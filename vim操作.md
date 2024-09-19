@@ -79,7 +79,20 @@ p 粘贴
 :set nohlsearch 关闭搜索结果高亮
 :set noincsearch 关闭渐进式高亮
 
+:set xxx 可以设置 xxx 选项。
+:set noxxx 相当于关闭 xxx 选项。
+
+'ic' 'ignorecase'       查找时忽略字母大小写
+'is' 'incsearch'        查找短语时显示部分匹配
+'hls' 'hlsearch'        高亮显示所有的匹配短语
+
+选项名可以用完整版本，也可以用缩略版本。
+     
 /ignore\c 在此次搜索时忽略大小写
 
-第六讲第五节
+
+
+以上内容从 vimtutor 整理而得，这是可以上手 vim 编辑器最基本的命令操作。
+
+以下内容则是根据 pratical vim edition2 书中提炼而出
 
