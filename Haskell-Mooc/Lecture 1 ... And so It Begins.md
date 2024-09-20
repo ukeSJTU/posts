@@ -218,8 +218,8 @@ Leaving GHCi.
 ```
 
 你可以通过`:quit`命令退出 GHCi。
-# 1.6 Expressions and Types
-Just like we saw in the GHCi example above, _expressions_ and _types_ are the bread and butter of Haskell. In fact, almost everything in a Haskell program is an expression. In particular, there are no _statements_ like in Python, Java or C.
+# 1.6 Expressions and Types 表达式和类型
+就像我们在上面的 GHCi 示例中看到的那样，_expressions_ 和 _types_ 是 Haskell 的生计。事实上，Haskell 程序中的几乎所有内容都是一个表达式。特别是，没有像 Python、Java 或 C 那样的 _statements_。
 
 An expression has a _value_ and a _type_. We write an expression and its type like this: `expression :: type`. Here are some examples:
 

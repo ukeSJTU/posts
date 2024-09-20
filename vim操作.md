@@ -138,3 +138,27 @@ d + aw：delete a word
 对于方法二而言，. 命令会重复执行dw，但是我们仍然需要b来调整光标位置
 对于方法三而言，. 命令会重复执行daw，相当于一个按键执行三个按键，非常好！
 
+### tip10 use count to do simple arithmetics
+在vim的normal-mode中，有很多命令可以通过在前面增加count来重复执行命令制定次数，例如3j是乡下移动三行，等等。
+
+vim中还有一对很有趣的命令：当光标位于一个数字上时，ctrl-a会+1， ctrl-x会-1.两者结合在一起：光标位于数字9上，在normal mode下输入5ctrl-x会得到4（9-5=4）。
+
+值得注意的是 vim 是对数整体处理的，而不是一个一个数字的计算，例如文本中有一个123，光标位于2上，按下99ctrl-a，结果会是123-99=24
+
+但如果光标根本不在数字上呢？根据文档，:h ctrl-a, vim会向后找到第一个数字并进行处理。作者提供了一个例子，我简化一下：
+初始文本（这是一段css，光标位于第一个字符上）
+
+``` css
+.blog { background-position: 0px 0px }
+```
+
+想要改成：
+``` css
+.blog { background-position: 0px 0px }
+.news { background-position: -180px 0px }
+```
+
+很显然，整个修改过程应该要分成三步：先复制粘贴行，然后修改blog->news，最后数字0改成-180.
+
+第一步很简单：yyp 就可以，光标移动到了第二行第一个字符上`.`。
+第二步：cW.news Esc. c
