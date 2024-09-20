@@ -96,3 +96,45 @@ p 粘贴
 
 以下内容则是根据 pratical vim edition2 书中提炼而出
 
+# Part1 Modes
+vim 中有个概念叫做 modes 模式，在不同模式下按同一个键效果不一样。比如normal modes按下x是删除当前光标所在的字符，而在insert modes下则是输入x字符
+## chapter 2 normal mode
+在normal mode下，许多命令都可以通过在前面添加一个数字来重复运行，例如w是移动到下一个单词首字母，那么5w就是向后5个单词。
+
+### tip7 pause with Your Brush Off the Page
+为什么我们需要normal mode？作者举例：正如画家也并不总是在画画，他们也需要时间构图，调色等，程序员也并不总是在写程序，更多时候你可能是在阅读代码，思考下面该写什么，甚至哪怕当你开始写代码了你也不一定要进入insert mode，你完全可以从别的地方复制/重构/删除代码。
+
+### tip8 chunk your undos
+在别的文本编辑器中，undo指令（一般是ctrl+z）会撤销对于最后输入/更改的单词/赐福。但是在vim中，我们可以控制undo命令的颗粒度。
+
+我认为想要理解undo的颗粒度，换句话说undo命令会revert最近的一次修改，但是一次修改指的是什么？这包括从normal，visual，command-line三种模式下触发的命令，也包括在insert模式下插入的text内容，例如 i{insert some text}<\Esc> 就是一次change。
+
+至于多久需要退出一次insert mode就见仁见智了，这纯粹是个人喜好问题。例如当你在insert mode下输入写完一行内容你想要换行，有的人会esc先退出到normal mode下再按o开启新的一行，有的人则直接CR回车。
+
+值得注意的是，在insert mode下如果你用方向键控制光标移动，这会另外新建一个undo chunk。
+
+### tip9 compose repeatable changes
+vim 针对重复的操作做了大量优化，例如 `.` 可以重复执行上一次操作。那么为了能够最大限度的利用这一特性，我们需要着重考虑我们如何构成可重复的编辑/改变 changes。
+
+下面举了一个例子：
+初始文本内容是 The end is nigh, 光标位于最后一个h上面，假设我们想要删除最后一个单词：nigh 该怎么做？
+
+方法一：db
+db **d**elete to the **b**eginning of the word, 但是这个产生的结果是 The end is h, 我们需要再按下x来删除残余的h字符
+3步
+
+方法二：dw
+先按b将光标移到nigh单词首字母上，然后dw命令删除整个单词。
+3步
+
+方法三：daw
+d + aw：delete a word
+这里的aw是一个text object，后续在 tip52和53再详细讨论。目前只知道它和前面的dw db中的w/b不太一样，它们是motion。
+3步
+
+上面的三种方法用同样的按键数实现了相同的效果，那么有没有区别呢？有的，回到最一开始我们说我们要最大限度的利用vim的重复操作便捷性，我们考虑重复上一操作： `.`
+
+对于方法一而言，. 命令会重复执行x
+对于方法二而言，. 命令会重复执行dw，但是我们仍然需要b来调整光标位置
+对于方法三而言，. 命令会重复执行daw，相当于一个按键执行三个按键，非常好！
+
