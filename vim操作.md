@@ -162,3 +162,36 @@ vim中还有一对很有趣的命令：当光标位于一个数字上时，ctrl-
 
 第一步很简单：yyp 就可以，光标移动到了第二行第一个字符上`.`。
 第二步：cW.news Esc. c
+
+
+### tip12 combine and conquer
+这一节的核心要点在于：`{operator}+{motion}={action}`。常用的`operator`如下：
+
+| 按键   | 效果                                                |
+| ---- | ------------------------------------------------- |
+| `c`  | change                                            |
+| `d`  | 删除                                                |
+| `y`  | yank                                              |
+| `g~` | 切换大小写                                             |
+| `gu` | 小写                                                |
+| `gU` | 大写                                                |
+| `>`  | 向右移动                                              |
+| `<`  | 向左移动                                              |
+| `=`  | autoindent                                        |
+| `!`  | Filter {motion} lines through an external program |
+
+motion 就是要将前面的 operator操作用到什么上：
+比如`3w`就是后面三个单词，`ap`是段落，等等。
+`$ 0 hjkl aw ap`
+
+你现在可以充分自由组合这些，例如：`gUap` 让当前段落全部大写。
+
+还有一点值得注意：在 vim 中，重复按 `{operator}` 相当于motion对象 就是当前行。例如`yy`或者`dd`分别是复制/删除当前行。但是请注意：将当前行全部小写是`guu`而不是`gugu`，原因见下：
+
+上面的 `{operator}` 中有三个都是 `g` 开头的，你可以把它们理解为 namespace 这样的概念。vim 除了自带的这些operator之外还支持自定义operator，我们后面就会看到，但是键盘上按键数量，所以为了能让用户使用更多 operator， g 相当于告诉vim这是拓展的按键，后面的u不代表undo，而是和g结合起来，作用是小写某些（由`{motion}`决定）字符。
+
+vim 还允许你自定义 operator 和 motion，你可以通过 `:h :map-operator` 和 `:h omap-info` 查看文档。
+
+那么在你按下 operator 之后，按下 motion 之前 vim 在干什么呢？实际上，vim 还有一种模式：operator-pending mode。在这个状态下，它一直等待你按下 motion 以执行操作，当然你也可与你按esc取消这次操作。值得注意的是，我们前面提到的`gu`这些命令，g不会进入 operator-pending mode, 毕竟g本身并不是operator，只有和别的例如u组合在一起才有意义。
+
+## chapter 3 insert mode
