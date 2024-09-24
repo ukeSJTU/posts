@@ -239,5 +239,6 @@ int mian
 
 insert normal mode是normal mode的一个特殊情况。它允许我们在这个模式下触发一次normal mode中的命令，然后就会自动回到 insert mode 下，允许我们继续编辑。例如，`zz`命令可以将当前行移动到屏幕正中间，所以当你想要写着写着想要看看下方是什么内容的时候可以组合按键：`<ctrl-o>zz`。
 
-
+TODO 也许应该有个更好的标题：paste from a register without leaving insert mode
+### tip15 在不离开insert模式的前提下从寄存器粘贴
 
