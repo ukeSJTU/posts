@@ -221,22 +221,22 @@ Leaving GHCi.
 # 1.6 Expressions and Types 表达式和类型
 就像我们在上面的 GHCi 示例中看到的那样，_expressions_ 和 _types_ 是 Haskell 的生计。事实上，Haskell 程序中的几乎所有内容都是一个表达式。特别是，没有像 Python、Java 或 C 那样的 _statements_。
 
-An expression has a _value_ and a _type_. We write an expression and its type like this: `expression :: type`. Here are some examples:
+一个表达式有一个值 (value) 和一个类型 (type)。我们用这种方式来写表达式及其类型：`expression :: type`。下面是一些例子：
 
-|Expression|Type|Value|
-|---|---|---|
-|`True`|`Bool`|`True`|
-|`not True`|`Bool`|`False`|
-|`"as" ++ "df"`|`[Char]`|`"asdf"`|
-## 1.6.1 Syntax of Expressions
-Expressions consist of functions _applied_ to arguments. Functions are _applied_ (i.e. called) by placing the arguments after the name of the function – there is no special syntax for a function call.
+| 表达式            | 类型       | 值        |
+| -------------- | -------- | -------- |
+| `True`         | `Bool`   | `True`   |
+| `not True`     | `Bool`   | `False`  |
+| `"as" ++ "df"` | `[Char]` | `"asdf"` |
+## 1.6.1 表达式的语法
+表达式是由函数和参数构成的。在 Haskell 中，你可以通过将参数直接放在函数名后面来调用（或者说"应用"）一个函数。这里没有特殊的函数调用语法，比如其他语言中常见的圆括号。
 
 |Haskell|Python, Java or C|
 |---|---|
 |`f 1`|`f(1)`|
 |`f 1 2`|`f(1,2)`|
 
-Parentheses can be used to _group_ expressions (just like in math and other languages).
+你可以使用圆括号来 _组合_（group）表达式（这点和数学以及其他编程语言类似）。
 
 | Haskell       | Python, Java or C |
 | ------------- | ----------------- |
@@ -244,7 +244,8 @@ Parentheses can be used to _group_ expressions (just like in math and other la
 | `g h (f 1)`   | `g(h,f(1))`       |
 | `g (h f 1)`   | `g(h(f,1))`       |
 | `g (h (f 1))` | `g(h(f(1)))`      |
-Some function names are made special characters and they are used as operators: between their arguments instead of before them. Function calls _bind tighter_ than operators, just like multiplication binds tighter than addition.
+
+一些函数名由特殊字符组成，它们被用作运算符：这些运算符会放在参数之间，而不是参数之前。函数调用的优先级高于运算符，这类似于乘法优先级高于加法。
 
 |Haskell|Python, Java or C|
 |---|---|
@@ -252,49 +253,52 @@ Some function names are made special characters and they are used as operators: 
 |`f a + g b`|`f(a) + g(b)`|
 |`f (a + g b)`|`f(a+g(b))`|
 
-PS. in Haskell, function application _associates left_, that is, `f g x y` is actually the same as `(((f g) x) y)`. We’ll get back to this topic later. For now you can just think that `f g x y` is `f` applied to the arguments `g`, `x` and `y`.
-## 1.6.2 Syntax of Types
-Here are some basic types of Haskell to get you started.
+在 Haskell 中，函数应用是**左结合的**。也就是说，`f g x y` 实际上等同于 `(((f g) x) y)`。我们稍后会详细讨论这个话题。现在，你可以简单地理解为 `f g x y` 是将函数 `f` 应用于参数 `g`、`x` 和 `y`。
 
-|Type|Literals|Use|Operations|
-|---|---|---|---|
-|`Int`|`1`, `2`, `-3`|Number type (signed, 64bit)|`+`, `-`, `*`, `div`, `mod`|
-|`Integer`|`1`, `-2`, `900000000000000000`|Unbounded number type|`+`, `-`, `*`, `div`, `mod`|
-|`Double`|`0.1`, `1.2e5`|Floating point numbers|`+`, `-`, `*`, `/`, `sqrt`|
-|`Bool`|`True`, `False`|Truth values|`&&`, `\|`, `not`|
-|`String` aka `[Char]`|`"abcd"`, `""`|Strings of characters|`reverse`, `++`|
+## 1.6.2 类型的语法
+下面我为你介绍一些 Haskell 的基本类型，帮助你入门。
 
-As you can see, the names of types in Haskell start with a capital letter. Some values like `True` also start with a capital letter, but variables and functions start with a lower case letter (`reverse`, `not`, `x`). We’ll get back to the meaning of capital letters in Lecture 2.
+| 类型                    | Literals                        | 使用                          |                             |
+| --------------------- | ------------------------------- | --------------------------- | --------------------------- |
+| `Int`                 | `1`, `2`, `-3`                  | Number type (signed, 64bit) | `+`, `-`, `*`, `div`, `mod` |
+| `Integer`             | `1`, `-2`, `900000000000000000` | Unbounded number type       | `+`, `-`, `*`, `div`, `mod` |
+| `Double`              | `0.1`, `1.2e5`                  | Floating point numbers      | `+`, `-`, `*`, `/`, `sqrt`  |
+| `Bool`                | `True`, `False`                 | Truth values                | `&&`, `\|`, `not`           |
+| `String` aka `[Char]` | `"abcd"`, `""`                  | Strings of characters       | `reverse`, `++`             |
 
-Function types are written using the `->` syntax:
+你可能已经注意到，`Haskell` 中的类型名称都以大写字母开头。一些值（如 `True`）也以大写字母开头，但变量和函数名则以小写字母开头（如 `reverse`、`not`、`x`）。我们会在第二讲中详细讨论大写字母的含义。
 
-- A function of one argument: `argumentType -> returnType`
-- … of two arguments: `argument1Type -> argument2Type -> returnType`
-- … of three arguments: `argument1Type -> argument2Type -> argument3Type -> returnType`
+函数类型使用 `->` 语法来表示：
 
-Looks a bit weird, right? We’ll get back to this as well.
-## 1.6.3 Note About Misleading Types
-Sometimes, the types you see in GHCi are a bit different than what you’d assume. Here are two common cases.
+- 单参数函数：`参数类型 -> 返回类型`
+- 双参数函数：`参数1类型 -> 参数2类型 -> 返回类型`
+- 三参数函数：`参数1类型 -> 参数2类型 -> 参数3类型 -> 返回类型`
+
+这种写法看起来有点奇怪，对吧？别担心，我们稍后会详细解释这种表示方法。
+## 1.6.3 可能误导性的类型
+有时候，你在 GHCi 中看到的类型可能会与你预想的有些不同。这里有两种常见的情况：
+
+1. 当你看到类型 `Num a => a` 时，现在你可以简单理解为"任何数字类型"。在 Haskell 中，数字字面量是_多态的_（overloaded），这意味着它们可以被解释为任何数字类型（比如 `Int` 或 `Double`）。我们会在后面讨论_类型类_（type classes）时详细解释 `Num a` 的实际含义。
 
 ``` haskell
 Prelude> :t 1+1
 1+1 :: Num a => a
 ```
 
-For now, you should read the type `Num a => a` as “any number type”. In Haskell, number literals are _overloaded_ which means that they can be interpreted as any number type (e.g. `Int` or `Double`). We’ll get back to what `Num a` actually means when we talk about _type classes_ later.
+2. 类型 `String` 实际上只是 `[Char]` 类型的别名，`[Char]` 表示"字符列表"。我们会在下一讲详细讨论列表！无论如何，你可以互换使用 `String` 和 `[Char]`，但 GHCi 在描述类型时通常会使用 `[Char]`。
 
 ``` haskell
 Prelude> :t "asdf"
 "asdf" :: [Char]
 ```
 
-The type `String` is just an alias for the type `[Char]` which means “list of characters”. We’ll get back to lists on the next lecture! In any case, you can use `String` and `[Char]` interchangeably, but GHCi will mostly use `[Char]` when describing types to you.
-# 1.7 The Structure of a Haskell Program
-下面是一个简单的Haskell程序，它进行一些数学运算并打印一些值。
+# 1.7 Haskell 程序的结构
+这是一个简单的 Haskell 程序，它进行一些算术运算并打印一些值。
+
 ``` haskell
 module Gold where
 
--- The golden ratio
+-- The golden ratio 黄金比例
 phi :: Double
 phi = (sqrt 5 + 1) / 2
 
@@ -308,73 +312,78 @@ main = do
   print (f phi)
 ```
 
-如果你把上面的内容放进`Gold.hs`这个文件中，然后用`stack runhaskell Gold.hs`来运行，你应该看到输出结果：
+如果你将这段代码保存在名为 `Gold.hs` 的文件中，并使用类似 `stack runhaskell Gold.hs` 的命令运行它，你应该会看到以下输出：
+
 ```
 0.0
 -1.0
 ```
 
-让我们来逐行看一下这个程序。
+让我们逐步解析这个文件。
+
 ``` haskell
 module Gold where
 ```
-There is one Haskell _module_ per source file. A module consists of _definitions_.
+
+每个 Haskell 源文件对应一个模块。一个模块由多个定义组成。
 
 ``` haskell
--- The golden ratio
+-- The golden ratio 黄金比例
 ```
-这个是注释。注释并不是真正程序的一部分，而是给阅读程序的人看的文字。
 
-```
+这是一个注释。注释不是程序的实际部分，而是为程序的人类读者提供的说明文本。
+
+``` haskell
 phi :: Double
 phi = (sqrt 5 + 1) / 2
 ```
 
-This is a definition of the constant `phi`, with an accompanying _type annotation_ (also known as a _type signature_) `phi :: Double`. The type annotation means that `phi` has type `Double`. The line with a equals sign (`=`) is called an _equation_. The left hand side of the `=` is the expression we are defining, and the right hand side of the `=` is the definition.
+这是常量 `phi` 的定义，附带类型注解（也称为类型签名）`phi :: Double`。类型注解表示 `phi` 的类型是 `Double`。带有等号（=）的行称为方程(equation)。等号左边是我们正在定义的表达式，右边是定义。
 
-普遍来说，定义（一个函数或者常量）包括可选的type annotation和一个或多个_equations_。
+一般来说，一个定义（函数或常量）由一个可选的类型注解和一个或多个方程组成。
 
-```
+``` haskell
 polynomial :: Double -> Double
 polynomial x = x^2 - x - 1
 ```
 
-This is the definition of a function called `polynomial`. It has a type annotation and an equation. Note how an equation for a function differs from the equation of a constant by the presence of a parameter `x` left of the `=` sign. Note also that `^` is the power operator in Haskell, not bitwise xor like in many other languages.
+这是名为 `polynomial` 的函数的定义。它有一个类型注解和一个方程。注意函数的方程与常量的方程的区别：在等号左侧有参数 `x`。还要注意，在 Haskell 中，`^` 是幂运算符，而不是像许多其他语言中的按位异或。
 
-```
+``` haskell
 f x = polynomial (polynomial x)
 ```
 
-This is the definition of a function called `f`. Note the lack of type annotation. What is the type of `f`?
+这是名为 `f` 的函数的定义。注意这里没有类型注解。你能推断出 `f` 的类型吗？
 
-```
+``` haskell
 main = do
   print (polynomial phi)
   print (f phi)
 ```
 
-This is a description of what happens when you run the program. It uses do-syntax and the IO Monad. We’ll get back to those in part 2 of the course.
-# 1.8 Working with Examples
-When you see an example definition like this
+这描述了运行程序时会发生什么。它使用了 do 语法和 IO Monad。我们会在课程的第二部分详细讨论这些概念。
+# 1.8 使用示例
 
-```
+当你看到像这样的定义时：
+
+``` haskell
 polynomial :: Double -> Double
 polynomial x = x^2 - x - 1
 ```
 
-you should usually play around with it. Start by running it. There are a couple of ways to do this.
+你通常应该尝试使用它。首先运行它。有几种方法可以做到这一点。
 
-If a definition fits on one line, you can just define it in GHCi:
+1. 如果定义只有一行，你可以直接在 GHCi 中定义它：
 
-```
+``` haskell
 Prelude> polynomial x = x^2 - x - 1
 Prelude> polynomial 3.0
 5.0
 ```
 
-For a multi-line definition, you can either use `;` to separate lines, or use the special `:{ :}` syntax to paste a block of code into GHCi:
+2. 对于多行定义，你可以使用 ; 分隔行，或使用特殊的 :{ :} 语法将代码块粘贴到 GHCi 中：
 
-```
+``` haskell
 Prelude> :{
 Prelude| polynomial :: Double -> Double
 Prelude| polynomial x = x^2 - x - 1
@@ -383,16 +392,17 @@ Prelude> polynomial 3.0
 5.0
 ```
 
-Finally, you can paste the code into a new or existing `.hs` file, and then `:load` it into GHCi. If the file has already been loaded, you can also use `:reload`.
+3. 最后，你可以将代码粘贴到新的或现有的 .hs 文件中，然后使用 :load 将其加载到 GHCi 中。如果文件已经加载，你也可以使用 :reload。
 
-```
--- first copy and paste the definition into Example.hs, then run GHCi
+``` haskell
+-- 首先将定义复制并粘贴到 Example.hs 中，然后运行 GHCi
 Prelude> :load Example.hs
 [1 of 1] Compiling Main             ( Example.hs, interpreted )
 Ok, one module loaded.
 *Main> polynomial 3.0
 5.0
--- now you can edit the definition
+
+-- 现在你可以编辑定义
 *Main> :reload
 [1 of 1] Compiling Main             ( Example.hs, interpreted )
 Ok, one module loaded.
@@ -400,10 +410,11 @@ Ok, one module loaded.
 3.0
 ```
 
-After you’ve run the example, try modifying it, or making another function that is similar but different. You learn programming by programming, not by reading!
-## 1.8.1 Dealing with Errors
-考虑到Haskell是一个typed language，你可能很快就会遇到类型错误。例如下面这样：
-```
+运行示例后，尝试修改它，或创建一个相似但不同的函数。你需要通过编程来学习编程，而不是通过阅读！
+## 1.8.1 处理错误
+
+由于 Haskell 是一种类型化语言，你可能很快就会遇到类型错误。以下是 GHCi 会话中的错误示例：
+``` plaintext
 Prelude> "string" ++ True
 
 <interactive>:1:13: error:
@@ -413,20 +424,21 @@ Prelude> "string" ++ True
       In an equation for ‘it’: it = "string" ++ True
 ```
 
-这是最常见的一种类型错误，"Couldn't match expected type"。尽管这个错误看起来又长又吓人，但是如果你仔细阅读它还是很简单的。
-- The first line of the error message, `<interactive>:1:13: error:` tells us that the error occurred in GHCi. If we had loaded a file, we might instead get something like `Sandbox.hs:3:17: error:`, where `Sandbox.hs` is the name of the file, `3` is the line number and `17` is the number of a character in the line.
-    
-- The line `• Couldn't match expected type ‘[Char]’ with actual type ‘Bool’` tells us that the immediate cause for the error is that there was an expression of type `Bool`, when GHCi was expecting to find an expression of type `[Char]`“. The location of this error was indicated in the first line of the error message. Note that the expected type is not always right. Giving type annotations by hand can help debugging typing errors.
-    
-- The line `• In the second argument of ‘(++)’, namely ‘True’` tells that the expression that had the wrong type was the second argument of the operator `(++)`. We’ll learn later why it’s surrounded by parentheses.
-    
-- The full expression with the error was `"string" ++ True`. As mentioned above, `String` is a type alias for `[Char]`, the type of character lists. The first argument to `++` was a list of characters, and since `++` can only combine two lists of the same type, the second argument should’ve been of type `[Char]` too.
-    
-- The line `In an equation for ‘it’: it = "string" ++ True` says that the expression occurred in the definition of the variable `it`, which is a default variable name that GHCi uses for standalone expressions. If we had a line `x = "string" ++ True` in a file, or a declaration `let x = "string" ++ True` in GHCi, GHCi would print `In an equation for ‘x’: x = "string" ++ True` instead.
-    
+这是最常见的类型错误，"无法匹配预期类型"。即使错误看起来很长很可怕，但如果你仔细阅读，它其实很简单。
 
-还有别的类型错误。
-```
+- 错误消息的第一行 `<interactive>:1:13: error:` 告诉我们错误发生在 GHCi 中。如果我们加载了一个文件，我们可能会看到类似 `Sandbox.hs:3:17: error:` 的内容，其中 `Sandbox.hs` 是文件名，`3` 是行号，`17` 是该行中的字符编号。
+
+- `Couldn't match expected type '[Char]' with actual type 'Bool'` 这一行告诉我们，错误的直接原因是有一个 Bool 类型的表达式，而 GHCi 期望找到一个 `[Char]` 类型的表达式。这个错误的位置在错误消息的第一行中指出。注意，预期类型并不总是正确的。手动给出类型注解可以帮助调试类型错误。
+
+- `In the second argument of '(++)', namely 'True'` 这一行告诉我们，类型错误的表达式是运算符 (++) 的第二个参数。我们稍后会了解为什么它被括号包围。
+
+- 完整的错误表达式是 "string" ++ True。如前所述，`String` 是 `[Char]`（字符列表类型）的类型别名。++ 的第一个参数是一个字符列表，由于 ++ 只能组合两个相同类型的列表，第二个参数也应该是 `[Char]` 类型。
+
+- `In an equation for 'it': it = "string" ++ True` 这一行说明该表达式出现在变量 it 的定义中，it 是 GHCi 用于独立表达式的默认变量名。如果我们在文件中有 `x = "string" ++ True` 这样的行，或在 GHCi 中有 `let x = "string" ++ True` 这样的声明，GHCi 会打印 `In an equation for 'x': x = "string" ++ True`。
+    
+还有其他类型的错误。
+
+``` plaintext
 Prelude> True + 1
 
 <interactive>:6:1: error:
@@ -435,36 +447,36 @@ Prelude> True + 1
       In an equation for ‘it’: it = True + 1
 ```
 
-This is the kind of error you get when you try to use a numeric function like `+` on something that’s not a number.
+当你试图在非数字上使用数字函数（如 +）时，会出现这种错误。
 
-The hardest error to track down is usually this:
+最难追踪的错误通常是这个：
 
-```
+``` plaintext
 Prelude> True +
 
 <interactive>:10:7: error:
     parse error (possibly incorrect indentation or mismatched brackets)
 ```
 
-There are many ways to cause it. Probably you’re missing some characters somewhere. We’ll get back to indentation later in this lecture.
-## 1.8.2 Arithmetic
-There’s one thing in Haskell arithmetic that often trips up beginners, and that’s division.
+有很多方式可能导致这个错误。可能是某处缺少了一些字符。我们稍后会在本讲中讨论缩进。
+## 1.8.2 算术
+Haskell 算术中有一件事经常让初学者感到困惑，那就是除法。
 
-In Haskell there are two division functions, the `/` operator and the `div` function. The `div` function does integer division:
+在 Haskell 中有两个除法函数，/ 运算符和 div 函数。div 函数进行整数除法：
 
 ``` haskell
 Prelude> 7 `div` 2
 3
 ```
 
-The `/` operator performs the usual division:
+/ 运算符执行通常的除法：
 
 ``` haskell
 Prelude> 7.0 / 2.0
 3.5
 ```
 
-However, you can only use `div` on whole number types like `Int` and `Integer`, and you can only use `/` on decimal types like `Double`. Here’s an example of what happens if you try to mix them up:
+然而，你只能在整数类型（如 Int 和 Integer）上使用 div，只能在小数类型（如 Double）上使用 /。以下是尝试混用它们时会发生的情况：
 
 ``` haskell
 halve :: Int -> Int
@@ -478,47 +490,40 @@ error:
       In an equation for ‘halve’: halve x = x / 2
 ```
 
-Just try to keep this in mind for now. We’ll get back to the difference between `/` and `div`, and what `Num` and `Fractional` mean when talking about type classes.
+现在只需记住这一点。我们稍后会在讨论类型类时回到 / 和 div 的区别，以及 Num 和 Fractional 的含义。
 
-> TODO: 这个是我在后面的1.10做练习遇到的：
-> ``` haskell
-module Collatz where
+# 1.9 如何实际编写程序？
+到目前为止，你已经见过一些算术运算、字符串反转等操作。那么，如何在Haskell中编写实际的程序呢？Haskell中缺少了许多常见的编程结构，如循环、语句和赋值。接下来，我们将介绍Haskell程序的基本构建块：
 
--- one step of the Collatz sequence
-step :: Integer -> Integer
-step x = if even x then down else up
-  where down = div x 2
-        up = 3*x+1
-> ```
-> 这里面有一个div x 2，也可以写成x `div` 2这到底有什么区别？
+- 条件语句
+- 局部定义
+- 模式匹配
+- 递归
+## 1.9.1 条件语句
+在其他语言中，`if` 通常是一个语句。它没有返回值，只是条件性地执行其他语句。
 
-# 1.9 How Do I Get Anything Done?
-So far you’ve seen some arithmetic, reversing a string and so on. How does one write actual programs in Haskell? Many of the usual programming constructs like loops, statements and assignment are missing from Haskell. Next, we’ll go through the basic building blocks of Haskell programs:
-
-- Conditionals
-- Local definitions
-- Pattern matching
-- Recursion
-## 1.9.1 Conditionals
-在别的语言中，`if`是一个statement。它没有一个值，它只会按照条件执行别的statements。
-
-但是在haskell中，`if`是一个expression。它有一个值。它能够有条件地在另外两个expressions中选择。你可以认为它对应着C或者Java中的`?:`操作符。
+而在Haskell中，`if` 是一个表达式。它有一个值，用于在两个表达式之间进行选择。它类似于C或Java中的 `?:` 运算符。
 
 ``` Java
 int price = product.equals("milk") ? 1 : 2;
 ```
-Python中的conditional expressions就和haskell中的if很类似：
+
+Python的条件表达式与Haskell的`if`非常接近：
+
 ``` python
 price = 1 if product == "milk" else 2
 ```
-而Haskell中你可以这样写：
+
+这是同样的例子在Haskell中的样子：
+
 ``` haskell
 price = if product == "milk" then 1 else 2
 ```
-Because Haskell’s `if` _returns_ a value, you **always** need an `else`!
-> TODO: 思考一下，如果没有else，是不是可以设定为None，还是Haskell中并没有none这个value？
-### 1.9.1.1 Functions Returning `Bool`
-In order to write if expressions, you need to know how to get values of type `Bool`. The most common way is comparisons. The usual `==`, `<`, `<=`, `>` and `>=` operators work in Haskell. You can do ordered comparisons (`<`, `>`) on all sorts of numbers, and equality comparisons (`==`) on almost anything:
+
+因为Haskell的`if`返回一个值，所以你总是需要一个`else`！
+### 1.9.1.1 返回`Bool`的函数
+为了编写`if`表达式，你需要知道如何获得`Bool`类型的值。最常见的方式是比较。通常的`==`、`<`、`<=`、`>`和`>=`运算符在Haskell中都可以使用。你可以对各种数字进行有序比较（`<`，`>`），对几乎任何东西进行相等比较（`==`）：
+
 ``` haskell
 Prelude> "foo" == "bar"
 False
@@ -528,7 +533,7 @@ Prelude> 1 == 1
 True
 ```
 
-One oddity of Haskell is that the not-equals operator is written `/=` instead of the usual `!=`:
+Haskell的一个特点是不等于运算符写作`/=`而不是通常的`!=`：
 
 ``` haskell
 Prelude> 2 /= 3
@@ -537,28 +542,29 @@ Prelude> "bike" /= "bike"
 False
 ```
 
-Remember that in addition to these comparisons, you can get `Bool` values out of other `Bool` values by using the `&&` (“and”) and `||` (“or”) operators, and the `not` function.
-### 1.9.1.2 Examples
+记住，除了这些比较之外，你还可以通过使用`&&`（"与"）和`||`（"或"）运算符，以及`not`函数来获得`Bool`值。
+### 1.9.1.2 例子
 ``` haskell
 checkPassword password = if password == "swordfish"
 						 then "You're in."
 						 else "ACCESS DENIED!"
 ```
 
-```
+``` haskell
 absoluteValue n = if n < 0 then -n else n
 ```
 
-```
+``` haskell
 login user password = if user == "unicorn73"
                       then if password == "f4bulous!"
                            then "unicorn73 logged in"
                            else "wrong password"
                       else "unknown user"
 ```
-## 1.9.2 Local Definitions
-Haskell 有两种不同的办法创建local定义：let-in和where
-`where` adds local definitions to a definition:
+## 1.9.2 局部定义
+Haskell有两种不同的方式来创建局部定义：`let...in`和`where`。
+
+`where`为定义添加局部定义：
 
 ``` haskell
 circleArea :: Double -> Double
@@ -567,7 +573,7 @@ circleArea r = pi * rsquare
           rsquare = r * r
 ```
 
-`let...in` is an expression:
+`let...in`是一个表达式：
 
 ``` haskell
 circleArea r = let pi = 3.1415926
@@ -575,7 +581,7 @@ circleArea r = let pi = 3.1415926
                in pi * rsquare
 ```
   
-Local definitions can also be functions:
+局部定义也可以是函数：
 
 ``` haskell
 circleArea r = pi * square r
@@ -589,18 +595,19 @@ circleArea r = let pi = 3.1415926
                in pi * square r
 ```
 
-We’ll get back to the differences between `let` and `where`, but mostly you can use which ever you like.
-## A Word About Immutability
-Even though things like `pi` above are often called _variables_, I’ve chosen to call them _definitions_ here. This is because unlike variables in Python or Java, the values of these definitions can’t be changed. Haskell variables aren’t boxes into which you can put new values, Haskell variables name a value (or rather, an expression) and that’s it.
+我们稍后会回到`let`和`where`的区别，但大多数情况下你可以使用你喜欢的任何一个。
+## 1.9.3 关于不可变性
 
-We’ll talk about immutability again later on this course, but for now it’s enough to know that things like this don’t work.
+尽管像上面的`pi`这样的东西通常被称为变量，但我在这里选择称它们为定义。这是因为与Python或Java中的变量不同，这些定义的值是不能改变的。Haskell变量不是你可以放入新值的盒子，Haskell变量命名一个值（或者更确切地说，一个表达式），仅此而已。
+
+我们稍后会在本课程中再次讨论不可变性，但现在只需要知道像这样的东西是不起作用的：
 
 ``` haskell
 increment x = let x = x+1
               in x
 ```
 
-This is just an infinite loop, because it tries to define a new variable `x` with the property `x = x+1`. Thus when evaluating `x`, Haskell just keeps computing `1+1+1+1+...` indefinitely.
+这只是一个无限循环，因为它试图定义一个新的变量`x`，其属性为`x = x+1`。因此，在计算`x`时，Haskell只是不断地计算`1+1+1+1+...`无限地继续下去。
 
 ``` haskell
 compute x = let a = x+1
@@ -608,16 +615,16 @@ compute x = let a = x+1
             in a
 ```
 
-```
+``` plaintext
 error:
     Conflicting definitions for ‘a’
     Bound at: <interactive>:14:17
               <interactive>:15:17
 ```
 
-Here we get a straightforward error when we’re trying to “update” the value of `a`.
+这里我们在试图"更新"`a`的值时报错。
 
-As a remark, local definitions can _shadow_ the names of variables defined elsewhere. Shadowing is not a side-effect. Instead, shadowing creates a new variable within a more restricted scope that uses the same name as some variable in the outer scope. For example, all of the functions `f`, `g`, and `h` below are legal:
+解释一下，局部定义可以**遮蔽**(shadow)在其他地方定义的变量的名称。遮蔽不是一个副作用。相反，遮蔽在更受限的作用域内创建一个新变量，该变量使用与外部作用域中某个变量相同的名称。例如，下面的函数`f`、`g`和`h`都是合法的：
 
 ``` haskell
 x :: Int
@@ -633,7 +640,7 @@ h :: Int -> Int
 h x = x where x = 3
 ```
 
-If we apply them to the global constant `x`, we see the effects of shadowing:
+如果我们将它们应用于全局常量`x`，我们会看到遮蔽的效果：
 
 ``` haskell
 f 1 ==> 2
@@ -645,7 +652,7 @@ g x ==> 6
 h x ==> 3
 ```
 
-It is best to always choose new names for local variables, so that shadowing never happens. That way, the reader of the code will understand where the variables that are used in an expression come from. Note that in the following example, `f` and `g` don’t shadow each others’ arguments:
+最好总是为局部变量选择新的名称，这样就永远不会发生遮蔽。这样，代码的读者就会理解表达式中使用的变量来自哪里。注意在下面的例子中，`f`和`g`并不遮蔽彼此的参数：
 
 ``` haskell
 f :: Int -> Int
@@ -654,10 +661,10 @@ f x = 2 * x + 1
 g :: Int -> Int
 g x = x - 2
 ```
-## 1.9.4 Pattern Matching
-A definition (of a function) can consist of multiple _equations_. The equations are matched in order against the arguments until a suitable one is found. This is called _pattern matching_.
+## 1.9.4 模式匹配
+一个（函数的）定义可以由多个等式组成。这些等式按顺序与参数匹配，直到找到一个合适的。这被称为模式匹配。
 
-Pattern matching in Haskell is very powerful, and we’ll keep learning new things about it along this course, but here are a couple of first examples:
+Haskell中的模式匹配非常强大，我们将在本课程中不断学习关于它的新知识，但这里有几个初步的例子：
 ``` haskell
 greet :: String -> String -> String
 greet "Finland" name = "Hei, " ++ name
@@ -666,7 +673,7 @@ greet "England" name = "How do you do, " ++ name
 greet _         name = "Hello, " ++ name
 ```
 
-The function `greet` generates a greeting given a country and a name (both `String`s). It has special cases for three countries, and a default case. This is how it works:
+`greet`函数根据给定的国家和名字（都是`String`类型）生成一个问候语。它有三个国家的特殊情况，和一个默认情况。它是这样工作的：
 
 ``` haskell
 Prelude> greet "Finland" "Pekka"
@@ -679,13 +686,14 @@ Prelude> greet "Greenland" "Jan"
 "Hello, Jan"
 ```
 
-The special pattern `_` matches anything. It’s usually used for default cases. Because patterns are matched in order, it’s important to (_usually_) put the `_` case last. Consider:
+特殊模式`_`可以匹配任何东西。它通常用于默认情况。因为模式是按顺序匹配的，所以（通常）将`_`情况放在最后很重要。否则像下面这种情况：
 
 ``` haskell
 brokenGreet _         name = "Hello, " ++ name
 brokenGreet "Finland" name = "Hei, " ++ name
 ```
-Now the first case gets selected for all inputs.
+
+现在第一种情况会被选中用于处理所有输入。
 
 ``` haskell
 Prelude> brokenGreet "Finland" "Varpu"
@@ -694,15 +702,15 @@ Prelude> brokenGreet "Sweden" "Ole"
 "Hello, Ole"
 ```
 
-GHC even gives you a warning about this code:
+GHC甚至会给你一个关于这段代码的警告：
 
-```
+``` plaintext
 <interactive>:1:1: warning: [-Woverlapping-patterns]
     Pattern match is redundant
     In an equation for ‘brokenGreet’: brokenGreet "Finland" name = ...
 ```
 
-Some more examples follow. But first let’s introduce the standard library function `show` that can turn (almost!) anything into a string:
+下面是更多的例子。但首先让我们介绍标准库函数`show`，它可以将（几乎！）任何东西转换为字符串：
 
 ``` haskell
 Prelude> show True
@@ -711,7 +719,7 @@ Prelude> show 3
 "3"
 ```
 
-So, here’s an example of a function with pattern matching and a default case that actually uses the value (instead of just ignoring it with `_`):
+所以，这里是一个带有模式匹配和实际使用值的默认情况（而不是用`_`忽略它）的函数例子：
 
 ``` haskell
 describe :: Integer -> String
@@ -721,7 +729,7 @@ describe 2 = "an even prime"
 describe n = "the number " ++ show n
 ```
 
-This is how it works:
+它的结果像这样：
 
 ``` haskell
 Prelude> describe 0
@@ -732,7 +740,7 @@ Prelude> describe 7
 "the number 7"
 ```
 
-You can even pattern match on multiple arguments. Again, the equations are tried in order. Here’s a reimplementation of the `login` function from earlier:
+你甚至可以对多个参数进行模式匹配。同样，等式是按顺序尝试的。这是对前面`login`函数的重新实现：
 
 ``` haskell
 login :: String -> String -> String
@@ -740,23 +748,23 @@ login "unicorn73" "f4bulous!" = "unicorn73 logged in"
 login "unicorn73" _           = "wrong password"
 login _           _           = "unknown user"
 ```
-## 1.9.5 Recursion
-In Haskell, all sorts of loops are implemented with recursion. 函数调用的效率都很高所以你不必担心性能问题。（我们会在后面再讨论性能）。
+## 1.9.5 递归
+在Haskell中，所有类型的循环都是用递归实现的。函数调用非常高效，所以你不需要担心性能。（我们稍后会讨论性能）。
 
-Learning how to do simple things with recursion in Haskell will help you use recursion on more complex problems later. Recursion is also often a useful way for thinking about solving harder problems.
+学习如何用Haskell中的递归做简单的事情将帮助你在更复杂的问题上使用递归。递归也经常是思考如何解决更难问题的有用方法。
 
-Here’s our first recursive function which computes the factorial. In mathematics, factorial is the product of _n_ first positive integers and is written as _n!_. The definition of factorial is
+这是我们的第一个递归函数，它计算阶乘。在数学中，阶乘是前n个正整数的乘积，写作n!。阶乘的定义是
 
-> _n! = n * (n-1) * … * 1_
+`n! = n * (n-1) * … * 1`
 
-For example, _4! = 4*3*2*1 = 24_. Well anyway, here’s the Haskell implementation of factorial:
+例如，`4! = 4 * 3 * 2 * 1 = 24`。总之，这里是阶乘的Haskell实现：
 ``` haskell
 factorial :: Int -> Int
 factorial 1 = 1
 factorial n = n * factorial (n-1)
 ```
 
-This is how it works. We use `==>` to mean “evaluates to”.
+这是它的工作原理。我们用`==>`表示"求值为"。
 
 ``` haskell
 factorial 3
@@ -767,31 +775,30 @@ factorial 3
   ==> 6
 ```
 
-What happens when you evaluate `factorial (-1)`?
+当你计算`factorial (-1)`时会发生什么？
 
-Here’s another example:
+这是另一个例子：
 
 ``` haskell
--- compute the sum 1^2+2^2+3^2+...+n^2
+-- compute the sum 1^2+2^2+3^2+...+n^2 计算1^2+2^2+3^2+...+n^2的和
 squareSum 0 = 0
 squareSum n = n^2 + squareSum (n-1)
 ```
-
   
-A function can call itself recursively multiple times. As an example let’s consider the _Fibonacci sequence_ from mathematics. The Fibonacci sequence is a sequence of integers with the following definition.
+一个函数可以多次递归地调用自己。让我们考虑数学中的斐波那契序列作为例子。斐波那契序列是一个具有以下定义的整数序列。
 
-> The sequence starts with 1, 1. To get the next element of the sequence, sum the previous two elements of the sequence.
+序列从1, 1开始。要得到序列的下一个元素，将序列的前两个元素相加。
 
-The first elements of the Fibonacci sequence are 1, 1, 2, 3, 5, 8, 13 and so on. Here’s a function `fibonacci` which computes the `n`th element in the Fibonacci sequence. Note how it mirrors the mathematical definition.
+斐波那契序列的前几个元素是1, 1, 2, 3, 5, 8, 13等等。这里有一个`fibonacci`函数，它计算斐波那契序列中的第n个元素。注意它如何反映数学定义。
 
 ``` haskell
--- Fibonacci numbers, slow version
+-- 斐波那契数，慢速版本
 fibonacci 1 = 1
 fibonacci 2 = 1
 fibonacci n = fibonacci (n-2) + fibonacci (n-1)
 ```
 
-Here’s how `fibonacci 5` evaluates:
+这是`fibonacci 5`如何求值的：
 
 ``` haskell
 fibonacci 5
@@ -803,6 +810,31 @@ fibonacci 5
   ==> (    1       +       1    ) + (    1       + (    1       +     1      ))
   ==> 5
 ```
+
+注意`fibonacci 3`被计算了两次，`fibonacci 2`被计算了三次。这不是`fibonacci`函数最有效的实现。我们会在下一讲回到这个问题。另一种思考`fibonacci`函数求值的方式是将其可视化为一棵树（我们将`fibonacci`缩写为`fib`）：
+
+![计算结果树形图](https://haskell.mooc.fi/img/Fibonacci-step2.svg)
+
+  
+![](https://haskell.mooc.fi/img/Fibonacci-step1.svg)
+
+![](https://haskell.mooc.fi/img/Fibonacci-step2.svg)
+
+![](https://haskell.mooc.fi/img/Fibonacci-step3.svg)
+
+![](https://haskell.mooc.fi/img/Fibonacci-step4.svg)
+
+![](https://haskell.mooc.fi/img/Fibonacci-step5.svg)
+
+![](https://haskell.mooc.fi/img/Fibonacci-step6.svg)
+
+![](https://haskell.mooc.fi/img/Fibonacci-step7.svg)
+
+![？](https://haskell.mooc.fi/img/Fibonacci-step8.svg)
+
+
+这棵树精确地对应于表达式(1 + 1) + (1 + (1 + 1))。递归经常可以产生链状、树状、嵌套或循环结构和计算。递归是函数式编程的主要技术之一，所以值得花些精力去学习它。
+
 # 1.10 All Together Now!
 Finally, here’s a complete Haskell module that uses ifs, pattern matching, local defintions and recursion. The module is interested in the [_Collatz conjecture_](https://en.wikipedia.org/wiki/Collatz_conjecture), a famous open problem in mathematics. It asks:
 
