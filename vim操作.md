@@ -195,3 +195,49 @@ vim 还允许你自定义 operator 和 motion，你可以通过 `:h :map-operato
 那么在你按下 operator 之后，按下 motion 之前 vim 在干什么呢？实际上，vim 还有一种模式：operator-pending mode。在这个状态下，它一直等待你按下 motion 以执行操作，当然你也可与你按esc取消这次操作。值得注意的是，我们前面提到的`gu`这些命令，g不会进入 operator-pending mode, 毕竟g本身并不是operator，只有和别的例如u组合在一起才有意义。
 
 ## chapter 3 insert mode
+对于很多初学者而言，也正如我们前面提到的各种快捷键/命令，想要执行复制/删除等等操作总是需要退出到 normal mode 下才可以用。这就有时候让人感觉很麻烦。在本chapter中，实际上你在 insert mode 下，也可以通过某些按键轻松做到。
+
+在本章，你还会学到如何在vim中方便地输入不在键盘上的键。
+
+replace mode 是 insert mode 的一种特殊情况，前面我们提到，当你按下`r`的时候，再按下某个字符，就会将当前字符替换成后者。中间经过的一个模式就是replace mode。我们还会学习 insert normal mode 这一子模式（sub-mode），它允许我们触发一个normal mode下的命令但不会进入 insert mode。（TODO 不知道是否翻译正确：原文：We’ll also meet Insert Normal mode, a sub- mode that lets us fire a single Normal mode command before dropping us back into Insert mode.）
+
+我们还会深度讨论自动补全（autocompletion）。
+
+### tip13 在insert模式下立即作出修改
+在 insert 模式下输入的时候，打错字是很常有的情况。例如下面，当你输入完后，你发现你把`main`拼写成`mian`。
+
+``` plaintext
+int mian
+```
+
+如果你什么都不懂，你大概率会是这个流程：`<Esc>`退出insert mode，移动光标到单词开头，然后`dw`删除这个单词，再`i`进入insert mode，最后重新输入正确拼写的单词：`main`。当然`cw`也是可以的。可是无论怎样，这样的流程总是包含：`insert -> normal -> insert`模式的切换。有没有更方便的操作呢？
+
+
+| 按键          | 作用       |
+| ----------- | -------- |
+| `backspace` | 向前删除一个字符 |
+| `<ctrl - h` | 向前删除一个字符 |
+| `<ctrl - w` | 向前删除一个单词 |
+| `<ctrl - u` | 向前删除到行首  |
+
+> [!tip] 提示：
+> 上面这些命令不仅仅可以在 vim （insert mode）中使用，你也可以在vim的command mode下甚至是shell环境中使用。
+
+### tip14 返回 normal mode
+初学者可能会使用 `<Esc>` 从 insert 退出到 normal mode中。但很快你会发现这并不方便，`<Esc>`这个键离我们的常用打字区域太远了。于是有些人会修改键盘键位映射，将`Capslock`键映射成`<Esc>`键，这样当你按下`Capslock`的时候，vim会从insert mode退出到normal mode下。
+
+实际上你还有些别的方法：vim内置了`ctrl-[`来起到相同的作用。有些人会配置快捷键`jj`或者`jk`来快速退出。
+
+但这些都避免不了一个问题：有的时候我在insert mode下想要执行一个normal mode中的命令，但是执行完以后我希望接着编辑文本，如果退出了insert mode我仍然需要按i重新进入insert mode下，甚至可能还需要调整光标所在位置，vim特意为此设置了一个子模式：insert normal mode模式。
+
+
+| 按键         | 效果                   |
+| ---------- | -------------------- |
+| `<Esc>`    | 切换到 normal 模式        |
+| `<ctrl-[>` | 切换到 normal 模式        |
+| `<ctrl-o>` | 切换到 insert normal 模式 |
+
+insert normal mode是normal mode的一个特殊情况。它允许我们在这个模式下触发一次normal mode中的命令，然后就会自动回到 insert mode 下，允许我们继续编辑。例如，`zz`命令可以将当前行移动到屏幕正中间，所以当你想要写着写着想要看看下方是什么内容的时候可以组合按键：`<ctrl-o>zz`。
+
+
+

@@ -1,62 +1,139 @@
-好的，我会先将这些语法知识分类总结成表格，然后详细解释每一个语法知识点。
 
-| 类别      | 语法知识                    |     |
-| ------- | ----------------------- | --- |
-| 函数      | 函数声明、箭头函数               |     |
-| 流程控制    | 条件语句 (if)               |     |
-| 字符串     | 模板字符串                   |     |
-| DOM 操作  | 选择元素、修改类、事件监听           |     |
-| 事件处理    | 事件监听、事件对象               |     |
-| Web API | Audio API               |     |
-| 数组操作    | Array.from(), forEach() |     |
-| ES6+ 特性 | 解构赋值、箭头函数               |     |
-| 对象操作    | 属性访问                    |     |
-| 其他      | 短路评估、全局对象               |     |
+# Knowledge Point 知识点
 
-现在，让我详细解释每一个语法知识点：
+## html
+### `data-*` attribute
 
-1. 函数声明：
-   使用 `function` 关键字定义函数。例如：`function removeTransition(e) { ... }`。这是定义函数的传统方式。
+这里可以看一下 [mdn的文档](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Howto/Use_data_attributes):
 
-2. 箭头函数：
-   ES6引入的简洁函数写法。例如：`key => key.addEventListener(...)`。箭头函数提供了更简洁的语法，尤其适合用作回调函数。
+语法非常简单。所有在元素上以`data-`开头的属性为数据属性。比如说你有一篇文章，而你又想要存储一些不需要显示在浏览器上的额外信息。请使用 data 属性：
 
-3. 条件语句 (if)：
-   用于根据条件执行不同的代码块。例如：`if (e.propertyName !== 'transform') return;`。这里使用了提前返回的模式来简化代码。
+``` html
+<article
+  id="electriccars"
+  data-columns="3"
+  data-index-number="12314"
+  data-parent="cars">
+  ...
+</article>
+```
+#### 用`javascript`访问
 
-4. 模板字符串：
-   使用反引号(`)和`${}`语法创建包含变量的字符串。例如：``audio[data-key="${e.keyCode}"]``。这使得字符串插值更加直观和灵活。
+在外部使用[JavaScript](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript)去访问这些属性的值同样非常简单。你可以使用[`getAttribute()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getAttribute "getAttribute()")配合它们完整的 HTML 名称去读取它们，但标准定义了一个更简单的方法：[`DOMStringMap`](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMStringMap)你可以使用[`dataset`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/dataset "dataset")读取到数据。
 
-5. DOM 操作：
-   - 选择元素：使用`document.querySelector()`方法选择DOM元素。
-   - 修改类：使用`classList.add()`和`classList.remove()`方法添加和移除CSS类。
-   - 事件监听：使用`addEventListener()`方法为元素添加事件监听器。
+为了使用`dataset`对象去获取到数据属性，需要获取属性名中`data-`之后的部分 (要注意的是破折号连接的名称需要改写为骆驼拼写法 (如"index-number"转换为"indexNumber"))。
 
-6. 事件处理：
-   处理用户交互和DOM事件。这里处理了'transitionend'和'keydown'事件。
+``` js
+var article = document.querySelector("#electriccars");
 
-7. Audio API：
-   使用Web Audio API播放声音。例如：`audio.play()`播放音频，`audio.currentTime = 0`重置音频播放位置。
+article.dataset.columns; // "3"
+article.dataset.indexNumber; // "12314"
+article.dataset.parent; // "cars"
+```
 
-8. 数组操作：
-   - `Array.from()`：将类数组对象（如NodeList）转换为真正的数组。
-   - `forEach()`：遍历数组的每个元素并执行回调函数。
+> [!tip] 注意
+> 
+> 不要在 data attribute 里储存需要显示及访问的内容，因为一些其他的技术可能访问不到它们。另外爬虫不能将 data attribute 的值编入索引中。
 
-9. 解构赋值：
-   在函数参数中使用`e`来接收事件对象，这是一种简单的解构赋值形式。
+每一个属性都是一个可读写的字符串。在上面的例子中，`article.dataset.columns = 5`.将会调整属性的值为 5。
 
-10. 属性访问：
-    使用点表示法访问对象属性，如`e.propertyName`, `e.target`, `e.keyCode`。
+为了支持 IE10 及以下的版本，你必须使用 [`getAttribute()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getAttribute "getAttribute()") 来访问:
+``` js
+var article = document.querySelector("#electriccars");
 
-11. 短路评估：
-    使用`if (!audio) return;`进行快速检查和退出。这是一种常见的防御性编程技巧。
+article.getAttributeNames(); // ['id', 'data-columns', 'data-index-number', 'data-parent']
 
-12. 全局对象：
-    使用`window`对象来添加全局事件监听器。`window`是浏览器中的全局对象，代表整个浏览器窗口。
+article.getAttribute("data-index-number"); // "12314"
+```
+
+#### 用`css`访问
+
+注意，data 设定为 HTML 属性，他们同样能被[CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS)访问。比如你可以通过[generated content](https://developer.mozilla.org/zh-CN/docs/Web/CSS/content)使用函数[`attr()`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/attr)来显示 data-parent 的内容：
+
+``` css
+article::before {
+  content: attr(data-parent);
+}
+```
+
+你也同样可以在 CSS 中使用[属性选择器](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Attribute_selectors)根据 data 来改变样式：
+
+``` css
+article[data-columns="3"] {
+  width: 400px;
+}
+article[data-columns="4"] {
+  width: 600px;
+}
+```
+
+你可以在这个[JSBin](https://jsbin.com/ujiday/2/edit) 里看到全部演示。
+
+Data 属性同样可以存储不断变化的信息，比如游戏的得分。使用 CSS 选择器与 JavaScript 去访问可以让你得到花俏的效果，这里你并不需要用常规的编写方案来编写代码。有关使用生成内容和 CSS 转换（[JSBin 示例](https://jsbin.com/atawaz/3/edit)）的示例，请参阅此[视频](https://www.youtube.com/watch?v=On_WyUB1gOk)。
+
+数据值是字符串。必须在选择器中引用数值才能使样式生效。
+
+### `<kbd>` 元素
+
+可以参考 [mdn文档](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd)：
+
+**`<kbd>`** 元素表示一段内联文本，表示来自键盘、语音输入或任何其他文本输入设备的文本用户输入。浏览器默认等宽字体显示`<kbd>`，但这并不是 HTML 标准的一部分，并且用户自定义 css 可以覆盖这一行为。
+
+你可以像这样使用`<kbd>`：
+``` html
+<p>Please press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> to re-render an MDN page.</p>
+```
+
+其他元素可以结合使用`<kbd>`来表示更具体的场景：
+- 将一个`<kbd>`元素嵌套在另一个`<kbd>`元素中表示实际的键或其他输入单元作为较大输入的一部分。请参阅下面的 [在输入中表示击键](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd#representing_keystrokes_within_an_input)。
+- 将`<kbd>`元素嵌套在[`<samp>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp)表示系统已回显给用户的输入。有关示例，请参阅下面的 [Echoed input](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd#echoed_input)。
+- 另一方面，将`<samp>`元素嵌套在`<kbd>`表示基于系统提供的文本的输入，例如菜单和菜单项的名称，或屏幕上显示的按钮的名称。请参阅下面的 [表示屏幕输入选项下](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd#representing_onscreen_input_options)的示例。
+
+`<kbd>`可以与 [`<samp>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp)嵌套，以表示基于视觉提示的各种形式的输入或输出。例如这样：
+``` html
+<p>I was trying to boot my computer, but I got this hilarious message:</p>
+
+<p>
+  <samp>Keyboard not found <br />Press F1 to continue</samp>
+</p>
+
+```
+
+`<kbd>`可以嵌套，例如这样：
+``` html
+<p>
+  Type the following in the Run dialog: <kbd>cmd</kbd><br />Then click the OK
+  button.
+</p>
+
+<p>Save the document by pressing <kbd>Ctrl</kbd> + <kbd>S</kbd></p>
+```
+
+> [!note] 注意：
+> 
+> 你不一定需要最外层的`<kbd>`。换句话说，将其简化为仅 `<kbd>Ctrl</kbd>+<kbd>N</kbd>` 将是完全有效的。
+> 
+> 但是，根据你的样式表，你可能会发现进行这种嵌套很有用。
+
+``` css
+kbd > kbd {
+  border-radius: 3px;
+  padding: 1px 2px 0;
+  border: 1px solid black;
+}
+```
+
+### `<audio>`元素
+参考[mdn文档](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/audio).
+
+## css
 
 
+## javascript
 
-最终完成代码：
+
+# 最终代码
+
 ``` js
 <!DOCTYPE html>
 <html lang="en">
@@ -66,9 +143,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="https://fav.farm/✅" />
 </head>
+
 <body>
-
-
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -142,5 +218,60 @@
 
 </body>
 </html>
+
+```
+
+``` css
+html {
+  font-size: 10px;
+  background: url('./background.jpg') bottom center;
+  background-size: cover;
+}
+
+body,html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.keys {
+  display: flex;
+  flex: 1;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.key {
+  border: .4rem solid black;
+  border-radius: .5rem;
+  margin: 1rem;
+  font-size: 1.5rem;
+  padding: 1rem .5rem;
+  transition: all .07s ease;
+  width: 10rem;
+  text-align: center;
+  color: white;
+  background: rgba(0,0,0,0.4);
+  text-shadow: 0 0 .5rem black;
+}
+
+.playing {
+  transform: scale(1.1);
+  border-color: #ffc600;
+  box-shadow: 0 0 1rem #ffc600;
+}
+
+kbd {
+  display: block;
+  font-size: 4rem;
+}
+
+.sound {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: .1rem;
+  color: #ffc600;
+}
 
 ```
