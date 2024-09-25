@@ -226,6 +226,12 @@ int mian
 ### tip14 返回 normal mode
 初学者可能会使用 `<Esc>` 从 insert 退出到 normal mode中。但很快你会发现这并不方便，`<Esc>`这个键离我们的常用打字区域太远了。于是有些人会修改键盘键位映射，将`Capslock`键映射成`<Esc>`键，这样当你按下`Capslock`的时候，vim会从insert mode退出到normal mode下。
 
+> **重新映射`<Capslock>`键**
+> 
+> 我们知道jk在normal mode下分别是将光标向下移动或者向上移动一行。但如果你不小心按到了`<Capslock>`键，相当于你输入了J或者K，前者会将当前行和下一行拼接在一起，后者会查看当前光标所在的单词的说明页（manpage）。这可能会在不经意间打乱你的文本，所以有些人会将`<Capslock>`映射到别的键，最常见的就是`<Esc>`(我们前面提到的)或者`<Ctrl>`键。
+> 
+> 一般来说，这个映射是发生在操作系统层面的，也就是说你最好google搜索如何在**你的**操作系统上映射键。并且因为这个重新映射是发生在操作系统层面的，这意味着你所有的键盘使用都是被重新映射过的，而不仅仅是在vim中。
+
 实际上你还有些别的方法：vim内置了`ctrl-[`来起到相同的作用。有些人会配置快捷键`jj`或者`jk`来快速退出。
 
 但这些都避免不了一个问题：有的时候我在insert mode下想要执行一个normal mode中的命令，但是执行完以后我希望接着编辑文本，如果退出了insert mode我仍然需要按i重新进入insert mode下，甚至可能还需要调整光标所在位置，vim特意为此设置了一个子模式：insert normal mode模式。
@@ -241,4 +247,23 @@ insert normal mode是normal mode的一个特殊情况。它允许我们在这个
 
 TODO 也许应该有个更好的标题：paste from a register without leaving insert mode
 ### tip15 在不离开insert模式的前提下从寄存器粘贴
+我们之前学习的vim 中的yank和put操作都是在normal mode下进行的，但如果我们想要在insert mode下进行put操作该怎么办呢？
+
+我们来看一个具体情景：
+``` plaintext
+Practical Vim, by Drew Neil
+Read Drew Neil's
+```
+
+期望的最终结果是：
+``` plaintext
+Practical Vim, by Drew Neil
+Read Drew Neil's Practical Vim
+```
+
+操作步骤：
+- `yt,`
+- `jA<Space>`
+- `Ctrl-r0`
+- `.<Esc>`
 
