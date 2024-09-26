@@ -837,28 +837,26 @@ fibonacci 5
 
 # 1.10 All Together Now!
 
-最后，这里是一个完整的Haskell模块，它使用了条件语句、模式匹配、局部定义和递归。 The module is interested in the [_Collatz conjecture_](https://en.wikipedia.org/wiki/Collatz_conjecture), a famous open problem in mathematics. It asks:
+最后，这里是一个完整的Haskell模块，它使用了条件语句、模式匹配、局部定义和递归。这个模块主要研究数学界一个著名的问题——[考拉兹猜想(`Collatz conjecture`)](https://en.wikipedia.org/wiki/Collatz_conjecture)：
 
-> Does the Collatz sequence eventually reach 1 for all positive integer initial values?
+对于任意正整数，它的考拉兹序列最后是否一定是1？
 
-The Collatz sequence is defined by taking any number as a starting value, and then repeatedly performing the following operation:
+具体来时，考拉兹序列是这样构造的。先选取任意的一个整数作为初始值，然后重复进行下面的操作：
+- 如果是偶数，除以`2`
+- 如果是奇数，乘以`3`再加`1`
 
-- if the number is even, divide it by two
-- if the number is odd, triple it and add one
+比如说，`3`的考拉兹序列是：`3, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1, ...`。你可以看到，这个序列出现了`1`之后就开始`4, 2, 1`的无限循环。
 
-As an example, the Collatz sequence for 3 is: 3, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1 … As you can see, once the number reaches 1, it gets caught in a loop.
-
-```
+``` haskell
 module Collatz where
 
--- one step of the Collatz sequence
+-- 生成下一个考拉兹序列的元素
 step :: Integer -> Integer
 step x = if even x then down else up
   where down = div x 2
         up = 3*x+1
 
--- collatz x computes how many steps it takes for the Collatz sequence
--- to reach 1 when starting from x
+-- collatz x 的结果是整数x的考拉兹序列需要多少步会第一次出现1
 collatz :: Integer -> Integer
 collatz 1 = 0
 collatz x = 1 + collatz (step x)
@@ -880,9 +878,9 @@ longest' number maxlength n =
   where len = collatz n
 ```
 
-We can load the program in GHCi and play with it.
+我们可以在`GHCi`中运行上面这段程序并且自己试试看：
 
-```
+``` haskell
 $ stack ghci
 GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 Prelude> :load Collatz.hs
@@ -891,9 +889,9 @@ Ok, one module loaded.
 *Collatz>
 ```
 
-Let’s verify that our program computes the start of the Collatz sequence for 3 correctly.
+让我们验证一下程序计算结果正确：
 
-```
+``` haskell
 *Collatz> step 3
 10
 *Collatz> step 10
@@ -902,50 +900,49 @@ Let’s verify that our program computes the start of the Collatz sequence for 3
 16
 ```
 
-How many steps does it take for 3 to reach 1?
+那么`3`的考拉兹序列需要多少步操作才会出现`1`呢？
 
-```
+``` haskell
 *Collatz> collatz 3
 7
 ```
 
-What’s the longest Collatz sequence for a starting value under 10? What about 100?
+对于所有小于`10`或者`100`的正整数，谁的考拉兹序列最长呢？
 
-```
+``` haskell
 *Collatz> longest 10
 9
 *Collatz> longest 100
 97
 ```
 
-The lengths of these Collatz sequences are:
+它们的考拉兹序列长度分别是：
 
-```
+``` haskell
 *Collatz> collatz 9
 19
 *Collatz> collatz 97
 118
 ```
-# 1.11 A Word About Indentation
-The previous examples have been fancily indented. In Haskell indentation matters, a bit like in Python. The complete set of rules for indentation is hard to describe, but you should get along fine with these rules of thumb:
+# 1.11 缩进
+Haskell 和 python 一样，都需要严格遵循缩进的规则才能正常运行。但是 Haskell 中的缩进规则有点难以描述，就目前而言，你只需要记得：
+1. 属于同一组的代码应该从同一列开始
+2. 如果一个表达式/方程需要跨越多行，你应该增加缩进
 
-1. Things that are grouped together start from the same column
-2. If an expression (or equation) has to be split on to many lines, increase indentation
+尽管你可以简单的通过 Tab 来控制缩进，我还是推荐你统一使用 Space。
 
-While you can get away with using tabs, it is highly recommended to use spaces for all indenting.
+下面是一些可行的示例代码：
 
-Some examples are in order.
-
-These all are ok:
 ``` haskell
 i x = let y = x+x+x+x+x+x in div y 5
 
--- let and in are grouped together, an expression is split
+-- let 和 in 属于同一组的代码
+-- x+x+x+x+x+x 这个表达式跨越了两行，所以要增加缩进（以对齐）
 j x = let y = x+x+x
               +x+x+x
       in div y 5
 
--- the definitions of a and b are grouped together
+-- a 和 b 的定义算是同一组
 k = a + b
   where a = 1
         b = 1
@@ -956,88 +953,85 @@ l = a + b
     b = 1
 ```
 
-These are not ok:
+而下面这些代码就是错误的：
+
 ``` haskell
--- indentation not increased even though expression split on many lines
+-- let 和 in 组成的表达式跨越多行但是没有相应地调整缩进
 i x = let y = x+x+x+x+x+x
 in div y 5
 
--- indentation not increased even though expression is split
+-- 加法表达式跨越多行但是没有相应地调整缩进
 j x = let y = x+x+x
       +x+x+x
       in div y 5
 
--- grouped things are not aligned
+-- a 和 b属于同一组代码但是没有列对齐
 k = a + b
   where a = 1
       b = 1
 
--- grouped things are not aligned
+-- 同上
 l = a + b
   where
     a = 1
      b = 1
 
--- where is part of the equation, so indentation needs to increase
+-- where 是整个方程的一部分，应该和上方(a + b)对齐
 l = a + b
 where
   a = 1
   b = 1
 ```
 
-If you make a mistake with the indentation, you’ll typically get a parse error like this:
+如果你的缩进有问题，典型的报错像这样：
 
-```
+``` haskell
 Indent.hs:2:1: error: parse error on input ‘where’
 ```
 
-The error includes the line number, so just go over that line again. If you can’t seem to get indentation to work, try putting everything on just one long line at first.
-# 1.12 Quiz
-在每一个lecture的最后部分，你都会找到这样的一个quiz。这些quiz并不记分，它们仅仅是帮助你检查自己是否理解了chapter的内容。
+报错包含了行数，所以解决起来很方便。如果你实在无法解决缩进问题，你可以就把所有的东西都写在同一行上。
+# 1.12 小测
+在每一讲的最后都有这样的一个小测。小测不计分，但可以更好地帮助你检查自己是否理解本讲的内容。
+
 CCACAAA
-What is the Haskell equivalent of the C/Java/Python expression `combine(prettify(lawn),construct(house,concrete))`?
 
-1. `combine prettify (lawn) construct (house concerete)`
-2. `combine (prettify lawn (counstruct house concrete))`
-3. `combine (prettify lawn) (construct house concrete)`
+> [!question] Q1.如何在Haskell中写出像C/Java/Python这样的表达式：`combine(prettify(lawn),construct(house,concrete))`? 
+> A. `combine prettify (lawn) construct (house concerete)`
+> B. `combine (prettify lawn (counstruct house concrete))`
+> C. `combine (prettify lawn) (construct house concrete)`
 
-What is the C/Java/Python equivalent of the Haskell expression `send metric (double population + increase)`?
+> [!question] Q2.如何在Haskell中写出像C/Java/Python这样的表达式：`send metric (double population + increase)`? 
+> A. `send(metric(double(population+increase)))`
+>B. `send(metric(double(population)+increase))`
+> C. `send(metric,double(population)+increase)`
+> D. `send(metric,double(population+increase))`
 
-1. `send(metric(double(population+increase)))`
-2. `send(metric(double(population)+increase))`
-3. `send(metric,double(population)+increase)`
-4. `send(metric,double(population+increase))`
+> [!question] Q3.下面哪个关于 Haskell 的说法是对的？
+> A. 所有的值都有类型
+> B. 所有的类型都有值
+> C. 每个语句都有值
 
-Which one of the following claims is true in Haskell?
 
-1. Every value has a type
-2. Every type has a value
-3. Every statement has a type
+> [!question] Q4.下面哪个关于 Haskell 的说法是对的？
+> 
+> A. 不能重新使用变量的变量名
+> B. 可以给一个变量重新赋值
+> C. `if`必须要搭配`then`和`else`
 
-Which one of the following claims is true in Haskell?
+> [!question] Q5.这个函数起到什么作用：`f x = if even (x + 1) then x + 1 else f (x - 1)` ?
+> A. 将每个值`x`映射到不小于`x`的最小偶数
+> B. 将每个值`x`映射到不大于`x`的最大偶数
+> C. 将每个值`x`映射它自己
 
-1. It’s impossible to reuse the name of a variable
-2. It’s possible to reassign a value to a variable
-3. An `if` always requires both `then` and `else`
+> [!question] Q6.为什么`3 * "F00"`在 Haskell 中无效？
+> A. `3` 和 `F00`的类型不同
+> B. 所有的数都需要小数点
+> C. `"F00"`需要前缀`"0x"`
 
-What does the function `f x = if even (x + 1) then x + 1 else f (x - 1)` do?
-
-1. Maps every value `x` to the least even number greater than or equal to `x`
-2. Maps every value `x` to the greatest even number less than or equal to `x`
-3. Maps every value to itself
-
-Why is `3 * "F00"` not valid Haskell?
-
-1. `3` and `"F00"` have different types
-2. All numeric values need a decimal point
-3. `"F00"` needs the prefix “0x”
-
-Why does ``7.0 `div` 2`` give an error?
-
-1. Because `div` is not defined for the type `Double`
-2. Because `div` is not defined for the type `Int`
-3. Because `` `...` `` is used for delimiting strings.
-
+> [!question] Q7.为什么`7.0 div 2`会报错？
+> A. 因为`div`没有为类型`Double`定义
+> B. 因为`div`没有为类型`Int`定义
+> C. 因为`...`用于分隔字符串
 # 1.13 Working on the Exercises
 The course materials, including exercises, are available in a Git repository on GitHub at [https://github.com/moocfi/haskell-mooc](https://github.com/moocfi/haskell-mooc). If you’re not familiar with Git, see [GitHub’s instructions on cloning a repository](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
