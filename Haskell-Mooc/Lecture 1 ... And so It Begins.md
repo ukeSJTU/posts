@@ -836,7 +836,8 @@ fibonacci 5
 这棵树精确地对应于表达式(1 + 1) + (1 + (1 + 1))。递归经常可以产生链状、树状、嵌套或循环结构和计算。递归是函数式编程的主要技术之一，所以值得花些精力去学习它。
 
 # 1.10 All Together Now!
-Finally, here’s a complete Haskell module that uses ifs, pattern matching, local defintions and recursion. The module is interested in the [_Collatz conjecture_](https://en.wikipedia.org/wiki/Collatz_conjecture), a famous open problem in mathematics. It asks:
+
+最后，这里是一个完整的Haskell模块，它使用了条件语句、模式匹配、局部定义和递归。 The module is interested in the [_Collatz conjecture_](https://en.wikipedia.org/wiki/Collatz_conjecture), a famous open problem in mathematics. It asks:
 
 > Does the Collatz sequence eventually reach 1 for all positive integer initial values?
 
@@ -846,7 +847,86 @@ The Collatz sequence is defined by taking any number as a starting value, and th
 - if the number is odd, triple it and add one
 
 As an example, the Collatz sequence for 3 is: 3, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1 … As you can see, once the number reaches 1, it gets caught in a loop.
-# 1.10 A Word About Indentation
+
+```
+module Collatz where
+
+-- one step of the Collatz sequence
+step :: Integer -> Integer
+step x = if even x then down else up
+  where down = div x 2
+        up = 3*x+1
+
+-- collatz x computes how many steps it takes for the Collatz sequence
+-- to reach 1 when starting from x
+collatz :: Integer -> Integer
+collatz 1 = 0
+collatz x = 1 + collatz (step x)
+
+-- longest finds the number with the longest Collatz sequence for initial values
+-- between 0 and upperBound
+longest :: Integer -> Integer
+longest upperBound = longest' 0 0 upperBound
+
+-- helper function for longest
+longest' :: Integer -> Integer -> Integer -> Integer
+-- end of recursion, return longest length found
+longest' number _ 0 = number
+-- recursion step: check if n has a longer Collatz sequence than the current known longest
+longest' number maxlength n =
+  if len > maxlength
+  then longest' n len (n-1)
+  else longest' number maxlength (n-1)
+  where len = collatz n
+```
+
+We can load the program in GHCi and play with it.
+
+```
+$ stack ghci
+GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
+Prelude> :load Collatz.hs
+[1 of 1] Compiling Collatz          ( Collatz.hs, interpreted )
+Ok, one module loaded.
+*Collatz>
+```
+
+Let’s verify that our program computes the start of the Collatz sequence for 3 correctly.
+
+```
+*Collatz> step 3
+10
+*Collatz> step 10
+5
+*Collatz> step 5
+16
+```
+
+How many steps does it take for 3 to reach 1?
+
+```
+*Collatz> collatz 3
+7
+```
+
+What’s the longest Collatz sequence for a starting value under 10? What about 100?
+
+```
+*Collatz> longest 10
+9
+*Collatz> longest 100
+97
+```
+
+The lengths of these Collatz sequences are:
+
+```
+*Collatz> collatz 9
+19
+*Collatz> collatz 97
+118
+```
+# 1.11 A Word About Indentation
 The previous examples have been fancily indented. In Haskell indentation matters, a bit like in Python. The complete set of rules for indentation is hard to describe, but you should get along fine with these rules of thumb:
 
 1. Things that are grouped together start from the same column
