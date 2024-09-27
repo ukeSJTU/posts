@@ -1,49 +1,51 @@
 # 12.1 - Introduction to compound data types 复合数据类型简介
-In lesson [4.1 -- Introduction to fundamental data types](https://www.learncpp.com/cpp-tutorial/introduction-to-fundamental-data-types/), we introduced the fundamental data types, which are the basic data types that C++ provides as part of the core language. 在 4.1TODO补充链接节课中，我们介绍了基本数据类型，它们是C++作为核心语言的一部分提供的基础数据类型。
 
-We’ve made much use of these fundamental types in our programs so far, especially the `int` data type. And while these fundamental types are extremely useful for straightforward uses, they don’t cover our full range of needs as we begin to do more complicated things. 到目前为止，我们的程序中大量使用了这些基本类型，尤其是 `int` 数据类型。虽然这些基本类型在简单应用中非常有用，但随着我们开始进行更复杂的操作，它们无法完全满足我们的需求。
+在 [[Chapter 4 - Fundamental Data Types#4.1 Introduction to fundamental data types 基本数据类型简介|4.1节——基本数据类型简介]] 中，我们介绍了基本数据类型，它们是C++作为核心语言的一部分提供的基础数据类型。
 
-For example, imagine you were writing a math program to multiply two fractions. How would you represent a fraction in your program? You might use a pair of integers (one for the numerator, one for the denominator), like this: 例如，假设你正在编写一个数学程序来相乘两个分数。你会如何在程序中表示一个分数？你可能会使用一对整数（一个表示分子，一个表示分母），如下所示：
+到目前为止，我们在程序中大量使用了这些基本类型，特别是`int`数据类型。虽然这些基本类型在简单使用时非常有用，但随着我们开始做更复杂的事情，它们无法满足我们的全部需求。
+
+例如，假设你正在编写一个数学程序来讲两个分数相乘。你会如何在程序中表示一个分数？你可能会使用一对整数（一个表示分子，一个表示分母），就像这样：
 
 ```cpp
 #include <iostream>
 
 int main()
 {
-    // Our first fraction
+    // 我们的第一个分数
     int num1 {};
     int den1 {};
 
-    // Our second fraction
+    // 我们的第二个分数
     int num2 {};
     int den2 {};
 
-    // Used to eat (remove) the slash between the numerator and denominator
+    // 用于移除分子和分母之间的斜杠
     char ignore {};
 
-    std::cout << "Enter a fraction: ";
+    std::cout << "输入一个分数: ";
     std::cin >> num1 >> ignore >> den1;
 
-    std::cout << "Enter a fraction: ";
+    std::cout << "输入一个分数: ";
     std::cin >> num2 >> ignore >> den2;
 
-    std::cout << "The two fractions multiplied: "
+    std::cout << "两个分数相乘: "
         << num1 * num2 << '/' << den1 * den2 << '\n';
 
     return 0;
 }
 ```
 
-And a run of this program: 程序运行结果如下：
-``` text
-Enter a fraction: 1/2
-Enter a fraction: 3/4
-The two fractions multiplied: 3/8
+这个程序的运行结果：
+
+``` plaintext
+输入一个分数: 1/2
+输入一个分数: 3/4
+两个分数相乘: 3/8
 ```
 
-While this program works, it introduces a couple of challenges for us to improve upon. First, each pair of integers is only loosely linked -- outside of comments and the context of how they are used in the code, there’s little to suggest that each numerator and denominator pair are related. Second, following the DRY (don’t repeat yourself) principle, we should create a function to handle the user inputting a fraction (along with some error handling). However, functions can only return a single value, so how would we return the numerator and denominator back to the caller? 虽然这个程序可以正常工作，但它为我们提出了一些可以改进的挑战。首先，每对整数的关联很弱——除了代码中的注释和上下文，几乎没有任何东西表明分子和分母是一对。其次，遵循DRY（不要重复自己）原则，我们应该创建一个函数来处理用户输入分数（并包括一些错误处理）。然而，函数只能返回一个值，那么我们如何将分子和分母一起返回给调用者呢？
+虽然这个程序可以正常工作，但它带来了一些挑战需要我们改进。首先，每对整数之间的联系非常松散——除了注释和它们在代码中使用的上下文外，几乎没有什么提示说明每个分子和分母的配对是相关的。其次，遵循DRY（不要重复自己 don't repeat yourself）原则，我们应该创建一个函数来处理用户输入的分数（以及一些错误处理）。然而，函数只能返回一个值，那我们该如何将分子和分母返回给调用者呢？
 
-Now imagine another case where you’re writing a program that needs to keep a list of employee IDs. How might you do so? You might try something like this: 再想象另一种情况，假设你正在编写一个需要维护员工ID列表的程序。你可能会这样做：
+现在想象另一种情况，你正在编写一个需要保存员工ID列表的程序。你可能会这样做：
 
 ```cpp
 int main()
@@ -55,35 +57,37 @@ int main()
 }
 ```
 
-But what if you had 100 employees? First, you’d need to type in 100 variable names. And what if you needed to print them all? Or pass them to a function? We’d be in for a lot of typing. This simply doesn’t scale. 但是如果你有100个员工呢？首先，你需要输入100个变量名。而如果你需要打印它们或传递给函数呢？我们将要输入大量的代码。显然，这种方法无法扩展。
+但是如果你有100个员工呢？首先，你需要输入100个变量名。而如果你需要打印它们或传递给函数呢？我们将要输入大量的代码。这显然是不够灵活的。
 
-Clearly fundamental types will only carry us so far. 显然，基本类型的应用是有限的。
-## Compound data types 复合数据类型
-Fortunately, C++ supports a second set of data types called `compound data types`. **Compound data types** (also sometimes called **composite data types**) are data types that can be constructed from fundamental data types (or other compound data types). Each compound data type has its own unique properties as well. 幸运的是，C++支持另一类数据类型，称为复合数据类型。复合数据类型（有时也称为组合数据类型）是由基本数据类型（或其他复合数据类型）构造的。每种复合数据类型都有其独特的属性。
+显然，基本类型的应用是有限的。
+## 复合数据类型
 
-As we’ll show in this chapter and future chapters, we can use compound data types to elegantly solve all of the challenges we presented above. 正如我们将在本章和后续章节中展示的那样，我们可以使用复合数据类型优雅地解决上述所有问题。
+幸运的是，C++支持另一组数据类型，称为**复合数据类型(Compound data types)**。复合数据类型（有时也称为**复合类型(Composite data types)**）是可以由基本数据类型（或其他复合数据类型）构造的数据类型。每种复合数据类型也具有其独特的属性。
 
-C++ supports the following compound types: C++支持以下复合类型：
-- Functions 函数
-- Arrays 数组
-- Pointer types: 指针类型
-    - Pointer to object 对象指针
-    - Pointer to function 函数指针
-- Pointer to member types: 成员指针类型
-    - Pointer to data member 数据成员指针
-    - Pointer to member function 成员函数指针
-- Reference types: 引用类型
-    - L-value references 左值引用
-    - R-value references 右值引用
-- Enumerated types: 枚举类型
-    - Unscoped enumerations 无范围枚举
-    - Scoped enumerations 有范围枚举
-- Class types: 类类型
-    - Structs 绝构体
-    - Classes 类
-    - Unions 联合体
+正如我们将在本章和后续章节中展示的那样，我们可以使用复合数据类型优雅地解决上述所有问题。
 
-You’ve already been using one compound type regularly: functions. For example, consider this function: 你已经经常使用过一种复合类型：**函数**。例如，考虑以下函数：
+C++支持以下复合类型：
+- 函数
+- 数组
+- 指针类型：
+    - 指向对象的指针
+    - 指向函数的指针
+    - 指向成员类型的指针：
+        - 指向数据成员的指针
+        - 指向成员函数的指针
+- 引用类型：
+    - 左值引用
+    - 右值引用
+- 枚举类型：
+    - 无作用域枚举
+    - 有作用域枚举
+- 类类型：
+    - 结构体
+    - 类
+    - 联合体
+
+
+你已经定期使用一种复合类型：函数。例如，考虑这个函数：
 
 ```cpp
 void doSomething(int x, double y)
@@ -91,11 +95,11 @@ void doSomething(int x, double y)
 }
 ```
 
-The type of this function is `void(int, double)`. Note that this type is composed of fundamental types, making it a compound type. Of course, functions also have their own special behaviors as well (e.g. being callable). 这个函数的类型是 `void(int, double)`。注意，这种类型是由基本数据类型组成的，因此它是一种复合类型。当然，函数还有一些特殊行为（例如可以被调用）。
+这个函数的类型是 `void(int, double)`。注意，这种类型是由基本数据类型组成的，因此它是一种复合类型。当然，函数还有其特殊的行为（例如，可以被调用）。
 
-Because there’s a lot of material to cover here, we’ll do it over multiple chapters. In this chapter, we’ll cover some of the more straightforward compound types, including `l-value references`, and `pointers`. Next chapter, we’ll cover `unscoped enumerations`, `scoped enumerations`, and basic `structs`. Then, in the chapters beyond that, we’ll introduce class types and dig into some of the more useful `array` types. This includes `std::string` (introduced in lesson [5.9 -- Introduction to std::string](https://www.learncpp.com/cpp-tutorial/introduction-to-stdstring/)), which is actually a class type! 因为这里涉及的内容很多，我们会分多个章节来介绍。在本章中，我们将介绍一些较为直接的复合类型，包括左值引用和指针。在下一章中，我们将介绍无范围枚举、有范围枚举和基本结构体。接下来的章节中，我们将引入类类型，并深入介绍一些更有用的数组类型。这包括在第5.9节**std::string简介**中引入的 `std::string`，它实际上是一种类类型！
+因为这里涉及的内容很多，我们会分多个章节来介绍。在本章中，我们将介绍一些较为直接的复合类型，包括**左值引用(`l-value references`)** 和**指针(`pointers`)** 。在下一章中，我们将介绍**无范围枚举(`unscoped enumerations`)**、**有范围枚举(`scoped enumerations`)** 和基本的**结构体(`structs`)** 。再往后的章节中，我们将引入类类型，并深入介绍一些更有用的**数组(`array`)**。这包括在 [[Chapter 5 - Constants and Strings#5.9 Introduction to `std string`|5.9 std::string 简介]] 中引入的 `std::string`，它实际上是一种类类型！
 
-Got your game face on? Let’s go! 准备好了吗？让我们开始吧！
+准备好了吗？让我们开始吧！
 # 12.2 Value categories (lvalues and rvalues) 数值类型（左值和右值）
 Before we talk about our first compound type (lvalue references), we’re going to take a little detour and talk about what an lvalue is. 在讨论我们的第一个复合类型（左值引用）之前，我们先稍微绕个弯，来谈谈什么是左值（lvalue）。
 
