@@ -352,29 +352,34 @@ g :: [Char] -> [Char]
 - 你可以使用类型注释为函数提供比 Haskell 推断出的更窄的类型
 
 一个好的经验法则是，为顶级定义提供类型注释。
-# 2.6 The `Maybe` Type
-In addition to the list type, Haskell has other parameterized types too. Let’s look at a very common and useful one: the `Maybe` type.
+# 2.6 `Maybe`类型
 
-Sometimes an operation doesn’t have a valid return value (E.g. division by zero.). We have a couple of options in this situation. We can use an error value, like `-1`. This is a bit ugly, not always possible. We can throw an exception. This is impure. In some other languages we would return a special null value that exists in (almost) all types. However Haskell does not have a null.
+除了列表(`List`)，Haskell 还有其他参数化类型。让我们先看最常用也是最有用的一个：`Maybe`类型。
 
-The solution Haskell offers us instead is to change our return type to a `Maybe` type. This is pure, safe and neat. The type `Maybe a` has two _constructors_: `Nothing` and `Just`. `Nothing` is just a constant, but `Just` takes a parameter. More concretely:
+当我们编写程序的时候，有的操作不一定会有有效的返回值（例如：除数为零）。我们可以采取不同策略：
+- 返回一个提前约定的错误码，比如说`-1`，但是这会让程序不够直观而且并不总是可靠；
+- 抛出异常，但这是不纯粹的(impure)。但 Haskell 应该是纯粹的(pure)；
+- 像其他很多语言中返回一个特殊的空值，比如`null`，但是 Haskell 中并没有这样的空值。
 
-|Type|Values|
-|---|---|
-|`Maybe Bool`|`Nothing`, `Just False`, `Just True`|
-|`Maybe Int`|`Nothing`, `Just 0`, `Just 1`, …|
-|`Maybe [Int]`|`Nothing`, `Just []`, `Just [1,1337]`, …|
+Haskell 提供了一个另外的解决措施，那就是`Maybe`类型。这种方式纯粹、安全且简洁。`Maybe a` 类型有两个**构造器(constructor)**：`Nothing` 和 `Just`。`Nothing` 只是一个常量，而 `Just` 则需要一个参数。更具体地说：
 
-You can think of `Maybe a` as being a bit like `[a]` except there can only be 0 or 1 elements, not more. Alternatively, you can think of `Maybe a` introducing a null value to the type `a`. If you’re familiar with Java, `Maybe Integer` is the Haskell equivalent of Java’s `Optional<Integer>`.
+| 类型            | 值                                        |
+| ------------- | ---------------------------------------- |
+| `Maybe Bool`  | `Nothing`, `Just False`, `Just True`     |
+| `Maybe Int`   | `Nothing`, `Just 0`, `Just 1`, …         |
+| `Maybe [Int]` | `Nothing`, `Just []`, `Just [1,1337]`, … |
 
-You can create `Maybe` values by either specifying `Nothing` or `Just someOtherValue`:
+你可以将 `Maybe a` 看作有点类似于 `[a]`，但它只能包含 0 或 1 个元素，不能更多。或者，你也可以将 `Maybe a` 理解为给类型 `a` 引入了一个空值。如果你熟悉 Java，那么 `Maybe Integer` 就相当于 Java 中的 `Optional<Integer>`。
+
+你可以用`Nothing`或者`Just 某个值`来构造`Maybe`类型的值：
+
 ``` haskell
 Prelude> :t Nothing
 Nothing :: Maybe a
 Prelude> Just "a camel"
 Just "a camel"
 Prelude> :t Just "a camel"
-Just "a camel" :: Maybe [Char]   -- the same as Maybe String
+Just "a camel" :: Maybe [Char]   -- 等同于 Maybe String
 Prelude> Just True
 Just True
 Prelude> :t Just True
@@ -382,19 +387,20 @@ Just True :: Maybe Bool
 ```
 
 ``` haskell
--- given a password, return (Just username) if login succeeds, Nothing otherwise
+-- 输入密码，如果成功登陆，返回 Just "用户名"，否则返回 Nothing
 login :: String -> Maybe String
 login "f4bulous!" = Just "unicorn73"
 login "swordfish" = Just "megahacker"
 login _           = Nothing
 ```
 
-You use a `Maybe` value by pattern matching on it. Usually you define patterns for the `Nothing` and `Just something` cases. Some examples:
+你可以通过对 `Maybe` 值进行模式匹配来使用它。通常，你需要为 `Nothing` 和 `Just something` 两种情况定义模式。下面是一些例子：
+
 ``` haskell
--- Multiply an Int with a Maybe Int. Nothing is treated as no multiplication at all.
+-- 将一个 Int 与一个 Maybe Int 相乘。Nothing 被视为不进行任何乘法运算。
 perhapsMultiply :: Int -> Maybe Int -> Int
 perhapsMultiply i Nothing = i
-perhapsMultiply i (Just j) = i*j   -- Note how j denotes the value inside the Just
+perhapsMultiply i (Just j) = i*j   -- 注意这里 j 表示 Just 中包含的值
 ```
 
 ``` haskell
@@ -419,60 +425,64 @@ headOrZero xs = intOrZero (safeHead xs)
 headOrZero []  ==> intOrZero (safeHead [])  ==> intOrZero Nothing  ==> 0
 headOrZero [1] ==> intOrZero (safeHead [1]) ==> intOrZero (Just 1) ==> 1
 ```
-# 2.7 Sidenote: Constructors
-如上所示，我们可以对 Maybe 的构造函数进行模式匹配：Just 和 Nothing。稍后我们会回到构造函数的含义。现在只需注意，构造函数是以大写字母开头的特殊值，可以进行模式匹配。
+# 2.7 附注：构造器(Constructors)
 
-我们已经看到的其他构造函数包括 Bool 的构造函数——True 和 False。我们将在下一节课中介绍列表类型的构造函数。
+如上所示，我们可以对 `Maybe` 的构造器进行模式匹配：`Just` 和 `Nothing`。稍后我们会详细讨论构造器的含义。现在你只需要知道，构造器是以大写字母开头的特殊值，你可以对它们进行模式匹配。
 
-构造函数可以像 Haskell 值一样使用。像 Nothing 和 False 这样的构造函数没有参数，实际上就是常量。像 Just 这样的构造函数接受一个参数，表现得像函数。它们甚至具有函数类型！
+我们已经看到的其他构造器包括 `Bool` 的构造器 —— `True` 和 `False`。在下一节中，我们将介绍列表类型的构造器。
 
-> TODO 没看懂什么意思。
+构造器可以像 Haskell 中的值一样使用。像 `Nothing` 和 `False` 这样的构造器不带任何参数，它们只是常量。像 `Just` 这样带参数的构造器则表现得像函数。它们甚至有函数类型！
 
 ``` haskell
 Prelude> :t Just
 Just :: a -> Maybe a
 ```
-# 2.8 The `Either` Type
-Sometimes it would be nice if you could add an error message or something to `Nothing`. That’s why we have the `Either` type. The `Either` type takes two type arguments. The type `Either a b` has two constructors: `Left` and `Right`. Both take an argument, `Left` an argument of type `a` and `Right` an argument of type `b`.
+# 2.8 `Either` 类型
 
-|Type|Values|
-|---|---|
-|`Either Int Bool`|`Left 0`, `Left 1`, `Right False`, `Right True`, …|
-|`Either String [Int]`|`Left "asdf"`, `Right [0,1,2]`, …|
-|`Either Integer Integer`|`Left 0`, `Right 0`, `Left 1`, `Right 1`, …|
+有时，我们希望能在 `Nothing` 中添加一条错误信息或其他内容。这就是我们拥有 `Either` 类型的原因。`Either` 类型需要两个类型参数。类型 `Either a b` 有两个**构造器(constructors)**：`Left` 和 `Right`。它们都需要一个参数，`Left` 需要一个类型为 `a` 的参数，而 `Right` 需要一个类型为 `b` 的参数。
 
-Here’s a simple example: a `readInt` function that only knows a couple of numbers and returns a descriptive error for the rest. Note the Haskell convention of using `Left` for errors and `Right` for success.
+| 类型                  | 值                                        |
+|-----------------------|--------------------------------------------|
+| `Either Int Bool`     | `Left 0`、`Left 1`、`Right False`、`Right True` 等。 |
+| `Either String [Int]` | `Left "asdf"`、`Right [0,1,2]` 等。         |
+| `Either Integer Integer` | `Left 0`、`Right 0`、`Left 1`、`Right 1` 等。 |
 
-``` haskell
+下面是一个简单的例子：一个只认识少量数字的 `readInt` 函数，而如果输入其他数字就返回一条描述错误的信息。请注意 Haskell 中的约定，使用 `Left` 表示错误，`Right` 表示成功。
+
+```haskell
 readInt :: String -> Either String Int
 readInt "0" = Right 0
 readInt "1" = Right 1
 readInt s = Left ("Unsupported string: " ++ s)
 ```
-> Sidenote: `Either` 的构造函数被称为 `Left` 和 `Right`，因为它们分别指代 Either 的左侧和右侧类型参数。注意在 `Either a b` 中，`a` 是左侧参数，`b` 是右侧参数。因此，`Left` 包含类型为 `a` 的值，而 `Right` 则包含类型为 `b` 的值。使用 `Right` 表示成功的惯例可能仅仅是因为 right 也意味着正确。并无冒犯左撇子之意。
 
-Here’s another example: pattern matching an `Either`. Just like with `Maybe`, there are two patterns for an `Either`, one for each constructor.
+**附注**：`Either` 的构造器被称为 `Left` 和 `Right` 是因为它们对应于 `Either` 的左右类型参数。注意在 `Either a b` 中，`a` 是左侧参数，`b` 是右侧参数。因此，`Left` 包含类型为 `a` 的值，`Right` 包含类型为 `b` 的值。将 `Right` 用于表示成功，可能是因为 "right" 也有 "正确" 的意思。这里没有冒犯左撇子群体的意思。
 
-``` haskell
+这里是另一个例子：对 `Either` 进行模式匹配。与 `Maybe` 类似，`Either` 有两个模式，每个构造器对应一个模式。
+
+```haskell
 iWantAString :: Either Int String -> String
 iWantAString (Right str)   = str
 iWantAString (Left number) = show number
 ```
 
-As you recall, Haskell lists can only contain elements of the same type. You can’t have a value like `[1,"foo",2]`. However, you can use a type like `Either` to represent lists that can contain two different types of values. For example we could track the number of people on a lecture, with a possibility of adding an explanation if a value is missing:
+我们前面提到，Haskell 列表只能包含相同类型的元素。你不能有类似 `[1, "foo", 2]` 这样的值。然而，你可以使用像 `Either` 这样的类型来表示包含两种不同类型值的列表。例如，我们可以记录讲座中的人数，并在缺少值时添加解释：
 
-``` haskell
+```haskell
 lectureParticipants :: [Either String Int]
 lectureParticipants = [Right 10, Right 13, Left "easter vacation", Right 17, Left "lecturer was sick", Right 3]
 ```
-# 2.9 The `case-of` Expression
-我们已经在函数参数中看到了模式匹配，但在表达式中也可以进行模式匹配。它看起来是这样的：
+
+# 2.9 `case-of` 表达式
+
+我们已经看到了函数参数中的模式匹配，但还有一种方法可以在表达式中进行模式匹配，格式如下：
+
 ``` haskell
 case <value> of <pattern> -> <expression>
 				<pattern> -> <expression>
 ```
 
-As an example let’s rewrite the `describe` example from the first lecture using `case`:
+例如，让我们用 `case` 重写第一节课中的 `describe` 例子：
 
 ``` haskell
 describe :: Integer -> String
@@ -490,10 +500,10 @@ describe n = case n of 0 -> "zero"
                        n -> "the number " ++ show n
 ```
 
-A more interesting example is when the value we’re pattern matching on is not a function argument. For example:
+一个更有趣的例子是，当我们要进行模式匹配的值不是函数参数时。例如：
 
 ``` haskell
--- parse country code into country name, returns Nothing if code not recognized
+-- 将国家代码解析为国家名称，如果代码无法识别则返回 Nothing
 parseCountry :: String -> Maybe String
 parseCountry "FI" = Just "Finland"
 parseCountry "SE" = Just "Sweden"
@@ -504,6 +514,8 @@ flyTo countryCode = case parseCountry countryCode of Just country -> "You're fly
                                                      Nothing -> "You're not flying anywhere"
 ```
 
+运行结果：
+
 ``` haskell
 Prelude> flyTo "FI"
 "You're flying to Finland"
@@ -511,7 +523,7 @@ Prelude> flyTo "DE"
 "You're not flying anywhere"
 ```
 
-We could write the `flyTo` function using a helper function for pattern matching instead of using the case-of expression:
+我们也可以使用一个辅助函数(`handleResult`)替代 `case-of` 表达式来实现 `flyTo`：
 
 ``` haskell
 flyTo :: String -> String
@@ -520,10 +532,10 @@ flyTo countryCode = handleResult (parseCountry countryCode)
         handleResult Nothing        = "You're not flying anywhere"
 ```
 
-In fact, a case-of expression can always be replaced with a helper function. Here’s one more example, written in both ways:
+实际上，`case-of` 表达式总是可以用辅助函数替代。下面是另一个例子，分别用两种方式实现：
 
 ``` haskell
--- given a sentence, decide whether it is a statement, question or exclamation
+-- 给定一个句子，判断它是陈述句、疑问句还是感叹句
 sentenceType :: String -> String
 sentenceType sentence = case last sentence of '.' -> "statement"
                                               '?' -> "question"
@@ -532,7 +544,7 @@ sentenceType sentence = case last sentence of '.' -> "statement"
 ```
 
 ``` haskell
--- same function, helper function instead of case-of
+-- 使用辅助函数而非 case-of
 sentenceType sentence = classify (last sentence)
   where classify '.' = "statement"
         classify '?' = "question"
@@ -546,10 +558,12 @@ Prelude> sentenceType "This is Haskell."
 Prelude> sentenceType "This is Haskell!"
 "exclamation"
 ```
-## 2.9.1 When to Use Case Expressions
-你可能会问，为什么还需要另一种模式匹配语法。好吧，`case` 表达式相较于方程式有一些优势，我们接下来会讨论这些。
+## 2.9.1 何时使用`case`表达式
 
-首先，也许最重要的是，`case` 表达式使我们能够对函数输出进行模式匹配。我们可能想要为工作（懒惰的）Haskellers 写一些清晨的激励信息：
+你可能会问，为什么要有另一种模式匹配的语法呢？ 这是因为 `case` 表达式相较于方程式中使用模式匹配有一些优势，我们接下来将讨论这些优势。
+
+首先，也许也是最重要的，`case` 表达式使我们能够对函数输出进行模式匹配。我们可能想要为工作（懒惰的）Haskellers 写一些早晨的激励语：
+
 ``` haskell
 motivate :: String -> String
 motivate "Monday"    = "Have a nice week at work!"
@@ -560,7 +574,7 @@ motivate "Friday"    = "1 more day(s) until the weekend!"
 motivate _           = "Relax! You don't need to work today!"
 ```
 
-Using a `case` expression we can run a helper function against the argument and pattern match on the result:
+使用 `case` 表达式，我们可以运行一个辅助函数来处理参数，并对其结果进行模式匹配：
 
 ``` haskell
 motivate :: String -> String
@@ -572,7 +586,7 @@ motivate day = case distanceToSunday day of
        else "Relax! You don't need to work today!"
 ```
 
-By the way, there’s also a third way, guards:
+顺便说一下，还有第三种方法，使用守卫(Guards)：
 
 ``` haskell
 motivate :: String -> String
@@ -584,9 +598,9 @@ motivate day
   where n = distanceToSunday day
 ```
 
-We’ll see in a moment how we can define `distanceToSunday` using equations and `case` expressions.
+稍后我们将看到如何用方程和 `case` 表达式来定义 `distanceToSunday`。
 
-Secondly, if a helper function needs to be shared among many patterns, then equations don’t work. For example:
+第二，如果一个辅助函数需要在多种模式(pattern)之间共享，那么方程就不适用。例如：
 
 ``` haskell
 area :: String -> Double -> Double
@@ -595,7 +609,7 @@ area "circle" x = pi * square x
   where square x = x * x
 ```
 
-This won’t compile because a the `where` clause only appends to the `"circle"` case, so the `square` helper function is not available in the `"square"` case. On the other hand, we can write
+这段代码无法编译，因为 `where` 子句仅附加在 `"circle"` 的情况，因此 `square` 辅助函数在 `"square"` 的情况下不可用。而我们可以这样写：
 
 ``` haskell
 area :: String -> Double -> Double
@@ -605,7 +619,7 @@ area shape x = case shape of
   where square x = x*x
 ```
 
-Thirdly, `case` expressions may help to write more concise code in a situation where a (long) function name would have to be repeated multiple times using equations. As we saw above, we might need a function which measures the distance between a given day and Sunday:
+第三，在需要多次重复一个（较长的）函数名称时，`case` 表达式可以帮助编写更简洁的代码。正如我们上面看到的那样，我们可能需要一个函数`distanceToSunday`来计算给定日期与周日之间的相差的天数：
 
 ``` haskell
 distanceToSunday :: String -> Int
@@ -618,7 +632,7 @@ distanceToSunday "Saturday"  = 1
 distanceToSunday "Sunday"    = 0
 ```
 
-Using a `case` expression leads into much more concise implementation:
+使用 `case` 表达式可以实现更简洁的代码：
 
 ``` haskell
 distanceToSunday :: String -> Int
@@ -632,24 +646,26 @@ distanceToSunday d = case d of
   "Sunday"    -> 0
 ```
 
-These three benefits make the `case` expression a versatile tool in a Haskeller’s toolbox. It’s worth remembering how `case` works.
+这三个优点使得 `case` 表达式成为 Haskeller 工具箱中一个多功能的工具。记住如何使用 `case` 是很值得的。
 
-(Representing weekdays as strings may get the job done, but it’s not the perfect solution. What happens if we apply `motivate` to `"monday"` (with all letters in lower case) or `"keskiviikko"`? In Lecture 5, we will learn a better way to represent things like weekdays.)
-# 2.10 Recap: Pattern Matching
-Things you can use as patterns:
+（用字符串来表示星期几虽然也能达到相同效果，但并非最优的解决方案。如果我们将 `motivate` 应用于 `"monday"`（全小写）或 `"keskiviikko"` 会发生什么呢？在第 5 讲中，我们将学习一种更好的表示星期几的方法。）
+# 2.10 总结：模式匹配
+可以用作模式(patterns)的内容：
 
-- `Int` and `Integer` constants like `(-1)`, `0`, `1`, `2`, …
-- `Bool` values `True` and `False`
-- `Char` constants: `'a'`, `'b'`
-- `String` constants: `"abc"`, `""`
-- `Maybe` constructors: `Nothing`, `(Just x)`
-- `Either` constructors: `(Left x)`, `(Right y)`
-- The special `_` pattern which means “anything, I don’t care”
-- Combinations of these patterns, like for example `(Just 1)`
-- We’ll learn about other patterns, for example lists, in the next lectures.
+- `Int` 和 `Integer` 常量，例如：`(-1)`、`0`、`1`、`2`、……
+- `Bool` 值：`True` 和 `False`
+- `Char` 常量：`'a'`、`'b'`
+- `String` 常量：`"abc"`、`""`
+- `Maybe` 构造器：`Nothing`、`(Just x)`
+- `Either` 构造器：`(Left x)`、`(Right y)`
+- 特殊的 `_` 模式，表示“任何东西，我不关心”
+- 这些模式的组合，例如 `(Just 1)`
+- 在接下来的课程中，我们将学习其他模式，例如列表。
 
-Places where you can use patterns:
-- Defining a function with equations:
+可以使用模式(patterns)的地方：
+
+- 使用方程定义函数:
+
 ``` haskell
 f :: Bool -> Maybe Int -> Int
 f False Nothing  = 1
@@ -657,21 +673,25 @@ f False _        = 2
 f True  (Just i) = i
 f True  Nothing  = 0
 ```
-- In the `case of` expression:
+
+- 在 `case` 表达式中：
+
 ``` haskell
 case number of 0 -> "zero"
                1 -> "one"
                _ -> "not zero or one"
 ```
 
-The only thing you really _need_ pattern matching for is _getting the value_ inside a `Just`, `Left` or `Right` constructor. Here are two more examples of this:
+实际上，你真正需要使用模式匹配的场景是获取 `Just`、`Left` 或 `Right` 构造器内的值。下面是两个示例：
 
 ``` haskell
--- getElement (Just i) gets the ith element (counting from zero) of a list, getElement Nothing gets the last element
+-- getElement (Just i) 获取列表中第 i 个元素（从零开始计数），getElement Nothing 获取最后一个元素
 getElement :: Maybe Int -> [a] -> a
 getElement (Just i) xs = xs !! i
 getElement Nothing xs = last xs
 ```
+
+运行结果：
 
 ``` haskell
 Prelude> getElement Nothing "hurray!"
@@ -686,6 +706,8 @@ direction (Left i) = "you should go left " ++ show i ++ " meters!"
 direction (Right i) = "you should go right " ++ show i ++ " meters!"
 ```
 
+运行结果：
+
 ``` haskell
 Prelude> direction (Left 3)
 "you should go left 3 meters!"
@@ -693,40 +715,47 @@ Prelude> direction (Right 5)
 "you should go right 5 meters!"
 ```
 
-Other uses (that we’ve seen so far!) of pattern matching can also be accomplished with the `==` operator. However, things like `x==Nothing` won’t work in all cases. We’ll find out why when we talk about type classes in lecture 4.
-# 2.11 Quiz
-BACBD
-How many values does `f x = [x,x]` return?
+到目前为止，我们看到的其他模式匹配用法也可以使用 `==` 运算符来实现。然而，像 `x == Nothing` 这样的表达式并不总是适用。我们将在第 4 讲中讨论类型类时了解其中的原因。
+# 2.11 小测
 
-1. Zero
-2. One
-3. Two
+> [!question] Q1. `f x = [x, x]` 返回多少个值？
+> 
+> A. 零个  
+> B. 一个  
+> C. 两个  
 
-Why does the expression `Nothing 1` cause a type error?
+> [!question] Q2. 为什么表达式 `Nothing 1` 会导致类型错误？
+> 
+> A. 因为 `Nothing` 不接受任何参数  
+> B. 因为 `Nothing` 不返回任何值  
+> C. 因为 `Nothing` 是一个构造器  
 
-1. Because `Nothing` takes no arguments
-2. Because `Nothing` returns nothing
-3. Because `Nothing` is a constructor
+> [!question] Q3. 函数 `f x y = if x && y then Right x else Left "foo"` 的类型是什么？
+> 
+> A. `Bool -> Bool -> Either Bool String`  
+> B. `String -> String -> Either String String`  
+> C. `Bool -> Bool -> Either String Bool`  
 
-What is the type of the function `f x y = if x && y then Right x else Left "foo"`?
+> [!question] Q4. 以下哪个函数可能具有类型 `Bool -> Int -> [Bool]`？
+> 
+> A. `f x y = [0, y]`  
+> B. `f x y = [x, True]`  
+> C. `f x y = [y, True]`  
 
-1. `Bool -> Bool -> Either Bool String`
-2. `String -> String -> Either String String`
-3. `Bool -> Bool -> Either String Bool`
+> [!question] Q5. 这个函数的类型是什么？`justBoth a b = [Just a, Just b]`
+> 
+> A. `a -> b -> [Maybe a, Maybe b]`  
+> B. `a -> a -> [Just a]`  
+> C. `a -> b -> [Maybe a]`  
+> D. `a -> a -> [Maybe a]`  
 
-Which of the following functions could have the type `Bool -> Int -> [Bool]`
-
-1. `f x y = [0, y]`
-2. `f x y = [x, True]`
-3. `f x y = [y, True]`
-
-What is the type of this function? `justBoth a b = [Just a, Just b]`
-
-1. `a -> b -> [Maybe a, Maybe b]`
-2. `a -> a -> [Just a]`
-3. `a -> b -> [Maybe a]`
-4. `a -> a -> [Maybe a]`
-# 2.12 Exercises
+> [!tip]- 答案  
+> 1. B  
+> 2. A  
+> 3. C  
+> 4. B  
+> 5. D
+# 2.12 练习
 - [Set2a](https://github.com/moocfi/haskell-mooc/blob/master/exercises/Set2a.hs)
 - [Set2b](https://github.com/moocfi/haskell-mooc/blob/master/exercises/Set2b.hs)
 

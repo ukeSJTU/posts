@@ -993,8 +993,6 @@ Indent.hs:2:1: error: parse error on input ‘where’
 # 1.12 小测
 在每一讲的最后都有这样的一个小测。小测不计分，但可以更好地帮助你检查自己是否理解本讲的内容。
 
-CCACAAA
-
 > [!question] Q1.如何在Haskell中写出像C/Java/Python这样的表达式：`combine(prettify(lawn),construct(house,concrete))`? 
 > A. `combine prettify (lawn) construct (house concerete)`
 > B. `combine (prettify lawn (counstruct house concrete))`
@@ -1010,7 +1008,6 @@ CCACAAA
 > A. 所有的值都有类型
 > B. 所有的类型都有值
 > C. 每个语句都有值
-
 
 > [!question] Q4.下面哪个关于 Haskell 的说法是对的？
 > 
@@ -1032,6 +1029,16 @@ CCACAAA
 > A. 因为`div`没有为类型`Double`定义
 > B. 因为`div`没有为类型`Int`定义
 > C. 因为`...`用于分隔字符串
+
+> [!tip]- 答案
+> 1. C
+> 2. C
+> 3. A
+> 4. C
+> 5. A
+> 6. A
+> 7. A
+
 # 1.13 Working on the Exercises
 The course materials, including exercises, are available in a Git repository on GitHub at [https://github.com/moocfi/haskell-mooc](https://github.com/moocfi/haskell-mooc). If you’re not familiar with Git, see [GitHub’s instructions on cloning a repository](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
