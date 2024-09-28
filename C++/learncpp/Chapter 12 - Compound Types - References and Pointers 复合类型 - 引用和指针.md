@@ -676,9 +676,660 @@ int main()
 > ```
 > 
 > 因为`ref`绑定到`x`，所以`x`和`ref`是同义的，因此它们总是打印相同的值。`ref = y`这行代码将`y`的值（2）赋给`ref`，而不是将`ref`更改为引用`y`。随后的`y = 3`只会更改`y`的值。
-# 12.4 Lvalue references to const
-# 12.5 Pass by lvalue reference
-# 12.6 Pass by const lvalue reference
+# 12.4 Lvalue references to const 对常量的左值引用
+
+在上一节 [[#12.3 Lvalue references 左值引用|12.3 —— 左值引用]] 中，我们说左值引用只能绑定到**可修改的左值**。这意味着下面的代码是非法的：
+
+```cpp
+int main()
+{
+    const int x { 5 }; // `x`是不可修改的（`const`）左值
+    int& ref { x }; // 错误：`ref`不能绑定到不可修改的左值
+
+    return 0;
+}
+```
+
+这种用法是不允许的，因为它可能会允许我们通过非`const`引用（`ref`）修改`const`变量（`x`）。
+
+那么，如果我们想为一个`const`变量创建一个引用该怎么办？普通的（指向非`const`值的）左值引用无法满足这种需求。
+## 指向`const`的左值引用
+
+通过在声明左值引用时使用`const`关键字，我们告诉左值引用将其所引用的对象视为`const`。这种引用称为**指向`const`值的左值引用** (有时也称为**指向`const`的引用** 或**`const`引用**)。
+
+**指向`const`的左值引用**可以绑定到不可修改的左值：
+
+```cpp
+int main()
+{
+    const int x { 5 };    // `x`是不可修改的左值
+    const int& ref { x }; // 合法：`ref`是指向`const`值的左值引用
+
+    return 0;
+}
+```
+
+因为**指向`const`的左值引用** 将其所引用的对象视为`const`，所以它们可以用于访问但不能修改被引用的值：
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    const int x { 5 };    // `x`是不可修改的左值
+    const int& ref { x }; // 合法：`ref`是指向`const`值的左值引用
+
+    std::cout << ref << '\n'; // 合法：我们可以访问`const`对象
+    ref = 6;                  // 错误：我们不能通过`const`引用修改对象
+
+    return 0;
+}
+```
+## 使用可修改的左值初始化指向`const`的左值引用
+
+**指向`const`的左值引用** 也可以绑定到**可修改的左值**。在这种情况下，通过引用访问的对象被视为`const`（尽管底层对象是非`const`的）：
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    int x { 5 };          // `x`是可修改的左值
+    const int& ref { x }; // 合法：我们可以将`const`引用绑定到可修改的左值
+
+    std::cout << ref << '\n'; // 合法：我们可以通过`const`引用访问对象
+    ref = 7;                  // 错误：我们不能通过`const`引用修改对象
+
+    x = 6;                // 合法：`x`是可修改的左值，我们仍然可以通过原始标识符修改它
+
+    return 0;
+}
+```
+
+在上面的程序中，我们将`const`引用`ref`绑定到可修改的左值`x`。然后我们可以使用`ref`访问`x`，但因为`ref`是`const`，我们不能通过`ref`修改`x`的值。然而，我们仍然可以直接使用标识符`x`来修改`x`的值。
+
+> [!tip] 最佳实践
+>
+> 除非你需要修改被引用的对象，否则应该优先使用**指向`const`的左值引用**而不是**指向非`const`的左值引用**。
+## 使用右值初始化指向`const`的左值引用
+
+可能令人惊讶的是，**指向`const`的左值引用** 也可以绑定到右值：
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    const int& ref { 5 }; // 合法：`5`是一个右值
+
+    std::cout << ref << '\n'; // 打印5
+
+    return 0;
+}
+```
+
+当这种情况发生时，会创建一个临时对象并用右值进行初始化，然后将`const`引用绑定到该临时对象。
+
+> [!info] 相关内容
+> 
+> 我们在 [[Chapter 2 - C++ Basics - Functions and Files#2.5 Introduction to local scope|2.5 —— 局部作用域简介]] 中介绍了临时对象。
+## 使用不同类型的值初始化指向`const`的左值引用
+
+**指向`const`的左值引用** 甚至可以绑定到不同类型的值，只要这些值可以隐式转换为引用类型：
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    // 情况1
+    const double& r1 { 5 };  // 用值5初始化的临时`double`，`r1`绑定到该临时对象
+
+    std::cout << r1 << '\n'; // 打印5
+
+    // 情况2
+    char c { 'a' };
+    const int& r2 { c };     // 用值'a'初始化的临时`int`，`r2`绑定到该临时对象
+
+    std::cout << r2 << '\n'; // 打印97（因为`r2`是指向`int`的引用）
+
+    return 0;
+}
+```
+
+在情况1中，一个类型为`double`的临时对象被创建并用`int`值`5`初始化。然后`const double& r1`绑定到该临时`double`对象。
+
+在情况2中，一个类型为`int`的临时对象被创建并用`char`值`'a'`初始化。然后`const int& r2`绑定到该临时`int`对象。
+
+在这两种情况下，引用的类型和临时对象的类型是匹配的。
+
+> [!example] 关键见解
+> 
+> 如果你尝试将一个`const`左值引用绑定到不同类型的值，编译器会创建一个与引用类型相同的临时对象，使用该值进行初始化，然后将引用绑定到临时对象。
+
+还要注意，当我们打印`r2`时，它以`int`的形式打印而不是`char`。这是因为`r2`是指向`int`对象（创建的临时`int`）的引用，而不是`char`变量`c`。
+
+尽管这看起来有些奇怪，但我们将在 [[Chapter 12 - Compound Types - References and Pointers 复合类型 - 引用和指针#12.6 Pass by const lvalue reference|12.6 通过`const`左值引用传递]] 中看到一些有用的例子。
+## 绑定到临时对象的`const`引用会延长临时对象的生命周期
+
+通常，临时对象会在创建它们的表达式结束时被销毁。
+
+然而，考虑上面的例子，如果用于保存右值`5`的临时对象在初始化`ref`的表达式结束时被销毁，会发生什么呢？引用`ref`将变成悬空引用（指向一个已被销毁的对象），当我们尝试访问`ref`时会产生未定义行为。
+
+为了避免这种情况下发生悬空引用，C++有一个特殊规则：当一个`const`左值引用**直接** 绑定到临时对象时，临时对象的生命周期将延长至与引用的生命周期一致。
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    const int& ref { 5 }; // 用于保存值5的临时对象的生命周期延长至与`ref`一致
+
+    std::cout << ref << '\n'; // 因此，我们可以安全地在这里使用它
+
+    return 0;
+} // `ref`和临时对象在此处同时销毁
+```
+
+在上面的例子中，当`ref`用右值`5`初始化时，创建了一个临时对象，`ref`绑定到该临时对象。临时对象的生命周期与`ref`匹配。因此，我们可以安全地在接下来的语句中打印`ref`的值。然后，`ref`和临时对象在代码块结束时同时超出作用域并被销毁。
+
+> [!example] 关键见解
+> 
+> - 左值引用只能绑定到可修改的左值。
+> - **指向`const`的左值引用** 可以绑定到**可修改的左值**、**不可修改的左值** 和**右值**。这使得它们成为一种更灵活的引用类型。
+
+> [!info] 面向高级读者
+> 
+> 生命周期延长仅适用于直接绑定到临时对象的`const`引用。从函数返回的临时对象（即使是通过`const`引用返回的）不符合生命周期延长的条件。
+> 
+> 我们将在 [[#12.12 Return by reference and return by address|12.12 通过引用返回值和通过地址返回值]] 中展示一个例子。
+
+那么，为什么C++允许`const`引用绑定到右值呢？我们将在下一节中回答这个问题！
+## `constexpr`左值引用
+
+当应用于引用时，`constexpr`允许引用用于常量表达式。`constexpr`引用有一个特定的限制：它们只能绑定到具有静态持续时间的对象（全局变量或静态局部变量）。这是因为编译器知道静态对象将在内存中的哪个位置被实例化，因此可以将该地址视为编译时常量。
+
+`constexpr`引用不能绑定到（非静态的）局部变量。这是因为局部变量的地址在其所在的函数被调用之前是未知的。
+
+```cpp
+int g_x { 5 };
+
+int main()
+{
+    [[maybe_unused]] constexpr int& ref1 { g_x }; // 合法，可以绑定到全局变量
+
+    static int s_x { 6 };
+    [[maybe_unused]] constexpr int& ref2 { s_x }; // 合法，可以绑定到静态局部变量
+
+    int x { 6 };
+    [[maybe_unused]] constexpr int& ref3 { x }; // 编译错误：不能绑定到非静态对象
+
+    return 0;
+}
+```
+
+当定义一个指向`const`变量的`constexpr`引用时，我们需要同时使用`constexpr`（应用于引用）和`const`（应用于被引用的类型）。
+
+```cpp
+int main()
+{
+    static const int s_x { 6 }; // 一个`const` `int`
+    [[maybe_unused]] constexpr const int& ref2 { s_x }; // 需要同时使用`constexpr`和`const`
+
+    return 0;
+}
+```
+
+鉴于这些限制，`constexpr`引用并不常用。
+# 12.5 通过左值引用传递
+
+在前面的课程中，我们介绍了**左值引用**( [[#12.3 Lvalue references 左值引用|12.3 左值引用]] )和**指向`const`的左值引用**( [[#12.4 Lvalue references to const 对常量的左值引用|12.4 左值引用到`const`]] )。单独看这些内容时，它们可能显得不太有用——为什么要创建一个变量的别名，而不直接使用变量本身呢？
+
+在本节中，我们将深入了解引用的实际用途。接下来在本章的后续内容中，你会看到引用的常规使用。
+
+首先，回顾一下背景知识。在 [[Chapter 2 - C++ Basics - Functions and Files#2.4 Introduction to function parameters and arguments|2.4 —— 函数参数和实参简介]] 中，我们讨论了**按值传递(pass by value)**，即将传递给函数的参数复制到函数的参数中：
+
+```cpp
+#include <iostream>
+
+void printValue(int y)
+{
+    std::cout << y << '\n';
+} // `y`在此处被销毁
+
+int main()
+{
+    int x { 2 };
+
+    printValue(x); // `x`按值传递（被复制）到参数`y`中（开销很小）
+
+    return 0;
+}
+```
+
+在上面的程序中，当调用`printValue(x)`时，`x`的值（`2`）被**复制**到参数`y`中。然后，在函数结束时，对象`y`被销毁。
+
+这意味着当我们调用函数时，我们复制了参数的值，但只是短暂地使用它，然后将其销毁！幸运的是，由于基本类型的复制开销很小，这并不是问题。
+## 某些对象的复制成本较高
+
+标准库中提供的大多数类型（例如`std::string`）是**类类型（class types）**。类类型的复制通常成本较高。我们希望尽可能避免对复制成本较高的对象进行不必要的复制，特别是在我们几乎会立即销毁这些副本的情况下。
+
+让我们看一下下面这个程序来理解问题所在：
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printValue(std::string y)
+{
+    std::cout << y << '\n';
+} // `y`在此处被销毁
+
+int main()
+{
+    std::string x { "Hello, world!" }; // `x`是一个`std::string`
+
+    printValue(x); // `x`按值传递（被复制）到参数`y`中（开销很大）
+
+    return 0;
+}
+```
+
+这会打印：
+
+``` plaintext
+Hello, world!
+```
+
+虽然该程序按预期运行，但效率低下。与前一个例子一样，当调用`printValue()`时，实参`x`被复制到`printValue()`的参数`y`中。然而，在这个例子中，实参是`std::string`而不是`int`，`std::string`是一个复制成本很高的类类型。而且每次调用`printValue()`时，都会进行这样“昂贵”的复制！
+
+我们可以做得更好。
+## 按引用传递
+
+一种在调用函数时避免对参数进行昂贵复制的方法是使用 **按引用传递(pass by reference)** 而不是**按值传递**。使用 **按引用传递** 时，我们将函数参数声明为引用类型（或`const`引用类型）而不是普通类型。当函数被调用时，每个引用参数会绑定到相应的实参。因为引用只是实参的别名而不是一个完整的对象，所以不会对实参进行复制。
+
+下面这个示例代码使用 **按引用传递** 而不是**按值传递**：
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printValue(std::string& y) // 参数类型改为`std::string&`
+{
+    std::cout << y << '\n';
+} // `y`在此处被销毁
+
+int main()
+{
+    std::string x { "Hello, world!" };
+
+    printValue(x); // `x`现在通过引用传递到引用参数`y`中（开销很小）
+
+    return 0;
+}
+```
+
+该程序与之前的例子相同，唯一的区别是参数`y`的类型从`std::string`更改为`std::string&`（一个左值引用）。现在，当调用`printValue(x)`时，左值引用参数`y`被绑定到实参`x`。绑定引用的开销始终很小，不需要对`x`进行复制。因为引用是被引用对象的别名，所以当`printValue()`使用引用`y`时，它实际上是在访问实参`x`（而不是`x`的副本）。
+
+> [!example] 关键见解
+> 
+> **按引用传递**允许我们在调用函数时传递参数，而无需每次都对这些参数进行复制。
+## 按引用传递允许我们修改实参的值
+
+当对象按值传递时，函数参数接收的是实参的副本。这意味着对参数值的任何更改都只会影响参数的副本，而不会影响实参本身：
+
+```cpp
+#include <iostream>
+
+void addOne(int y) // `y`是`x`的副本
+{
+    ++y; // 这只会修改`x`的副本，而非实际的对象`x`
+}
+
+int main()
+{
+    int x { 5 };
+
+    std::cout << "value = " << x << '\n';
+
+    addOne(x);
+
+    std::cout << "value = " << x << '\n'; // `x`没有被修改
+
+    return 0;
+}
+```
+
+在上面的程序中，由于值参数`y`是`x`的副本，当我们递增`y`时，这只会影响`y`。该程序输出：
+
+``` plaintext
+value = 5
+value = 5
+```
+
+然而，由于引用与被引用对象相同，因此在使用**按引用传递**时，对引用参数进行的任何更改都会影响实参：
+
+```cpp
+#include <iostream>
+
+void addOne(int& y) // `y`绑定到实际的对象`x`
+{
+    ++y; // 这会修改实际的对象`x`
+}
+
+int main()
+{
+    int x { 5 };
+
+    std::cout << "value = " << x << '\n';
+
+    addOne(x);
+
+    std::cout << "value = " << x << '\n'; // `x`已经被修改
+
+    return 0;
+}
+```
+
+该程序输出：
+
+``` plaintext
+value = 5
+value = 6
+```
+
+在上面的例子中，`x`最初的值是`5`。当调用`addOne(x)`时，引用参数`y`绑定到实参`x`。当`addOne()`函数递增引用`y`时，它实际上递增了实参`x`，从`5`变为`6`（而不是`x`的副本）。即使`addOne()`执行完毕，这个更改后的值也会保留下来。
+
+> [!example] 关键见解
+> 
+> 将值按非`const`引用传递，允许我们编写可以修改传入参数值的函数。
+
+让函数修改传入参数值的能力很有用。想象一下，你编写了一个函数来确定怪物是否成功攻击了玩家。如果是，则怪物应对玩家的生命值造成一定的伤害。如果你通过引用传递玩家对象，函数可以直接修改传入的实际玩家对象的生命值。如果你按值传递玩家对象，则只能修改玩家对象的副本，这不如直接修改实用。
+## 按引用传递只能接受可修改的左值实参
+
+因为指向非`const`值的引用只能绑定到可修改的左值（本质上是非`const`变量），这意味着按引用传递只适用于可修改的左值实参。从实际角度来看，这极大地限制了按非`const`引用传递的用途，因为它意味着我们不能传递`const`变量或字面值。例如：
+
+```cpp
+#include <iostream>
+
+void printValue(int& y) // `y`只接受可修改的左值
+{
+    std::cout << y << '\n';
+}
+
+int main()
+{
+    int x { 5 };
+    printValue(x); // 合法：`x`是可修改的左值
+
+    const int z { 5 };
+    printValue(z); // 错误：`z`是不可修改的左值
+
+    printValue(5); // 错误：`5`是右值
+
+    return 0;
+}
+```
+
+幸运的是，有一个简单的解决方法，我们将在下一节讨论。我们还将讨论何时使用按值传递和按引用传递。
+# 12.6 - Pass by const lvalue reference 通过`const`左值引用传递
+
+与只能绑定到可修改左值的非`const`引用不同，`const`引用可以绑定到可修改左值、不可修改左值和右值。因此，如果我们将引用参数声明为`const`，那么它将能够绑定到任何类型的实参：
+
+```cpp
+#include <iostream>
+
+void printRef(const int& y) // `y`是一个`const`引用
+{
+    std::cout << y << '\n';
+}
+
+int main()
+{
+    int x { 5 };
+    printRef(x);   // 合法：`x`是一个可修改的左值，`y`绑定到`x`
+
+    const int z { 5 };
+    printRef(z);   // 合法：`z`是一个不可修改的左值，`y`绑定到`z`
+
+    printRef(5);   // 合法：`5`是右值字面值，`y`绑定到临时`int`对象
+
+    return 0;
+}
+```
+
+通过`const`引用传递与通过引用传递的主要好处相同（避免复制实参），同时还保证了函数**不能**更改被引用的值。
+
+例如，以下代码是不允许的，因为`ref`是`const`常量：
+
+```cpp
+void addOne(const int& ref)
+{
+    ++ref; // 不允许：`ref`是`const`
+}
+```
+
+在大多数情况下，我们不希望函数修改实参的值。
+
+> [!tip] 最佳实践
+> 
+> 除非有特定的理由（例如函数需要更改实参的值），否则应优先通过`const`引用传递，而不是通过非`const`引用传递。
+
+现在我们就能够理解为什么要允许`const`左值引用绑定到右值上：如果不能这样的话，我们就没有办法向按引用传递的函数传递字面量（或者其他右值）了。
+## 将不同类型的值传递给`const`左值引用参数
+
+在 [[#12.4 Lvalue references to const 对常量的左值引用|12.4 左值引用到`const`]] 中，我们提到`const`左值引用可以绑定到不同类型的值，只要该值可以转换为引用的类型。允许这样做的主要动机是可以以相同的方式将值作为实参传递给值参数或`const`引用参数：
+
+```cpp
+#include <iostream>
+
+void printVal(double d)
+{
+    std::cout << d << '\n';
+}
+
+void printRef(const double& d)
+{
+    std::cout << d << '\n';
+}
+
+int main()
+{
+    printVal(5); // `5`被转换为临时`double`，并复制到参数`d`
+    printRef(5); // `5`被转换为临时`double`，并绑定到参数`d`
+
+    return 0;
+}
+```
+## 混合按值和按引用传递
+
+具有多个参数的函数可以单独确定每个参数是按值传递还是按引用传递。例如：
+
+```cpp
+#include <string>
+
+void foo(int a, int& b, const std::string& c)
+{
+}
+
+int main()
+{
+    int x { 5 };
+    const std::string s { "Hello, world!" };
+
+    foo(5, x, s);
+
+    return 0;
+}
+```
+
+在上述例子中，第一个实参是按值传递的，第二个是按引用传递的，第三个是通过`const`引用传递的。
+## 何时使用(`const`)引用传递
+
+由于类类型的复制成本可能很高（有时相当高），类类型通常通过`const`引用传递，而不是按值传递，以避免对实参进行昂贵的复制。基本类型复制成本较低，因此通常按值传递。
+
+> [!tip] 最佳实践
+> 
+> 作为经验法则，基本类型按值传递，类（或结构）类型通过`const`引用传递。
+> 
+> - 其他通常按值传递的类型：枚举类型和`std::string_view`。  
+> - 其他通常按（`const`）引用传递的类型：`std::string`、`std::array`和`std::vector`。
+## 按值传递与按引用传递的成本
+
+并不是所有的类类型都需要通过引用传递。你可能会问，为什么我们不把所有内容都通过引用传递呢？在本节（可选阅读）中，我们讨论按值传递与按引用传递的成本，并完善我们的最佳实践，以确定何时应该使用每种方式。
+
+要了解何时应按值传递与按引用传递，有两个关键点：
+
+1. 复制对象的成本通常与两件事成正比：
+    
+    - 对象的大小。占用更多内存的对象需要更多时间复制。
+    - 任何额外的设置成本。一些类类型在实例化时会执行额外的设置（例如打开文件或数据库，或分配一定量的动态内存来保存可变大小的对象）。这些设置成本在每次复制对象时都必须支付。
+2. 绑定引用到对象始终是快速的（大约与复制基本类型的速度相同）。
+
+
+通过引用访问对象比通过普通变量标识符访问对象稍微昂贵一些。使用变量标识符时，运行的程序可以直接访问分配给该变量的内存地址并获取值。而通过引用访问时，通常需要额外一步：程序必须首先访问引用以确定所引用的对象，然后才能前往该对象的内存地址并获取值。编译器有时也可以对使用按值传递的对象的代码进行更高效的优化，这意味着对通过引用传递的对象的访问通常比对按值传递对象的访问慢。
+
+现在我们可以回答为什么不把所有内容都按引用传递的问题了：
+
+- 对于复制成本较低的对象，复制成本与绑定成本相似，因此我们更倾向于按值传递，以使生成的代码更快。
+- 对于复制成本较高的对象，复制成本占主导地位，因此我们更倾向于通过（`const`）引用传递以避免复制。
+
+> [!tip] 最佳实践
+> 
+> 对于复制成本较低的对象，优先按值传递；对于复制成本较高的对象，优先通过`const`引用传递。如果不确定对象的复制成本是高还是低，优先通过`const`引用传递。
+
+最后一个问题就是我们如何定义“复制成本低”？这没有绝对的答案，因为这取决于编译器、使用场景和架构。然而，我们可以形成一个好的经验法则：如果对象使用的内存不超过2个“字（word）”的大小（一个“字”大致为一个内存地址的大小），并且没有额外的设置成本，那么它的复制成本就是低的。
+
+以下程序定义了一个类似函数的宏，可以根据对象或类型判断其复制成本是否较低：
+
+```cpp
+#include <iostream>
+
+// 函数宏，如果类型（或对象）大小小于或等于两个内存地址的大小，则返回true
+#define isSmall(T) (sizeof(T) <= 2 * sizeof(void*))
+
+struct S
+{
+    double a;
+    double b;
+    double c;
+};
+
+int main()
+{
+    std::cout << std::boolalpha; // 打印true或false，而不是1或0
+    std::cout << isSmall(int) << '\n'; // true
+
+    double d {};
+    std::cout << isSmall(d) << '\n'; // true
+    std::cout << isSmall(S) << '\n'; // false
+
+    return 0;
+}
+```
+
+> [!info] 顺带一提
+> 因为C++的函数不允许将类型名作为参数进行传递，我们使用预处理的函数宏，这样我们可以将一个对象或者类型名作为参数。
+
+但是想要知道某类对象有没有额外的设置成本比较困难。除非你明确知道没有，你最好还是假设大部分标准库里的类有设置成本。
+
+> [!tip] 提示
+> 
+> 如果类型`T`的大小`sizeof(T) <= 2 * sizeof(void*)`，并且没有额外的设置成本，那么`T`的对象的复制成本就是低的。
+## 函数参数中，优先使用`std::string_view`而不是`const std::string&`
+
+一个经常在现代C++中出现的问题是：当编写具有字符串参数的函数时，参数类型应该是`const std::string&`还是`std::string_view`？
+
+在大多数情况下，`std::string_view`是更好的选择，因为它可以高效处理更广泛的实参类型。
+
+```cpp
+void doSomething(const std::string&);
+void doSomething(std::string_view);   // 大多数情况下优先使用这个
+```
+
+但下面这几种情况下使用`const std::string&`参数可能更合适：
+
+- 如果你使用C++14或更早版本，`std::string_view`不可用。
+- 如果你的函数需要调用另一个接收C风格字符串或`std::string`参数的函数，那么`const std::string&`可能是更好的选择，因为`std::string_view`不保证以空字符结尾（这是C风格字符串函数所期望的），并且不能高效地转换回`std::string`。
+
+> [!tip] 最佳实践
+> 
+> 在传递字符串时，优先使用`std::string_view`（按值）而不是`const std::string&`，除非你的函数调用了需要C风格字符串或`std::string`参数的其他函数。
+
+## 为什么`std::string_view`参数比`const std::string&`效率更高
+
+在C++中，字符串参数的类型一般是`std::string`，`std::string_view`或C风格的字符串（字面量）。
+
+As reminders:
+
+- If the type of an argument does not match the type of the corresponding parameter, the compiler will try to implicitly convert the argument to match the type of the parameter.
+- Converting a value creates a temporary object of the converted type.
+- Creating (or copying) a `std::string_view` is inexpensive, as `std::string_view` does not make a copy of the string it is viewing.
+- Creating (or copying) a `std::string` can be expensive, as each `std::string` object makes a copy of the string.
+
+Here’s a table showing what happens when we try to pass each type:
+
+|Argument Type|std::string_view parameter|const std::string& parameter|
+|---|---|---|
+|std::string|Inexpensive conversion|Inexpensive reference binding|
+|std::string_view|Inexpensive copy|Requires expensive explicit conversion to `std::string`|
+|C-style string / literal|Inexpensive conversion|Expensive conversion|
+
+With a `std::string_view` value parameter:
+
+- If we pass in a `std::string` argument, the compiler will convert the `std::string` to a `std::string_view`, which is inexpensive, so this is fine.
+- If we pass in a `std::string_view` argument, the compiler will copy the argument into the parameter, which is inexpensive, so this is fine.
+- If we pass in a C-style string or string literal, the compiler will convert these to a `std::string_view`, which is inexpensive, so this is fine.
+
+As you can see, `std::string_view` handles all three cases inexpensively.
+
+With a `const std::string&` reference parameter:
+
+- If we pass in a `std::string` argument, the parameter will reference bind to the argument, which is inexpensive, so this is fine.
+- If we pass in a `std::string_view` argument, the compiler will refuse to do an implicit conversion, and produce a compilation error. We can use `static_cast` to do an explicit conversion (to `std::string`), but this conversion is expensive (since `std::string` will make a copy of the string being viewed). Once the conversion is done, the parameter will reference bind to the result, which is inexpensive. But we’ve made an expensive copy to do the conversion, so this isn’t great.
+- If we pass in a C-style string or string literal, the compiler will implicitly convert this to a `std::string`, which is expensive. So this isn’t great either.
+
+Thus, a `const std::string&` parameter only handles `std::string` arguments inexpensively.
+
+The same, in code form:
+
+```cpp
+#include <iostream>
+#include <string>
+#include <string_view>
+
+void printSV(std::string_view sv)
+{
+    std::cout << sv << '\n';
+}
+
+void printS(const std::string& s)
+{
+    std::cout << s << '\n';
+}
+
+int main()
+{
+    std::string s{ "Hello, world" };
+    std::string_view sv { s };
+
+    // Pass to `std::string_view` parameter
+    printSV(s);              // ok: inexpensive conversion from std::string to std::string_view
+    printSV(sv);             // ok: inexpensive copy of std::string_view
+    printSV("Hello, world"); // ok: inexpensive conversion of C-style string literal to std::string_view
+
+    // pass to `const std::string&` parameter
+    printS(s);              // ok: inexpensive bind to std::string argument
+    printS(sv);             // compile error: cannot implicit convert std::string_view to std::string
+    printS(static_cast<std::string>(sv)); // bad: expensive creation of std::string temporary
+    printS("Hello, world"); // bad: expensive creation of std::string temporary
+
+    return 0;
+}
+```
+
+Additionally, we need to consider the cost of accessing the parameter inside the function. Because a `std::string_view` parameter is a normal object, the string being viewed can be accessed directly. Accessing a `std::string&` parameter requires an additional step to get to the referenced object before the string can be accessed.
+
 # 12.7 Introduction to pointers
 # 12.8 Null pointers
 # 12.9 Pointers and const
