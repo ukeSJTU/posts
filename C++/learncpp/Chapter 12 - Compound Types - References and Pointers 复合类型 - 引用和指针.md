@@ -2213,11 +2213,1459 @@ int main()
 > 我们无法确定非空指针是否有效或悬空，且访问悬空指针会导致未定义行为。因此，我们需要确保程序中不存在任何悬空指针。
 > 
 > 如果我们确保所有指针都要么指向有效对象，要么设置为 `nullptr`，那么我们可以使用条件语句测试指针是否为空，以确保我们不会解引用空指针，并假设所有非空指针都指向有效对象。
-# 12.9 Pointers and const
-# 12.10 Pass by address
-# 12.11 Pass by address (part 2)
-# 12.12 Return by reference and return by address
-# 12.13 In and out parameters
+# 12.9 Pointers and const 指针和常量
+
+考虑以下代码片段：
+
+```cpp
+int main()
+{
+    int x { 5 };
+    int* ptr { &x }; // ptr 是一个普通（非 const）指针
+
+    int y { 6 };
+    ptr = &y; // 我们可以指向另一个值
+
+    *ptr = 7; // 我们可以改变指针所指地址的值
+
+    return 0;
+}
+```
+
+对于普通（非 const）指针，我们可以改变指针指向的对象（通过给指针赋予一个新的地址），也可以改变指针所持有地址的值（通过给解引用的指针赋予新值）。
+
+但是，如果我们想指向的值是 const，会发生什么呢？
+
+```cpp
+int main()
+{
+    const int x { 5 }; // x 现在是 const
+    int* ptr { &x };   // 编译错误：无法从 const int* 转换为 int*
+
+    return 0;
+}
+```
+
+上面的代码片段无法通过编译——我们不能让一个普通指针指向一个 const 变量。原因在于：**const** 变量是其值不能被改变的变量。允许程序员使用非 const 指针指向 const 值，会使程序员能够通过解引用指针来改变该值。这将违反变量的 const 性。
+## 指向 const 值的指针
+
+**指向 const 值的指针**（有时简称为 `pointer to const`）是一个（非 const）指针，指向一个常量值。
+
+要声明一个指向 `const` 值的指针，在指针的数据类型前使用 `const` 关键字：
+
+```cpp
+int main()
+{
+    const int x{ 5 };
+    const int* ptr { &x }; // 可以：ptr 指向一个 "const int"
+
+    *ptr = 6; // 不允许：我们不能改变一个 const 值
+
+    return 0;
+}
+```
+
+在上面的例子中，`ptr` 指向一个 `const int`。因为所指数据类型是 const，所以不能改变被指向的值。
+
+然而，由于指向 const 的指针本身不是 const（它只是指向一个 const 值），我们可以通过给指针赋予一个新地址来改变指针指向的对象：
+
+```cpp
+int main()
+{
+    const int x{ 5 };
+    const int* ptr { &x }; // ptr 指向 const int x
+
+    const int y{ 6 };
+    ptr = &y; // 可以：ptr 现在指向 const int y
+
+    return 0;
+}
+```
+
+就像对 const 的引用一样，指向 const 的指针也可以指向非 const 变量。指向 const 的指针将被指向的值视为常量，无论该地址的对象最初是否被定义为 const：
+
+```cpp
+int main()
+{
+    int x{ 5 }; // 非 const
+    const int* ptr { &x }; // ptr 指向一个 "const int"
+
+    *ptr = 6;  // 不允许：ptr 指向一个 "const int"，所以我们不能通过 ptr 改变该值
+    x = 6; // 允许：通过非 const 标识符 x 访问时，该值仍是非 const 的
+
+    return 0;
+}
+```
+
+## const 指针
+
+我们也可以使指针本身成为常量。一个 **const 指针** 是指初始化后地址不能被改变的指针。
+
+要声明一个 const 指针，在指针声明中的星号后使用 `const` 关键字：
+
+```cpp
+int main()
+{
+    int x{ 5 };
+    int* const ptr { &x }; // 星号后面的 const 表示这是一个 const 指针
+
+    return 0;
+}
+```
+
+在上面的例子中，`ptr` 是一个指向（非 const）int 值的 const 指针。
+
+就像普通的 const 变量一样，const 指针必须在定义时初始化，并且这个值不能通过赋值来改变：
+
+```cpp
+int main()
+{
+    int x{ 5 };
+    int y{ 6 };
+
+    int* const ptr { &x }; // 可以：const 指针被初始化为 x 的地址
+    ptr = &y; // 错误：一旦初始化，const 指针不能被改变。
+
+    return 0;
+}
+```
+
+然而，由于被指向的值是非 const 的，可以通过解引用 const 指针来改变被指向的值：
+
+```cpp
+int main()
+{
+    int x{ 5 };
+    int* const ptr { &x }; // ptr 将始终指向 x
+
+    *ptr = 6; // 可以：被指向的值是非 const 的
+
+    return 0;
+}
+```
+## 指向 const 值的 const 指针
+
+最后，可以通过在类型前和星号后都使用 `const` 关键字来声明一个 **指向 const 值的 const 指针**：
+
+```cpp
+int main()
+{
+    int value { 5 };
+    const int* const ptr { &value }; // 一个指向 const 值的 const 指针
+
+    return 0;
+}
+```
+
+指向 const 值的 const 指针不能改变其地址，也不能通过指针改变其所指向的值。它只能被解引用以获取其指向的值。
+## 指针和 const 回顾
+
+总结一下，你只需要记住 4 条规则，而且它们非常合乎逻辑：
+
+- 非 const 指针可以被赋予另一个地址来改变它指向的对象。
+- const 指针总是指向同一地址，这个地址不能被改变。
+- 指向非 const 值的指针可以改变它所指向的值。这些指针不能指向 const 值。
+- 指向 const 值的指针在通过指针访问时将值视为 const，因此不能改变它所指向的值。这些指针可以指向 const 或非 const 左值（但不能指向没有地址的右值）。
+
+理清声明语法可能有点挑战：
+
+- 在星号前面的 `const` 与被指向的类型相关。因此，这是一个指向 const 值的指针，不能通过指针修改该值。
+- 在星号后面的 `const` 与指针本身相关。因此，该指针不能被赋予新的地址。
+
+```cpp
+int main()
+{
+    int v{ 5 };
+
+    int* ptr0 { &v };             // 指向一个 "int"，但自身不是 const，所以这是一个普通指针。
+    const int* ptr1 { &v };       // 指向一个 "const int"，但自身不是 const，所以这是一个指向 const 值的指针。
+    int* const ptr2 { &v };       // 指向一个 "int"，自身是 const 的，所以这是一个 const 指针（指向非 const 值）。
+    const int* const ptr3 { &v }; // 指向一个 "const int"，自身是 const 的，所以这是一个指向 const 值的 const 指针。
+
+    // 如果 const 在 * 的左边，const 属于值
+    // 如果 const 在 * 的右边，const 属于指针
+
+    return 0;
+}
+```
+
+我自己整理了以下表格：
+
+| 声明方式                    | 指针类型             | 指针指向的值是否可变 `*ptr=val` | 指针地址是否可变 `ptr=&var` |
+| ----------------------- | ---------------- | --------------------- | ------------------- |
+| `int* ptr;`             | 普通指针             | 是                     | 是                   |
+| `const int* ptr;`       | 指向const值的指针      | 否                     | 是                   |
+| `int* const ptr;`       | const指针          | 是                     | 否                   |
+| `const int* const ptr;` | 指向const值的const指针 | 否                     | 否                   |
+
+# 12.10 - Pass by address 按地址传递
+
+在之前的课程中，我们介绍了将参数传递给函数的两种不同方式：按值传递 [[Chapter 2 - C++ Basics - Functions and Files#2.4 Introduction to function parameters and arguments|2.4 —— 函数参数和实参简介]] 和按引用传递 [[#12.5 通过左值引用传递|12.5 —— 按左值引用传递]]。
+
+下面是一个示例程序，展示了一个 `std::string` 对象按值传递和按引用传递：
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printByValue(std::string val) // 函数参数是 str 的一个副本
+{
+    std::cout << val << '\n'; // 通过副本打印值
+}
+
+void printByReference(const std::string& ref) // 函数参数是绑定到 str 的引用
+{
+    std::cout << ref << '\n'; // 通过引用打印值
+}
+
+int main()
+{
+    std::string str{ "Hello, world!" };
+
+    printByValue(str); // 按值传递 str，会复制 str
+    printByReference(str); // 按引用传递 str，不会复制 str
+
+    return 0;
+}
+```
+
+当我们按值传递参数 `str` 时，函数参数 `val` 接收到该参数的一个副本。因为参数是实参的副本，对 `val` 的任何更改都是对副本的修改，而不是对原始参数的修改。
+
+当我们按引用传递参数 `str` 时，引用参数 `ref` 绑定到实际的参数。这避免了复制参数。因为我们的引用参数是 const 的，我们不能修改 `ref`。但如果 `ref` 是非 const 的，我们对 `ref` 的任何修改都会改变 `str`。
+
+在这两种情况下，调用者都提供了要作为函数调用参数的实际对象（`str`）。
+## 按地址传递
+
+C++ 提供了第三种将值传递给函数的方法，称为按地址传递。使用 **按地址传递** 时，调用者不是提供一个对象作为参数，而是提供一个对象的 **地址**（通过指针）。这个指针（持有对象的地址）被复制到被调用函数的指针参数中（现在也持有对象的地址）。然后，函数可以解引用该指针来访问传递地址的对象。
+
+下面是上述程序的一个版本，添加了按地址传递的变体：
+
+```cpp
+#include <iostream>
+#include <string>
+
+void printByValue(std::string val) // 函数参数是 str 的一个副本
+{
+    std::cout << val << '\n'; // 通过副本打印值
+}
+
+void printByReference(const std::string& ref) // 函数参数是绑定到 str 的引用
+{
+    std::cout << ref << '\n'; // 通过引用打印值
+}
+
+void printByAddress(const std::string* ptr) // 函数参数是一个持有 str 地址的指针
+{
+    std::cout << *ptr << '\n'; // 通过解引用指针打印值
+}
+
+int main()
+{
+    std::string str{ "Hello, world!" };
+
+    printByValue(str); // 按值传递 str，会复制 str
+    printByReference(str); // 按引用传递 str，不会复制 str
+    printByAddress(&str); // 按地址传递 str，不会复制 str
+
+    return 0;
+}
+```
+
+请注意，这三个版本有多么相似。让我们更详细地探讨按地址传递的版本。
+
+首先，因为我们希望 `printByAddress()` 函数使用按地址传递，我们将函数参数设为名为 `ptr` 的指针。由于 `printByAddress()` 将以只读方式使用 `ptr`，`ptr` 是一个指向 const 值的指针。
+
+```cpp
+void printByAddress(const std::string* ptr)
+{
+    std::cout << *ptr << '\n'; // 通过解引用指针打印值
+}
+```
+
+在 `printByAddress()` 函数内部，我们解引用 `ptr` 参数来访问被指向对象的值。
+
+其次，当调用函数时，我们不能仅仅传入 `str` 对象——我们需要传入 `str` 的地址。最简单的方法是使用取地址符`&`来获取持有 `str` 地址的指针：
+
+```cpp
+printByAddress(&str); // 使用取地址符 (&) 获取持有 str 地址的指针
+```
+
+当执行此调用时，`&str` 将创建一个持有 `str` 地址的指针。然后，这个地址在函数调用时被复制到函数参数 `ptr` 中。因为 `ptr` 现在持有 `str` 的地址，当函数解引用 `ptr` 时，它将获得 `str` 的值，函数将其打印到控制台。
+
+就是这样。
+
+虽然在上面的例子中我们使用取地址符来获取 `str` 的地址，但如果我们已经有一个持有 `str` 地址的指针变量，我们也可以使用它：
+
+```cpp
+int main()
+{
+    std::string str{ "Hello, world!" };
+
+    printByValue(str); // 按值传递 str，会复制 str
+    printByReference(str); // 按引用传递 str，不会复制 str
+    printByAddress(&str); // 按地址传递 str，不会复制 str
+
+    std::string* ptr { &str }; // 定义一个持有 str 地址的指针变量
+    printByAddress(ptr); // 按地址传递 str，不会复制 str
+
+    return 0;
+}
+```
+
+> [!info] Nomenclature 命名法
+> 
+> 当我们使用`&`取地址运算符将变量的地址作为参数传递时，我们说变量是 **按地址传递**。
+> 
+> 当我们有一个持有对象地址的指针变量，并将指针作为参数传递给相同类型的参数时，我们说对象是按地址传递的，指针是按值传递的。
+## 按地址传递不会复制被指向的对象
+
+考虑以下语句：
+
+```cpp
+std::string str{ "Hello, world!" };
+printByAddress(&str); // 使用取地址符 (&) 获取持有 str 地址的指针
+```
+
+As we noted in [12.5 -- Pass by lvalue reference](https://www.learncpp.com/cpp-tutorial/pass-by-lvalue-reference/), copying a `std::string` is expensive, so that’s something we want to avoid. When we pass a `std::string` by address, we’re not copying the actual `std::string` object -- we’re just copying the pointer (holding the address of the object) from the caller to the called function. Since an address is typically only 4 or 8 bytes, a pointer is only 4 or 8 bytes, so copying a pointer is always fast.
+
+正如我们在 [[#12.5 通过左值引用传递|12.5 —— 按左值引用传递]] 中指出的，复制一个 `std::string` 是很耗费资源的，这是我们想要避免的。当我们按地址传递一个 `std::string` 时，我们并没有复制实际的 `std::string` 对象——我们只是将持有对象地址的指针从调用者复制到被调用函数。由于地址通常只有 4 或 8 个字节，所以指针也只有 4 或 8 个字节，因此复制指针总是很快的。
+
+因此，就像按引用传递一样，按地址传递也是快速的，避免了对参数对象的复制。
+## 按地址传递允许函数修改参数的值
+
+当我们按地址传递对象时，函数接收到被传递对象的地址，可以通过解引用访问它。因为这是被传递的实际参数对象的地址（而不是对象的副本），如果函数参数是指向非 const 的指针，函数可以通过指针参数修改参数：
+
+```cpp
+#include <iostream>
+
+void changeValue(int* ptr) // 注意：在此示例中，ptr 是指向非 const 的指针
+{
+    *ptr = 6; // 将值改为 6
+}
+
+int main()
+{
+    int x{ 5 };
+
+    std::cout << "x = " << x << '\n';
+
+    changeValue(&x); // 我们将 x 的地址传递给函数
+
+    std::cout << "x = " << x << '\n';
+
+    return 0;
+}
+```
+
+这将输出：
+
+``` plaintext
+x = 5
+x = 6
+```
+
+如你所见，参数被修改了，这种修改在 `changeValue()` 运行完毕后仍然存在。
+
+如果函数不应修改被传入的对象，可以将函数参数设为指向 const 的指针：
+
+```cpp
+void changeValue(const int* ptr) // 注意：ptr 现在是指向 const 的指针
+{
+    *ptr = 6; // 错误：不能改变 const 值
+}
+```
+## 空指针检查
+
+现在考虑这个看似无害的程序：
+
+```cpp
+#include <iostream>
+
+void print(int* ptr)
+{
+    std::cout << *ptr << '\n';
+}
+
+int main()
+{
+    int x{ 5 };
+    print(&x);
+
+    int* myPtr {};
+    print(myPtr);
+
+    return 0;
+}
+```
+
+当运行此程序时，它将打印值 `5`，然后很可能崩溃。
+
+在调用 `print(myPtr)` 时，`myPtr` 是一个空指针，因此函数参数 `ptr` 也将是一个空指针。当在函数体内解引用这个空指针时，会导致未定义行为。
+
+当按地址传递参数时，在解引用值之前应注意确保指针不是空指针。一种方法是使用条件语句：
+
+```cpp
+#include <iostream>
+
+void print(int* ptr)
+{
+    if (ptr) // 如果 ptr 不是空指针
+    {
+        std::cout << *ptr << '\n';
+    }
+}
+
+int main()
+{
+    int x{ 5 };
+
+    print(&x);
+    print(nullptr);
+
+    return 0;
+}
+```
+
+在上述程序中，我们测试 `ptr` 是否为 null，以确保在解引用之前它不是空指针。虽然对于这样一个简单的函数来说这没问题，但在更复杂的函数中，这可能会导致冗余的逻辑（多次测试 ptr 是否为 null）或嵌套函数的主要逻辑（如果包含在一个块中）。
+
+在大多数情况下，更有效的方法是反过来：将函数参数是否为 null 作为前提条件进行测试([[Chapter 9 -  Error Detection and Handling#9.6 Assert and static_assert|9.6 —— assert 和 static_assert]])，并立即处理负面情况：
+
+```cpp
+#include <iostream>
+
+void print(int* ptr)
+{
+    if (!ptr) // 如果 ptr 是空指针，提前返回给调用者
+        return;
+
+    // 如果执行到这里，我们可以假设 ptr 是有效的
+    // 所以不需要更多的测试或嵌套
+
+    std::cout << *ptr << '\n';
+}
+
+int main()
+{
+    int x{ 5 };
+
+    print(&x);
+    print(nullptr);
+
+    return 0;
+}
+```
+
+如果在你的程序流程设计中，空指针无论如何都不应该被传递给函数，我们就可以使用在 [[Chapter 9 -  Error Detection and Handling#9.6 Assert and static_assert|9.6 —— assert 和 static_assert]] 中介绍的 `assert`（单独用`assert`或者两者一起使用）。
+
+断言旨在表明条件永远不应该发生：
+
+```cpp
+#include <iostream>
+#include <cassert>
+
+void print(const int* ptr) // 现在是指向 const int 的指针
+{
+    assert(ptr); // 如果传递了空指针，在调试模式下使程序失败（因为这永远不应该发生）
+
+    // （可选）在生产模式下将其作为错误情况处理，以便如果确实发生了，我们不会崩溃
+    if (!ptr)
+        return;
+
+    std::cout << *ptr << '\n';
+}
+
+int main()
+{
+    int x{ 5 };
+
+    print(&x);
+    print(nullptr);
+
+    return 0;
+}
+```
+## 优先使用按（const）引用传递
+
+注意，上面示例中的 `print()` 函数无法很好地处理空值——它实际上只是中止了函数。鉴于此，为什么要允许用户传入空值呢？按引用传递具有与按地址传递相同的优点，而无需冒意外解引用空指针的风险。
+
+按 const 引用传递比按地址传递还有其他一些优点。
+
+首先，因为按地址传递的对象必须有一个地址，所以只能按地址传递左值（因为右值没有地址）。按 const 引用传递更灵活，因为它可以接受左值和右值：
+
+```cpp
+#include <iostream>
+
+void printByValue(int val) // 函数参数是参数的一个副本
+{
+    std::cout << val << '\n'; // 通过副本打印值
+}
+
+void printByReference(const int& ref) // 函数参数是绑定到参数的引用
+{
+    std::cout << ref << '\n'; // 通过引用打印值
+}
+
+void printByAddress(const int* ptr) // 函数参数是一个持有参数地址的指针
+{
+    std::cout << *ptr << '\n'; // 通过解引用指针打印值
+}
+
+int main()
+{
+    printByValue(5);     // 有效（但会复制）
+    printByReference(5); // 有效（因为参数是 const 引用）
+    printByAddress(&5);  // 错误：无法获取右值的地址
+
+    return 0;
+}
+```
+
+其次，按引用传递的语法更自然，我们可以直接传入字面量或对象。使用按地址传递，我们的代码会充斥着 & 和 *。
+
+在现代 C++ 中，大多数可以用按地址传递完成的事情，通过其他方法可以更好地完成。遵循这个常见的准则：“**尽可能按引用传递，必须时才按地址传递**”。
+
+> 最佳实践
+> 
+> 除非有特定原因使用按地址传递，否则应优先使用按引用传递。
+# 12.11 — Pass by address (part 2) 按地址传递（第二部分）
+
+本节课接着上节课 [[#12.10 - Pass by address 按地址传递|12.10 —— 按地址传递]] 继续研究“按地址传递”。
+## 为“可选”参数使用按地址传递
+
+按地址传递的一个更常见的用途是允许函数接受一个“可选”参数。用例子来说明比描述更容易：
+
+```cpp
+#include <iostream>
+
+void printIDNumber(const int *id = nullptr)
+{
+    if (id)
+        std::cout << "Your ID number is " << *id << ".\n";
+    else
+        std::cout << "Your ID number is not known.\n";
+}
+
+int main()
+{
+    printIDNumber(); // 我们还不知道用户的 ID
+
+    int userid{ 34 };
+    printIDNumber(&userid); // 我们现在知道用户的 ID 了
+
+    return 0;
+}
+```
+
+该示例打印：
+
+``` plaintext
+Your ID number is not known.
+Your ID number is 34.
+```
+
+在这个程序中，`printIDNumber()` 函数有一个按地址传递并默认值为 `nullptr` 的参数。在 `main()` 中，我们调用了两次这个函数。第一次调用时，我们不知道用户的 ID，所以不带参数地调用 `printIDNumber()`。`id` 参数默认值为 `nullptr`，函数打印 `Your ID number is not known.`。第二次调用时，我们有一个有效的 ID，所以调用 `printIDNumber(&userid)`。`id` 参数接收 `userid` 的地址，因此函数打印 `Your ID number is 34.`。
+
+然而，在许多情况下，**函数重载(function overloading)** 是实现相同结果的更好选择：
+
+```cpp
+#include <iostream>
+
+void printIDNumber()
+{
+    std::cout << "Your ID is not known\n";
+}
+
+void printIDNumber(int id)
+{
+    std::cout << "Your ID is " << id << "\n";
+}
+
+int main()
+{
+    printIDNumber(); // 我们还不知道用户的 ID
+
+    int userid{ 34 };
+    printIDNumber(userid); // 我们知道用户是 34
+
+    printIDNumber(62); // 现在也可以使用右值参数
+
+    return 0;
+}
+```
+
+这有许多优点：我们不再需要担心空指针解引用，并且我们可以传递字面值或其他右值作为参数。
+## 改变指针参数所指向的对象
+
+当我们将一个地址传递给函数时，该地址从实参复制到指针参数中（这是可以的，因为复制地址很快）。现在考虑以下程序：
+
+```cpp
+#include <iostream>
+
+// [[maybe_unused]] 消除关于 ptr2 被设置但未使用的编译器警告
+void nullify([[maybe_unused]] int* ptr2)
+{
+    ptr2 = nullptr; // 将函数参数设为空指针
+}
+
+int main()
+{
+    int x{ 5 };
+    int* ptr{ &x }; // ptr 指向 x
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n");
+
+    nullify(ptr);
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n");
+    return 0;
+}
+```
+
+该程序将打印：
+
+``` plaintext
+ptr is non-null
+ptr is non-null
+```
+
+如你所见，改变指针参数所持有的地址对实参的地址没有影响（`ptr` 仍然指向 `x`）。当调用函数 `nullify()` 时，`ptr2` 接收到传入地址的副本（在本例中，是 `ptr` 持有的地址，即 `x` 的地址）。当函数改变 `ptr2` 指向的对象时，这只影响了 `ptr2` 持有的副本。
+
+那么，如果我们想允许函数改变指针参数所指向的对象，该怎么办？
+## 按引用传递……地址？
+
+是的，这确实可以。就像我们可以按引用传递普通变量一样，我们也可以按引用传递指针。下面是与上述相同的程序，但将 `ptr2` 改为对地址的引用：
+
+```cpp
+#include <iostream>
+
+void nullify(int*& refptr) // refptr 现在是指针的引用
+{
+    refptr = nullptr; // 将函数参数设为空指针
+}
+
+int main()
+{
+    int x{ 5 };
+    int* ptr{ &x }; // ptr 指向 x
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n");
+
+    nullify(ptr);
+
+    std::cout << "ptr is " << (ptr ? "non-null\n" : "null\n");
+    return 0;
+}
+```
+
+该程序将打印：
+
+``` plaintext
+ptr is non-null
+ptr is null
+```
+
+因为 `refptr` 现在是指针的引用，当 `ptr` 作为参数传递时，`refptr` 绑定到 `ptr`。这意味着对 `refptr` 的任何更改都会作用于 `ptr`。
+
+> [!info] As an aside… 顺便说一下……
+> 
+> 由于指针的引用相当罕见，所以很容易混淆语法（到底是 `int*&` 还是 `int&*`？）。好消息是，如果你写反了，编译器会报错，因为你不能有指向引用的指针（因为指针必须持有对象的地址，而引用不是对象）。然后你可以将其调整过来。
+## 为什么不再推荐使用 `0` 或 `NULL`（可选）
+
+在本小节中，我们将解释为什么不再推荐使用 `0` 或 `NULL`。
+
+字面值 `0` 可以被解释为整数字面值，或作为空指针字面值。在某些情况下，这可能会产生歧义——在这些情况下，编译器可能错误理解我们的意图，从而导致程序产生意外后果。
+
+预处理器宏 `NULL` 的定义并未在语言标准中规定。它可以被定义为 `0`、`0L`、`((void*)0)` 或其他任何东西。
+
+在 [[Chapter 11 - Function Overloading and Function Templates#11.1 Introduction to function overloading 函数重载简介|11.1 —— 函数重载简介]] 中，我们讨论了函数可以被重载（多个函数可以有相同的名称，只要它们可以通过参数的数量或类型来区分）。编译器可以通过函数调用中传递的参数来确定你希望调用哪个重载函数。
+
+当使用 `0` 或 `NULL` 时，这可能会引起问题：
+
+```cpp
+#include <iostream>
+#include <cstddef> // 为了使用 NULL
+
+void print(int x) // 此函数接受一个整数
+{
+    std::cout << "print(int): " << x << '\n';
+}
+
+void print(int* ptr) // 此函数接受一个整数指针
+{
+    std::cout << "print(int*): " << (ptr ? "non-null\n" : "null\n");
+}
+
+int main()
+{
+    int x{ 5 };
+    int* ptr{ &x };
+
+    print(ptr);  // 总是调用 print(int*)，因为 ptr 的类型是 int*（很好）
+    print(0);    // 总是调用 print(int)，因为 0 是一个整数字面值（希望这是我们期望的）
+
+    print(NULL); // 这条语句可能会执行以下任意一种：
+    // 调用 print(int)（Visual Studio 就是这样）
+    // 调用 print(int*)
+    // 导致函数调用歧义的编译错误（gcc 和 Clang 就会这样）
+
+    print(nullptr); // 总是调用 print(int*)
+
+    return 0;
+}
+```
+
+在作者的机器上（使用 Visual Studio），这会打印：
+
+``` plaintext
+print(int*): non-null
+print(int): 0
+print(int): 0
+print(int*): null
+```
+
+当将整数值 `0` 作为参数传递时，编译器会优先选择 `print(int)` 而不是 `print(int*)`。当我们希望使用空指针参数调用 `print(int*)` 时，这可能会导致意想不到的结果。
+
+在 `NULL` 被定义为值 `0` 的情况下，`print(NULL)` 也会调用 `print(int)`，而不是你期望的作为空指针字面值调用 `print(int*)`。在 `NULL` 不被定义为 `0` 的情况下，可能会产生其他行为，例如调用 `print(int*)` 或出现编译错误。
+
+使用 `nullptr` 消除了这种歧义（它总是调用 `print(int*)`），因为 `nullptr` 只会匹配指针类型。
+## `std::nullptr_t`
+
+由于 `nullptr` 可以在函数重载中与整数值区分开来，它必须有一个不同的类型。那么 `nullptr` 是什么类型呢？答案是 `nullptr` 的类型是 `std::nullptr_t`（在头文件 `<cstddef>` 中定义）。`std::nullptr_t` 只能持有一个值：`nullptr`！虽然这看起来有点傻，但在某种情况下很有用。如果我们想编写一个只接受 `nullptr` 字面值参数的函数，我们可以将参数设为 `std::nullptr_t`。
+
+```cpp
+#include <iostream>
+#include <cstddef> // 为了使用 std::nullptr_t
+
+void print(std::nullptr_t)
+{
+    std::cout << "in print(std::nullptr_t)\n";
+}
+
+void print(int*)
+{
+    std::cout << "in print(int*)\n";
+}
+
+int main()
+{
+    print(nullptr); // 调用 print(std::nullptr_t)
+
+    int x{ 5 };
+    int* ptr{ &x };
+
+    print(ptr); // 调用 print(int*)
+
+    ptr = nullptr;
+    print(ptr); // 调用 print(int*)（因为 ptr 的类型是 int*）
+
+    return 0;
+}
+```
+
+在上述示例中，函数调用 `print(nullptr)` 解析为函数 `print(std::nullptr_t)` 而非 `print(int*)`，因为它不需要转换。
+
+可能有点令人困惑的一种情况是，当我们在 `ptr` 持有值 `nullptr` 时调用 `print(ptr)`。请记住，函数重载是根据类型而不是值来匹配的，`ptr` 的类型是 `int*`。因此，将匹配 `print(int*)`。在这种情况下，`print(std::nullptr_t)` 甚至不会被考虑，因为指针类型不会隐式转换为 `std::nullptr_t`。
+
+你可能永远不需要使用这个，但知道一下也是好的，以防万一。
+## 其实只有按值传递
+
+现在你已经理解了按引用、按地址和按值传递之间的基本区别，让我们简化一下。:)
+
+虽然编译器通常可以完全优化掉引用，但在某些情况下这是不可能的，实际上需要一个引用。引用通常由编译器使用指针来实现。这意味着在幕后，按引用传递本质上就是按地址传递。
+
+而在前一课中，我们提到按地址传递只是将一个地址从调用者复制到被调用函数——这实际上是按值传递一个地址。
+
+因此，我们可以得出结论：C++ 其实真的都是按值传递的！按地址（和引用）传递的特性仅仅来自于我们可以解引用传递的地址来改变参数，而对于普通的值参数，我们无法做到这一点！
+# 12.12 - Return by reference and return by address 按引用返回和按地址返回
+
+在之前的课程中，我们讨论了当按值传递参数时，参数的副本会被复制到函数的参数中。对于基本类型（复制成本低），这没有问题。但对于类类型（如 `std::string`），复制通常代价高昂。我们可以通过使用按（const）引用传递（或按地址传递）来避免昂贵的复制。
+
+当按值返回时，我们遇到了类似的情况：返回值的副本被传递回调用者。如果函数的返回类型是类类型，这可能会很昂贵（消耗性能）。
+
+```cpp
+std::string returnByValue(); // 返回一个 std::string 的副本（开销大）
+```
+## 按引用返回
+
+当我们将类类型传递回调用者时，我们可能（或可能不）希望按引用返回。**按引用返回** 返回一个绑定到被返回对象的引用，从而避免了对返回值的复制。要按引用返回，我们只需将函数的返回值定义为引用类型：
+
+```cpp
+std::string&       returnByReference();       // 返回现有 std::string 的引用（开销小）
+const std::string& returnByReferenceToConst(); // 返回现有 std::string 的 const 引用（开销小）
+```
+
+下面的示例程序演示了按引用返回：
+
+```cpp
+#include <iostream>
+#include <string>
+
+const std::string& getProgramName() // 返回一个 const 引用
+{
+    static const std::string s_programName { "Calculator" }; // 具有静态持续时间，在程序结束时销毁
+
+    return s_programName;
+}
+
+int main()
+{
+    std::cout << "This program is named " << getProgramName();
+
+    return 0;
+}
+```
+
+该程序将打印：
+
+``` plaintext
+This program is named Calculator
+```
+
+因为 `getProgramName()` 返回一个 const 引用，当执行 `return s_programName` 时，`getProgramName()` 将返回对 `s_programName` 的 const 引用（因此避免了复制）。然后，调用者可以使用该 const 引用来访问 `s_programName` 的值，并打印出来。
+## 按引用返回的对象在函数返回后必须存在
+
+使用按引用返回有一个主要的注意事项：程序员必须确保被引用的对象在返回引用的函数之后仍然存在。否则，返回的引用将成为悬空引用（引用一个已被销毁的对象），使用该引用将导致未定义的行为。
+
+在上述程序中，因为 `s_programName` 具有静态持续时间，它将一直存在到程序结束。当 `main()` 访问返回的引用时，实际上是在访问 `s_programName`，这是可以的，因为 `s_programName` 直到程序结束时才会被销毁。
+
+现在，让我们修改上述程序，展示当我们的函数返回一个悬空引用时会发生什么：
+
+```cpp
+#include <iostream>
+#include <string>
+
+const std::string& getProgramName()
+{
+    const std::string programName { "Calculator" }; // 现在是非静态的局部变量，函数结束时销毁
+
+    return programName;
+}
+
+int main()
+{
+    std::cout << "This program is named " << getProgramName(); // 未定义行为
+
+    return 0;
+}
+```
+
+该程序的结果是未定义的。当 `getProgramName()` 返回时，返回了绑定到局部变量 `programName` 的引用。然后，由于 `programName` 是具有自动持续时间的局部变量，在函数结束时被销毁。这意味着返回的引用现在是悬空的，在 `main()` 函数中使用 `programName` 将导致未定义行为。
+
+现代编译器如果你试图按引用返回局部变量，会产生警告或错误（所以上述程序可能甚至无法编译），但编译器有时难以检测更复杂的情况。
+
+> [!warning] 警告 warning
+> 
+> 按引用返回的对象必须在返回引用的函数作用域之外继续存在，否则将导致悬空引用。**切勿**按引用返回（非静态）局部变量或临时对象。
+## 生命周期延长在函数边界之外不起作用
+
+让我们看一个按引用返回临时对象的例子：
+
+```cpp
+#include <iostream>
+
+const int& returnByConstReference()
+{
+    return 5; // 返回对临时对象的 const 引用
+}
+
+int main()
+{
+    const int& ref { returnByConstReference() };
+
+    std::cout << ref; // 未定义行为
+
+    return 0;
+}
+```
+
+在上述程序中，`returnByConstReference()` 返回一个整数字面值，但函数的返回类型是 `const int&`。这导致创建并返回一个绑定到值为 5 的临时对象的临时引用。这个返回的引用被复制到调用者作用域中的临时引用中。然后，临时对象超出作用域，导致调用者作用域中的临时引用悬空。
+
+当调用者作用域中的临时引用绑定到 const 引用变量 `ref`（在 `main()` 中）时，延长临时对象的生命周期已经太晚了——因为它已经被销毁了。因此，`ref` 是一个悬空引用，使用 `ref` 的值将导致未定义行为。
+
+这里有一个不太明显但同样不起作用的例子：
+
+```cpp
+#include <iostream>
+
+const int& returnByConstReference(const int& ref)
+{
+    return ref;
+}
+
+int main()
+{
+    // 情况 1：直接绑定
+    const int& ref1 { 5 }; // 延长生命周期
+    std::cout << ref1 << '\n'; // 正常
+
+    // 情况 2：间接绑定
+    const int& ref2 { returnByConstReference(5) }; // 绑定到悬空引用
+    std::cout << ref2 << '\n'; // 未定义行为
+
+    return 0;
+}
+```
+
+在情况 2 中，创建了一个临时对象来保存值 `5`，函数参数 `ref` 绑定到它。函数只是将这个引用返回给调用者，调用者然后使用该引用初始化 `ref2`。由于这不是对临时对象的直接绑定（因为引用通过函数传递），生命周期延长不适用。这使得 `ref2` 悬空，随后使用它会导致未定义行为。
+
+> [!warning] 警告
+> 
+> 引用的生命周期延长不适用于跨越函数边界的情况。
+## 不要按引用返回非 const 的静态局部变量
+
+在上面最一开始的示例中，我们按引用返回了一个 const 静态局部变量，以简单说明按引用返回的机制。然而，按引用返回非 const 的静态局部变量是相当不常用的(non-idiomatic)，通常应避免。下面是一个简化的例子，说明可能发生的此类问题：
+
+```cpp
+#include <iostream>
+#include <string>
+
+const int& getNextId()
+{
+    static int s_x{ 0 }; // 注意：变量是非 const 的
+    ++s_x; // 生成下一个 id
+    return s_x; // 并返回对它的引用
+}
+
+int main()
+{
+    const int& id1 { getNextId() }; // id1 是一个引用
+    const int& id2 { getNextId() }; // id2 是一个引用
+
+    std::cout << id1 << id2 << '\n';
+
+    return 0;
+}
+```
+
+该程序打印：
+
+``` plaintext
+22
+```
+
+这是因为 `id1` 和 `id2` 引用的是同一个对象（静态变量 `s_x`），因此当任何东西（例如 `getNextId()`）修改了该值时，所有的引用现在都访问修改后的值。
+
+上述例子可以通过将 `id1` 和 `id2` 设为普通变量（而不是引用）来修正，这样它们保存返回值的副本，而不是对 `s_x` 的引用。
+
+> [!info] For advanced readers 给高级读者
+> 这里有另一个不太明显的同样问题的例子：
+> 
+> ```cpp
+> 
+> std::string& getName()
+> {
+>     static std::string s_name{};
+>     std::cout << "Enter a name: ";
+>     std::cin >> s_name;
+>     return s_name;
+> }
+> 
+> void printFirstAlphabetical(std::string_view s1, std::string_view s2)
+> {
+>     if (s1 < s2)
+>         std::cout << s1 << " comes before " << s2 << '\n';
+>     else
+>         std::cout << s2 << " comes before " << s1 << '\n';
+> }
+> 
+> int main()
+> {
+>     printFirstAlphabetical(getName(), getName());
+> 
+>     return 0;
+> }
+> ```
+> 
+> 这是该程序一次运行的结果：
+> 
+> ``` plaintext
+> Enter a name: Dave
+> Enter a name: Stan
+> Stan comes before Stan
+> ```
+> 
+> 在此示例中，`getName()` 返回对静态局部变量 `s_name` 的引用。使用对 `s_name` 的引用初始化 `std::string_view`，会使该 `std::string_view` 查看 `s_name`（而不是复制它）。
+> 
+> 因此，`s1` 和 `s2` 最终都是 `s_name`（它被赋予了我们输入的最后一个名字）。
+
+另一个经常出现在按引用返回非 const 静态局部变量的程序中的问题是，没有标准化的方法将 `s_x` 重置为默认状态。这样的程序必须使用非常规的解决方案（例如重置函数参数），或者只能通过退出并重新启动程序来重置。
+
+> [!tip] 最佳实践 Best practice
+> 避免按引用返回非 const 的静态局部变量。
+
+如果按引用返回的局部变量创建和/或初始化代价高昂，有时会返回对 **const** 静态局部变量的 const 引用（这样我们就不必在每次函数调用时重新创建变量）。但这很少见。
+
+有时也会返回对 **const** 全局变量的 const 引用，作为封装对全局变量访问的一种方式。我们在 [[Chapter 7 - Scope, Duration, and Linkage#7.8 Why (non-const) global variables are evil|7.8 —— 为什么（非 const）全局变量是有害的]] 中讨论了这一点。如果你明确自己的意图并且小心地使用时，这也是可以的。
+## 使用返回的引用为普通变量赋值/初始化会进行复制
+
+如果一个函数返回一个引用，并且该引用用于初始化或赋值给一个非引用变量，则返回值将被复制（就像它是按值返回的一样）。
+
+```cpp
+#include <iostream>
+#include <string>
+
+const int& getNextId()
+{
+    static int s_x{ 0 };
+    ++s_x;
+    return s_x;
+}
+
+int main()
+{
+    const int id1 { getNextId() }; // id1 现在是普通变量，接收从 getNextId() 按引用返回值的副本
+    const int id2 { getNextId() }; // id2 现在是普通变量，接收从 getNextId() 按引用返回值的副本
+
+    std::cout << id1 << id2 << '\n';
+
+    return 0;
+}
+```
+
+在上述示例中，`getNextId()` 返回一个引用，但 `id1` 和 `id2` 是非引用变量。在这种情况下，返回引用的值被复制到普通变量中。因此，该程序打印：
+
+``` plaintext
+12
+```
+
+另外，请注意，如果程序返回一个悬空引用，引用在复制之前就已经悬空，这将导致未定义行为：
+
+```cpp
+#include <iostream>
+#include <string>
+
+const std::string& getProgramName() // 将返回一个 const 引用
+{
+    const std::string programName{ "Calculator" };
+
+    return programName;
+}
+
+int main()
+{
+    std::string name { getProgramName() }; // 复制一个悬空引用
+    std::cout << "This program is named " << name << '\n'; // 未定义行为
+
+    return 0;
+}
+```
+## 按引用返回引用参数是可以的
+
+在许多情况下，按引用返回对象是有意义的，我们将在后续课程中遇到许多这样的例子。然而，现在有一个有用的例子我们可以展示。
+
+如果一个参数通过引用传递给函数，那么按引用返回该参数是安全的。这是有道理的：为了将参数传递给函数，参数必须存在于调用者的作用域中。当被调用函数返回时，该对象仍然必须存在于调用者的作用域中。
+
+下面是这样一个函数的简单示例：
+
+```cpp
+#include <iostream>
+#include <string>
+
+// 接受两个 std::string 对象，返回按字母顺序排列第一个
+const std::string& firstAlphabetical(const std::string& a, const std::string& b)
+{
+    return (a < b) ? a : b; // 我们可以对 std::string 使用 operator< 来确定按字母顺序哪个在前
+}
+
+int main()
+{
+    std::string hello { "Hello" };
+    std::string world { "World" };
+
+    std::cout << firstAlphabetical(hello, world) << '\n';
+
+    return 0;
+}
+```
+
+这将打印：
+
+``` plaintext
+Hello
+```
+
+在上述函数中，调用者通过 const 引用传入两个 `std::string` 对象，按字母顺序排列在前的那个字符串通过 const 引用传回。如果我们使用按值传递和按值返回，我们将创建多达 3 个 `std::string` 的副本（每个参数一个，返回值一个）。通过使用按引用传递/按引用返回，我们可以避免这些复制。
+## 按 const 引用返回通过 const 引用传递的右值是可以的
+
+当 const 引用参数的实参是右值时，按 const 引用返回该参数仍然是可以的。
+
+这是因为右值直到它们被创建的完整表达式结束时才会被销毁。
+
+首先，让我们看一下这个例子：
+
+```cpp
+#include <iostream>
+#include <string>
+
+std::string getHello()
+{
+    return std::string{"Hello"};
+}
+
+int main()
+{
+    const std::string s{ getHello() };
+
+    std::cout << s;
+
+    return 0;
+}
+```
+
+在这种情况下，`getHello()` 按值返回一个 `std::string`，这是一个右值。然后，这个右值被用于初始化 `s`。在 `s` 初始化之后，创建右值的表达式已经评估完毕，右值被销毁。
+
+现在让我们看看这个类似的例子：
+
+```cpp
+#include <iostream>
+#include <string>
+
+const std::string& foo(const std::string& s)
+{
+    return s;
+}
+
+std::string getHello()
+{
+    return std::string{"Hello"};
+}
+
+int main()
+{
+    const std::string s{ foo(getHello()) };
+
+    std::cout << s;
+
+    return 0;
+}
+```
+
+在这种情况下，唯一的区别是右值通过 const 引用传递给 `foo()`，然后按 const 引用返回给调用者，然后用于初始化 `s`。其他一切都相同。
+
+我们在 [[Chapter 14 - Introduction to Classes#14.6 Access functions|14.6 —— 访问函数]] 中讨论了类似的情况。
+## 调用者可以通过引用修改返回的值
+
+当参数通过非 const 引用传递给函数时，函数可以使用该引用修改参数的值。
+
+同样，当函数返回一个非 const 引用时，调用者可以使用该引用修改返回的值。
+
+阅读下面的程序：
+
+```cpp
+#include <iostream>
+
+// 通过非 const 引用传入两个整数，按引用返回较大的一个
+int& max(int& x, int& y)
+{
+    return (x > y) ? x : y;
+}
+
+int main()
+{
+    int a{ 5 };
+    int b{ 6 };
+
+    max(a, b) = 7; // 将 a 或 b 中较大的一个设为 7
+
+    std::cout << a << b << '\n';
+
+    return 0;
+}
+```
+
+在上述程序中，`max(a, b)` 使用 `a` 和 `b` 作为参数调用 `max()` 函数。引用参数 `x` 绑定到参数 `a`，引用参数 `y` 绑定到参数 `b`。然后，函数确定 `x`（`5`）和 `y`（`6`）中哪个更大。在这种情况下，是 `y`，所以函数将 `y`（仍然绑定到 `b`）返回给调用者。然后，调用者将值 `7` 赋给这个返回的引用。
+
+因此，表达式 `max(a, b) = 7` 实际上等同于 `b = 7`。
+
+这将打印：
+
+``` plaintext
+57
+```
+## 按地址返回
+
+**按地址返回** 与按引用返回几乎相同，只是返回的是对象的指针而不是对象的引用。按地址返回与按引用返回有相同的主要注意事项——按地址返回的对象必须在返回地址的函数作用域之外继续存在，否则调用者将收到一个悬空指针。
+
+按地址返回相对于按引用返回的主要优势是，如果没有有效的对象可返回，我们可以让函数返回 `nullptr`。例如，假设我们有一个要搜索的学生列表。如果我们在列表中找到我们正在寻找的学生，我们可以返回表示匹配学生的对象的指针。如果我们没有找到任何匹配的学生，我们可以返回 `nullptr` 来表示未找到匹配的学生对象。
+
+按地址返回的主要缺点是，调用者必须记得在解引用返回值之前进行 `nullptr` 检查，否则可能发生空指针解引用，导致未定义行为。由于这种危险，除非需要返回“无对象”的能力，否则应优先使用按引用返回而非按地址返回。
+
+> [!tip] 最佳实践 Best Practice
+> 
+> 除了返回"无对象 `nullptr`"的很有必要的情形，其他情形下应优先使用按引用返回而非按地址返回。
+
+> [!info] 相关内容 Related content
+
+请参见 [[Chapter 5 - Constants and Strings#5.11 `std string_view` (part 2)|5.11 —— std::string_view（第二部分）]] 中快速指南部分以了解何时返回 `std::string_view` 与 `const std::string&`。
+# 12.13 - In and out parameters 输入参数和输出参数
+
+函数和其调用者通过两种机制进行通信：参数和返回值。当函数被调用时，调用者提供实参，函数通过其参数接收这些实参。这些参数可以通过值、引用或地址传递。
+
+通常，我们会按值或按 const 引用传递参数。但有时我们可能需要采用其他方式。
+## 输入参数
+
+在大多数情况下，函数参数仅用于从调用者那里接收输入。仅用于接收调用者输入的参数有时称为**输入参数（in parameter）**。
+
+```cpp
+#include <iostream>
+
+void print(int x) // x 是一个输入参数
+{
+    std::cout << x << '\n';
+}
+
+void print(const std::string& s) // s 是一个输入参数
+{
+    std::cout << s << '\n';
+}
+
+int main()
+{
+    print(5);
+    std::string s { "Hello, world!" };
+    print(s);
+
+    return 0;
+}
+```
+
+输入参数通常通过值或 const 引用传递。
+## 输出参数
+
+通过（非 const）引用（或地址）传递的函数参数允许函数修改作为参数传递的对象的值。这为函数提供了一种方式，将数据返回给调用者，在某些情况下使用返回值不足以满足需求。
+
+仅用于将信息返回给调用者的函数参数称为**输出参数（out parameter）**。
+
+例如：
+
+```cpp
+#include <cmath>    // 为了使用 std::sin() 和 std::cos()
+#include <iostream>
+
+// sinOut 和 cosOut 是输出参数
+void getSinCos(double degrees, double& sinOut, double& cosOut)
+{
+    // sin() 和 cos() 接受的是弧度而不是度数，所以我们需要转换
+    constexpr double pi { 3.14159265358979323846 }; // π 的值
+    double radians = degrees * pi / 180.0;
+    sinOut = std::sin(radians);
+    cosOut = std::cos(radians);
+}
+
+int main()
+{
+    double sin { 0.0 };
+    double cos { 0.0 };
+
+    double degrees{};
+    std::cout << "Enter the number of degrees: ";
+    std::cin >> degrees;
+
+    // getSinCos 将把 sin 和 cos 的值返回到变量 sin 和 cos 中
+    getSinCos(degrees, sin, cos);
+
+    std::cout << "The sin is " << sin << '\n';
+    std::cout << "The cos is " << cos << '\n';
+
+    return 0;
+}
+```
+
+该函数有一个参数 `degrees`（其实参通过值传递）作为输入，并通过引用“返回”两个参数作为输出。
+
+我们在输出参数的名称后加上后缀“Out”以表示它们是输出参数。这有助于提醒调用者：这些参数传入的初始值无关紧要，应该预知它们会被覆盖。按照惯例，输出参数通常放在最右边的参数位置。
+
+让我们更详细地探讨其工作原理。首先，主函数创建了局部变量 `sin` 和 `cos`。它们通过引用（而不是值）传递给函数 `getSinCos()`。这意味着函数 `getSinCos()` 可以访问 `main()` 中实际的 `sin` 和 `cos` 变量，而不仅仅是它们的副本。`getSinCos()` 相应地给 `sinOut` 和 `cosOut`（分别对应 `sin` 和 `cos` 的引用）赋予新值，覆盖了 `sin` 和 `cos` 中的旧值。然后，`main()` 函数打印这些更新后的值。
+
+如果 `sin` 和 `cos` 是通过值而不是引用传递的，`getSinCos()` 将修改 `sin` 和 `cos` 的副本，导致在函数结束时任何更改都会被丢弃。但由于 `sin` 和 `cos` 是通过引用传递的，对 `sin` 或 `cos`（通过引用）的任何更改都将在函数之外保留。因此，我们可以使用这种机制将值返回给调用者。
+
+> [!info] 顺便说一下 As an aside…
+
+[StackOverflow 上的这个回答](https://stackoverflow.com/a/9779765) 是一篇有趣的阅读材料。它解释了为什么非 const 左值引用不能绑定到右值/临时对象（因为隐式类型转换在与输出参数结合使用时会产生意想不到的行为）。
+## 输出参数的语法不够自然
+
+虽然输出参数功能上可行，但有一些缺点。
+
+首先，调用者必须实例化（并初始化）对象并将其作为参数传递，即使它并不打算使用它们。这些对象必须是可赋值的，这意味着它们不能被声明为 const。
+
+其次，因为调用者必须传入对象，这些值不能作为临时对象，或在单个表达式中轻松使用。
+
+下面的示例代码展示了这些缺点：
+
+```cpp
+#include <iostream>
+
+int getByValue()
+{
+    return 5;
+}
+
+void getByReference(int& x)
+{
+    x = 5;
+}
+
+int main()
+{
+    // 按值返回
+    [[maybe_unused]] int x{ getByValue() }; // 可用于初始化对象
+    std::cout << getByValue() << '\n';      // 可在表达式中使用临时返回值
+
+    // 通过输出参数返回
+    int y{};                // 必须首先分配一个可赋值的对象
+    getByReference(y);      // 然后传递给函数以赋予所需的值
+    std::cout << y << '\n'; // 然后才能使用该值
+
+    return 0;
+}
+```
+
+如你所见，使用输出参数的语法有点不自然。
+## 通过引用的输出参数修改值不明显
+
+当我们将函数的返回值赋给一个对象时，很明显对象的值正在被修改：
+
+```cpp
+x = getByValue(); // 很明显 x 正在被修改
+```
+
+这很好，因为它清楚地表明我们应该预期 `x` 的值会发生变化。
+
+然而，让我们再次看看上面示例中对 `getSinCos()` 的函数调用：
+
+```cpp
+getSinCos(degrees, sin, cos);
+```
+
+从这个函数调用中，并不清楚 `degrees` 是一个输入参数，而 `sin` 和 `cos` 是输出参数。如果调用者没有意识到 `sin` 和 `cos` 将被修改，可能会导致语义错误。
+
+在某些情况下，使用按地址传递而不是按引用传递可以帮助使输出参数更加明显，因为它要求调用者将对象的地址作为参数传递。
+
+考虑以下示例：
+
+```cpp
+void foo1(int x);  // 按值传递
+void foo2(int& x); // 按引用传递
+void foo3(int* x); // 按地址传递
+
+int main()
+{
+    int i{};
+
+    foo1(i);  // 不能修改 i
+    foo2(i);  // 可以修改 i（不明显）
+    foo3(&i); // 可以修改 i
+
+    int* ptr { &i };
+    foo3(ptr); // 可以修改 i（不明显）
+
+    return 0;
+}
+```
+
+注意在调用 `foo3(&i)` 时，我们必须传入 `&i` 而不是 `i`，这有助于更清楚地表明我们应该预期 `i` 会被修改。
+
+然而，这并非万无一失，因为 `foo3(ptr)` 允许 `foo3()` 修改 `i`，并且不要求调用者对 `ptr` 取地址。
+
+调用者还可能认为他们可以传入 `nullptr` 或空指针作为有效参数，而这是不允许的。而且函数现在需要进行空指针检查和处理，这增加了复杂性。这种需要额外的空指针处理通常会导致比坚持使用按引用传递更多的问题。
+
+出于所有这些原因，除非没有其他好的选项，否则应避免使用输出参数。
+
+> [!tip] 最佳实践 Best practice
+> 
+> 避免使用输出参数（除非在极少数情况下没有更好的选择）。
+> 
+> 对于非可选的输出参数，优先使用按引用传递。
+## 输入/输出参数
+
+在极少数情况下，函数实际上会在覆盖其值之前使用输出参数的值。这种参数称为**输入/输出参数（in-out parameter）**。输入/输出参数的工作方式与输出参数完全相同，并且问题也相同。
+## 何时使用非 const 引用传递
+
+如果你打算通过引用传递以避免复制参数的副本，你基本上都应该通过 const 引用传递。
+
+> [!note] 作者注 Author’s note
+> 
+> 在以下示例中，我们将使用 `Foo` 来表示我们关心的某种类型。目前，你可以将 `Foo` 想象为你选择的类型的别名（例如 `std::string`）。
+
+然而，有两种主要情况，非 const 引用传递可能是更好的选择。
+
+首先，当参数是输入/输出参数时，使用非 const 引用传递。由于我们已经传入了我们需要返回的对象，直接修改该对象通常更直接和高效。
+
+```cpp
+void someFcn(Foo& inout)
+{
+    // 修改 inout
+}
+
+int main()
+{
+    Foo foo{};
+    someFcn(foo); // 调用后 foo 被修改，可能不明显
+
+    return 0;
+}
+```
+
+为函数起一个好名字有所帮助：
+
+```cpp
+void modifyFoo(Foo& inout)
+{
+    // 修改 inout
+}
+
+int main()
+{
+    Foo foo{};
+    modifyFoo(foo); // 调用后 foo 被修改，稍微更明显
+
+    return 0;
+}
+```
+
+另一种选择是按照常规方式通过值或 const 引用传递对象，并按值返回一个新对象，调用者然后可以将其赋回原始对象：
+
+```cpp
+Foo someFcn(const Foo& in)
+{
+    Foo foo { in }; // 这里进行复制
+    // 修改 foo
+    return foo;
+}
+
+int main()
+{
+    Foo foo{};
+    foo = someFcn(foo); // 明确表明 foo 被修改，但这里又进行了复制
+
+    return 0;
+}
+```
+
+这具有使用更常规的返回语法的优点，但需要进行 2 次额外的复制（有时编译器可以优化掉其中一次复制）。
+
+其次，当函数需要将对象按值返回给调用者，但复制该对象的成本非常高昂时，使用非 const 引用传递。特别是当函数在性能关键的代码段中被多次调用时。
+
+```cpp
+void generateExpensiveFoo(Foo& out)
+{
+    // 修改 out
+}
+
+int main()
+{
+    Foo foo{};
+    generateExpensiveFoo(foo); // 调用后 foo 被修改
+
+    return 0;
+}
+```
+
+> [!info] 给高级读者 For advanced readers
+> 
+> 上述方法最常见的例子是，当函数需要用数据填充一个大的 C 风格数组或 `std::array`，且数组具有复制成本高昂的元素类型时。我们将在后续章节中讨论数组。
+
+尽管如此，对象很少昂贵到值得采用如此不常用的方法来返回这些对象。
 # 12.14 Type deduction with pointers, references, and const
 # 12.15 `std::optional`
 # 12.x Chapter 12 summary and quiz
