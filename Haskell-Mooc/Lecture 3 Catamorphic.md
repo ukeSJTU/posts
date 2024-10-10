@@ -516,43 +516,43 @@ whatFollows c k = map tail . filter ((==[c]) . take 1) . map (take (k+1)) . tail
 ```
 
 这是一种比较极端的函数版本，但在适当的情况下，使用这些技巧可以使代码更易读。
-## 3.7 More Functional List Wrangling Examples
+## 3.7 更多列表函数式编程示例
 
-Here are some more examples of functional programming with lists. Let’s start by introducing a couple of new list functions:
+这里有一些关于列表的函数式编程示例。我们先介绍几个新的列表函数：
 
-```
-takeWhile :: (a -> Bool) -> [a] -> [a]   -- take elements from a list as long as they satisfy a predicate
-dropWhile :: (a -> Bool) -> [a] -> [a]   -- drop elements from a list as long as they satisfy a predicate
+``` haskell
+takeWhile :: (a -> Bool) -> [a] -> [a]   -- 从列表中获取满足谓词（判断条件）的元素
+dropWhile :: (a -> Bool) -> [a] -> [a]   -- 从列表中丢弃满足谓词（判断条件）的元素
 ```
 
-```
+``` haskell
 takeWhile even [2,4,1,2,3]   ==> [2,4]
 dropWhile even [2,4,1,2,3]   ==> [1,2,3]
 ```
 
-There’s also the function `elem`, which can be used to check if a list contains an element:
+还有一个 `elem` 函数，可以用来检查列表中是否包含某个元素：
 
-```
+``` haskell
 elem 3 [1,2,3]   ==> True
 elem 4 [1,2,3]   ==> False
 ```
 
-Using these, we can implement a function `findSubstring` that finds the earliest and longest substring in a string that consist only of the given characters.
+使用这些函数，我们可以实现一个 `findSubstring` 函数，找到字符串中只包含指定字符的最早和最长的子字符串。
 
-```
+``` haskell
 findSubstring :: String -> String -> String
 findSubstring chars = takeWhile (\x -> elem x chars)
                       . dropWhile (\x -> not $ elem x chars)
 ```
 
-```
+``` haskell
 findSubstring "a" "bbaabaaaab"              ==> "aa"
 findSubstring "abcd" "xxxyyyzabaaxxabcd"    ==> "abaa"
 ```
 
-The function `zipWith` lets you combine two lists element-by-element:
+`zipWith` 函数可以让你将两个列表的元素逐一组合：
 
-```
+``` haskell
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 ```
 
