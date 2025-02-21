@@ -180,3 +180,5 @@ This is a template guide for actual methods of syncing dotfiles
 
 - **Q**：如何避免在不同设备上 `stow` 出现冲突？
   - **A**：确保在每台设备上保持一致的符
+
+
