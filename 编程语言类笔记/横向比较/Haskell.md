@@ -1,3 +1,7 @@
+```haskell
+main :: IO ()
+main = putStrLn "Hello Haskell"
+```
 ## 1. 基础语法结构
 
 ### 1.1 程序入口

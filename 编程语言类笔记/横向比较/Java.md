@@ -1,3 +1,10 @@
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello Java");
+    }
+}
+```
 ## 1. 基础语法结构
 
 ### 1.1 程序入口

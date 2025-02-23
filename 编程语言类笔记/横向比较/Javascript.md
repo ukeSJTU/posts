@@ -1,3 +1,6 @@
+```javascript
+console.log("Hello JavaScript");
+```
 ## 1. 基础语法结构
 
 ### 1.1 程序入口

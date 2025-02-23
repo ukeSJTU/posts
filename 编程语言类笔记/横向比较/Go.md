@@ -1,3 +1,12 @@
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello Go")
+}
+```
 ## 1. 基础语法结构
 
 ### 1.1 程序入口
