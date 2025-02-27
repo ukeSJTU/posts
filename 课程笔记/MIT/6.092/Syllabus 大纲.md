@@ -1,3 +1,17 @@
+
+
+补充一些我自己的理解
+
+总共七个课程，每个课程都公布了lecture note。每个lecture最后有一个练习题，会在下个lecture最一开始讲解答案。
+
+这门课程从整体上是一个给编程初学者想要将Java作为自己入门编程语言的人看的，整体难度偏低，适合快速了解Java，后续如果想要提高Java水平需要其他辅助教程。但是MIT没有公布这个课程的视频，因此初学者光看pdf可能会学得云里雾里，我的课程笔记就是自己在学习的过程中，按照原本教程的顺序，补充了文字，使得初学者能够比较顺畅的学完整个教程。
+
+如果你有其他编程语言的基础，那么可以尝试直接做assignmen，如果有不会的再看课程具体内容，效率更高。
+
+---
+
+下面的是直接拷贝的课程大纲，需要翻译。
+
 ### Description
 
 This course is an introduction to software engineering, using the Java™ programming language. It covers concepts useful to 6.005. Students will learn the fundamentals of Java. The focus is on developing high quality, working software that solves real problems.
@@ -61,3 +75,10 @@ Mac OS X comes with the Java development tools. Run Software Update to ensure th
 ### Linux
 
 If you are using Linux, you probably don’t need our help to get Java and Eclipse running yourself. If you do need help, ask one of the instructors during the first lecture.
+
+
+---
+
+
+
+

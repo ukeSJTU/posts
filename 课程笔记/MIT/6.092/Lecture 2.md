@@ -281,3 +281,196 @@ Methods: Building Blocks
 - Methods can be individually developed
 - User of method does not need to know how it works
 - In CS, this is called "abstraction"
+
+Mathematical Functions
+```java
+Math.sin(x)
+Math.cos(Math.PI / 2)
+Math.pow(2, 3)
+Math.log(Math.log(x+y))
+```
+
+Conditionals
+if statement
+```java
+if(CONDITION) {
+	STATEMENTS
+}
+```
+
+example code
+```java
+class Condition {
+    public static void test(int x) {
+        if(x > 5) {
+            System.out.println(x + " is > 5");
+        }
+    }
+    public static void main(String[] args) {
+        test(6);
+        test(5);    
+        test(4);
+    }
+}
+```
+
+Comparison operators
+```
+x > y: x is greater than y
+x < y: x is less than y
+x >= y: x is greater than or equal to x
+x <= y: x is less than or equal to y
+x == y: x equals y
+```
+Notice that: `==` means equality, `=` means assignment.
+
+Boolean operators
+`&&`: logical AND
+`||`: logical OR
+
+```java
+if(x>6) {
+	if(x<9) {
+		...
+	}
+}
+```
+
+is equivalent to:
+```java
+if(x>6 && x<9) {
+	...
+}
+```
+
+else statement
+```java
+if(CONDITION) {
+	STATEMENTS
+} else {
+	STATEMENTS
+}
+```
+
+example code:
+```java
+class Condition2 {
+    public static void test(int x) {
+        if(x > 5) {
+            System.out.println(x + " is > 5");
+        } else {
+            System.out.println(x + " is not > 5");
+        }
+    }
+    public static void main(String[] args) {
+        test(6);
+        test(5);    
+        test(4);
+    }
+}
+```
+
+else if statement
+```java
+if (CONDITION) {
+	STATEMENTS
+} else if(CONDITION) {
+	STATEMENTS
+} else if (CONTIDION) {
+	STATEMENTS
+} else {
+	STATEMENTS
+}
+```
+
+example code:
+```java
+class Condition3 {
+    public static void test(int x) {
+        if (x > 5) {
+            System.out.println(x + " is > 5");
+        } else if (x == 5) {
+            System.out.println(x + " squals 5");
+        } else {
+            System.out.println(x + " is < 5");
+        }
+    }
+
+    public static void main(String[] args) {
+        test(6);
+        test(5);
+        test(4);
+    }
+}
+```
+
+Q&A: just leave an empty section here for now.
+
+Assignment: FooCorporation
+Foo Corporation needs a program to calculate how much to pay their hourly employees. The US Department of Labor
+
+requires that employees get paid time and a half for any hours over 40 that they work in a single week. For example, if an
+
+employee works 45 hours, they get 5 hours of overtime, at 1.5 times their base pay. The State of Massachusetts requires
+
+that hourly employees be paid at least $8.00 an hour. Foo Corp requires that an employee not work more than 60 hours in
+
+a week.
+
+An employee gets paid (hours worked) × (base pay), for each hour up to 40 hours.
+
+For every hour over 40, they get overtime = (base pay) × 1.5.
+
+The base pay must not be less than the minimum wage ($8.00 an hour). If it is, print an error.
+
+If the number of hours is greater than 60, print an error message.
+
+Create a new class called FooCorporation.
+
+Write a method that takes the base pay and hours worked as parameters, and prints the total pay or an error. Write a main
+
+method that calls this method for each of these employees:
+
+**Base Pay Hours Worked**
+
+Employee 1 $7.50 35
+
+Employee 2 $8.20 47
+
+Employee 3 $10.00 73
+
+Submit your FooCorporation.java file via Stellar.
+
+Do _not_ try to write the entire program in one go. It is much easier to write a small piece and test it, then write another
+
+small piece and test it. For example, start by writing just a skeleton of your method and your main program. Then add the
+
+code to do the normal salary computation, without any special rules. Then add each additional rule, one at a time. You
+
+should test your program with simple test inputs to check that you handle each case.
+
+Good luck!
+
+Below is some supplementary
+Conversion by method
+`int` to `sSTring`
+```java
+String five = 5; // EERROR!
+String five = Integer.toString(5); // OK!
+String five = "" + 5; // five="5"
+```
+
+`String` to `int`
+```java
+int foo = "18"; // ERROR!
+int foo = Integer.parseInt("18"); // OK!
+```
+
+Comparison operators
+Do NOT call `==` on doubles! EVER!
+```java
+double a = Math.cos(Math.PI / 2);
+double b = 0.0;
+```
+
+`a==b` will return FALSE.T
