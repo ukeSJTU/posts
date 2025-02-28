@@ -544,7 +544,7 @@ Create a class called Library. Copy and paste the skeleton below. We provide a m
 Notes:
 
 - Some methods will need to be static methods, and some need to be instance methods.
-- Be careful when comparing Strings objects. Use string1.equals(string2) for comparing the contents of string1 and string2.
+- Be careful when comparing Strings objects. Use `string1.equals(string2)` for comparing the contents of `string1` and `string2`.
 - You should get a small part working at a time. Start by commenting the entire main method, then uncomment it line by line. Run the program, get the first lines working, then uncomment the next line, get that working, etc. You can comment a block of code in Eclipse by selecting the code, then choosing Source → Toggle Comment. Do the same again to uncomment it.
 - You must not modify the main method.
 
