@@ -1,3 +1,7 @@
+Banner Image Description: _A conceptual diagram of Java class organization: a package represented as a folder containing multiple classes, padlock icons illustrating access control levels (public, private, protected), and a simple Java API book or document icon._
+
+---
+
 Access Control, Class Scope, Packages, Java API
 
 Review

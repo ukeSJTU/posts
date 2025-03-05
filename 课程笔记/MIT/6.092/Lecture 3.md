@@ -1,3 +1,8 @@
+Banner Image Description: _A visual concept of looping and arrays: a for-loop illustrated as a circular arrow, an array represented as a row of connected labeled boxes, and a simple flow representation of repeating steps._
+
+---
+
+
 Loops, Arrays
 
 Assignment 2 Review

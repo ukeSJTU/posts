@@ -1,3 +1,8 @@
+Banner Image Description: _A simple illustration of Java programming essentials: a variable represented by a labeled box, different data types symbolized by basic icons (e.g., a number, a character, a boolean), and mathematical operators (+, -, _, /) in a balanced composition._
+
+---
+
+
 Types, variables, Operators
 
 Goal is to learn enough Java to do something useful.

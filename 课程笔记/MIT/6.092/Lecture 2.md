@@ -1,3 +1,8 @@
+Banner Image Description: _An abstract representation of Java programming concepts: a method as a labeled block with arrows indicating input and output, a conditional branching path (if-else) splitting into two simple options, and various data type symbols arranged neatly._
+
+---
+
+
 More types, Methods, Conditionals
 Outline:
 - Lecture 1 Review

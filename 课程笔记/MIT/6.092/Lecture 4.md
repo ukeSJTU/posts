@@ -1,3 +1,8 @@
+Banner Image Description: _A clean line art illustration of object-oriented programming: a simple class blueprint on one side and multiple objects derived from it, symbolized as small connected blocks, showcasing the concept of instances and reusability_
+
+---
+
+
 Classes and Objects
 
 Solution to assignment 3.

@@ -1,3 +1,7 @@
+Banner Image Description: _An abstract composition symbolizing Java design and debugging: a structured UML-like class diagram, a magnifying glass inspecting a bug (debugging), and an interface icon represented by a plug/socket analogy._
+
+---
+
 Design, Debugging, Interfaces
 
 Review on Homework 5.
