@@ -122,11 +122,95 @@ How does Java do that?
 	6. Found it! Call `punchFace()`
 	7. Deduct hp from dude1
 - What Java does when it sees: `((Dude)grandWizard1).sayName();`
+	1. Cast to `Dude` tells Java to start looking in `Dude`
+	2. Look for `sayName()` in Dude class
+	3. Found it! Call `sayName()`
 
+What's going on?
+我们先编写了一个类叫做Dude，然后继承它并创建了Subclass of Dude: Wizard, Thief, Elf等等。随后我们还可以继承Wizard class得到Subclass of Wizard: Grand Wizard
+
+TODO：上面这个可以补充一个图片/ASCII-style art说明
+
+一个类只能继承一个类
+读者可以先简单思考一下为什么
+
+接着用上面的的例子来说明。Thief和Elf都继承Dude这个类。如果这个时候创建一个Bad Elf类同时继承了Thief和Elf，这是不可行的。因为假如Thief和Elf都实现了一个method：`public void sneakUp()`然后我们对Bad Elf的一个对象实例调用`sneakUp()`最终会调用Thief还是Elf的`sneakUp()`方法呢？Java没有办法确定。因此Java中一个类只能继承一个类。
+
+Inheritance Summary
+- class A extends B {} means that A is a subclass of B
+- A has all the fields and methods that B has
+- A can add it's own fields and methods
+- A can only have 1 parent
+- A can replace a parent's methods by re-implementing it
+- If A doesn't implement something, Java searches ancestors
+
+So much more to lean: 下面是一些补充的学习资料链接
+- [java-sun](http://java.sun.com/docs/books/tutorial/java/IandI/subclasses.html)
+- [cogeco](http://home.cogeco.ca/~ve3ll/jatutor5.htm)
+- [wikipedia](https://en.wikipedia.org/wiki/Inheritance_(computer_science)
+- [google](https://www.google.com/)
+
+TODO: 上面的链接可能需要更新/调整
 
 ---
 
 Exceptions
+
+Examples of Exceptions:
+- `NullPointerException`
+- `ArrayindexOutOfBoundsException`
+- `ClassCastException`
+- `RuntimeException`
+
+TODO: 应该为上面的四种常见Exception补充示例代码以及示例输出
+
+What is an "Exception"?
+Event that occurs when something "unexpected" happens, for example:
+- `null.someMethod();`
+- `(new int[1])[1] = 0;`
+- `int i = "string";`
+TODO: 上面的三个代码应该稍微解释一下所谓的unexpected体现在哪里。
+
+Why use an Exception?
+- To tell the code using your method that something went wrong
+例如：
+```java
+public class RuntimeException {
+    public static void main(String[] args) {
+        int array[] = new int[4];
+        System.out.println(array[5]);
+    }
+}
+```
+
+Running the program above would trigger the exception:
+```plaintext
+Exception in thread "main" 
+	java.lang.ArrayIndexOutOfBoundsException: Index 6 out of bounds for length 5
+        at RuntimeException.main(RuntimeException.java:5)
+```
+
+- Debugging and understanding control flow
+
+How do exceptions "happen"?
+Java doesn't know what to do, so it:
+- Creates an Exception object
+- Includes some useful information
+- "throws" the Exception
+
+You can create and throw Exceptions too，例如下面这样
+
+Public class Exception
+- `Exception` is a class
+- Just inherit from it!
+``` java
+public class MyException extends Exception {
+	// ... code ...
+}
+```
+- Or use existing exceptions: [java中的异常](https://rymden.nu/exceptions.html)
+
+Warn 
 
 ---
 
