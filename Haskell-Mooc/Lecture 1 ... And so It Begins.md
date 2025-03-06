@@ -1,4 +1,5 @@
 # 1.1 About the Course 关于这门课程
+
 这是一门使用 Haskell 编程语言的函数式编程在线课程。您可以按照自己的节奏学习。所有材料和练习都是公开的。
 
 本课程面向希望学习函数式编程的初学者，但也适合具有函数式编程经验并特别想学习 `Haskell` 的人。该课程假定没有先前的知识，但事先至少了解一种编程语言会使课程更容易。
@@ -8,19 +9,23 @@
 这是由两部分组成的课程的第 1 部分。第 1 部分介绍了 `Haskell` 语法和功能的基础知识。您将学习递归、高阶函数、代数数据类型和一些 Haskell 的高级功能。但是，第 1 部分将坚持使用纯函数式编程，没有副作用。`I/O` 和 `Monad` 将在第 2 部分中介绍。
 
 本课程分为 8 个讲座。它们的大小大致相同，但有些讲座的材料比其他讲座多。每组讲座以 10-30 个关于讲座主题的小型编程练习结束。
+
 # 1.2 Read These 阅读这些
+
 本课程使用的材料和补充内容：
+
 - [The course pages](https://haskell.mooc.fi/)
 - The course [channel on Telegram](https://t.me/haskell_mooc_fi)
 - The course [repository on Github](https://github.com/moocfi/haskell-mooc) contains the exercises and this material
 - Additional resources
-    - [A Gentle Introduction to Haskell](https://www.haskell.org/tutorial/) - an older and shorter tutorial, but still worth reading
-    - [Learn You a Haskell for Great Good!](http://learnyouahaskell.com/chapters) – a nice free introduction to Haskell
-    - [The Haskell School of Expression](https://www.cs.yale.edu/homes/hudak/SOE/index.htm) - slightly older but still relevant introduction to functional programming
-    - [Haskell Programming from First Principles](https://haskellbook.com/) - $59 e-book on Haskell, slow and long
-    - The IRC channel `#haskell` on [libera.chat](https://libera.chat/) is a nice place for beginners
+  - [A Gentle Introduction to Haskell](https://www.haskell.org/tutorial/) - an older and shorter tutorial, but still worth reading
+  - [Learn You a Haskell for Great Good!](http://learnyouahaskell.com/chapters) – a nice free introduction to Haskell
+  - [The Haskell School of Expression](https://www.cs.yale.edu/homes/hudak/SOE/index.htm) - slightly older but still relevant introduction to functional programming
+  - [Haskell Programming from First Principles](https://haskellbook.com/) - $59 e-book on Haskell, slow and long
+  - The IRC channel `#haskell` on [libera.chat](https://libera.chat/) is a nice place for beginners
 
 # 1.3 Haskell 语言简介
+
 Haskell 是
 
 - **函数式的 Functional**：程序的基本构建单位是函数。一个函数可以返回另一个函数或者将函数作为参数。另外，Haskell 中唯一的循环结构是递归。
@@ -34,19 +39,22 @@ Haskell 是
 在本课程中，你将了解这些术语在实践中的含义。如果其中一些现在听起来很抽象，请不要担心。
 
 另请参阅：[Haskell Wiki 关于函数式编程的](https://wiki.haskell.org/Functional_programming)页面。
+
 ## 1.3.1 Features 特性
+
 在开始正式学习之前，我们可以先看看 Haskell 中有趣的语法特性：
 
 **高阶函数 Higher-order functions** – 函数可以将函数作为参数：
 
-``` haskell
+```haskell
 map length ["abc","abcdef"]
 ```
 
 这会产生结果 `[3,6]`.
 
 **匿名函数（又名 lambda）Anonymous functions aka lambdas** – 你可以定义一次性使用的辅助函数，而无需为其命名：
-``` haskell
+
+```haskell
 filter (\x -> length x > 1) ["abc","d","ef"]
 ```
 
@@ -54,13 +62,13 @@ filter (\x -> length x > 1) ["abc","d","ef"]
 
 **部分应用 Partial application** – 你可以通过仅向另一个函数提供它需要的一些参数来定义新函数。例如，这会将列表中的所有元素乘以 3：
 
-``` haskell
+```haskell
 map (*3) [1,2,3]
 ```
 
 **代数数据类型 Algebraic datatypes** – 一种用于定义可以包含多种不同的数据类型的语法：
 
-``` haskell
+```haskell
 data Shape = Point | Rectangle Double Double | Circle Double
 ```
 
@@ -68,15 +76,15 @@ data Shape = Point | Rectangle Double Double | Circle Double
 
 **模式匹配 Pattern matching** – 根据与数据定义对应的不同情况来定义不同函数：
 
-``` haskell
+```haskell
 area Point = 0
 area (Rectangle width height) = width * height
 area (Circle radius) = 2 * pi * radius
 ```
 
-**列表 Lists** – 与许多语言不同，Haskell 具有简洁的内置列表语法。可以使用_列表推导_式从其他列表构建列表。下面是一个代码段，它从名字和姓氏的一组选项中生成偶数长度的名称：
+**列表 Lists** – 与许多语言不同，Haskell 具有简洁的内置列表语法。可以使用*列表推导*式从其他列表构建列表。下面是一个代码段，它从名字和姓氏的一组选项中生成偶数长度的名称：
 
-``` haskell
+```haskell
 [whole | first <- ["Eva", "Mike"],
          last <- ["Smith", "Wood", "Odd"],
          let whole = first ++ last,
@@ -85,13 +93,13 @@ area (Circle radius) = 2 * pi * radius
 
 这将生成这样的一个列表 `["EvaSmith","EvaOdd","MikeWood"]`。多亏了 Haskell 的 lazy 特性，我们甚至可以创建所谓的 _无限列表_：
 
-``` haskell
+```haskell
 primes = [ n | n <- [2..] , all (\k -> n `mod` k /= 0) [2..n `div` 2] ]
 ```
 
 然后可以通过计算来获得前十个素数
 
-``` haskell
+```haskell
 take 10 primes
 ```
 
@@ -100,7 +108,9 @@ take 10 primes
 **参数化类型 Parameterized types** – 您可以定义由其他类型参数化的类型。例如，`[Int]` 是 `Int`的列表，`[Bool]` 是布尔值的列表。您可以定义适用于各种列表的类型化函数，例如 `reverse` 函数的类型为 `[a] -> [a]`，这意味着它接受包含任何类型 `a` 的列表，并返回相同类型的列表。
 
 **类型类 Type classes** – 这是另一种形式的多态性，你可以根据参数的类型为函数提供不同的实现。例如，`Show` 类型类定义了可以将各种类型的值转换为字符串的函数 `show`。`Num` 类型类定义算术运算符（如 `+`），这些运算符适用于所有数字类型（`Int`、`Double`、`Complex` 等）。
+
 ## 1.3.2 History 一些历史
+
 Haskell 的简要时间表：
 
 - 1930 年代：Lambda 演算
@@ -117,7 +127,9 @@ Haskell 的简要时间表：
 - 2010 年代：GHC 开发、Haskell 平台、Haskell Stack
 
 “haskel”这个词在希伯来语中是智慧的意思，但 Haskell 编程语言的名称来自逻辑学家 Haskell Curry。Haskell 这个名字来自古挪威语单词 áss（上帝）和 ketil（头盔）。
+
 ## 1.3.3 Uses of Haskell Haskell的用途
+
 以下是一些用 Haskell 编写的软件项目示例。
 
 - [Darcs](https://en.wikipedia.org/wiki/Darcs) 分布式版本控制系统
@@ -129,7 +141,9 @@ Haskell 的简要时间表：
 
 See The Haskell Wiki and this blog post for more!
 有关更多信息，请参阅 [Haskell Wiki](https://wiki.haskell.org/Haskell_in_industry)和[此博客文章](https://serokell.io/blog/top-software-written-in-haskell)！
+
 # 1.4 Running Haskell 运行 Haskell
+
 获取 Haskell 最简单的方法是安装 `stack` 工具，参见 [https://haskellstack.org](https://haskellstack.org/)。本课程中的练习旨在与 Stack 配合使用，因此您现在应该使用它。
 
 顺便说一句，如果你对 Stack 是什么感兴趣，以及它与其他 Haskell 工具（如 Cabal 和 GHC）的关系，[请在此处或此处阅读更多内容](https://www.quora.com/What-is-the-difference-between-Cabal-and-Stack-in-Haskell-projects-Which-one-do-you-recommend-and-why)。我们将在课程的第 2 部分中再讲解 Haskell 包并解释具体如何使用它们。
@@ -137,10 +151,12 @@ See The Haskell Wiki and this blog post for more!
 目前，安装 Stack 后，只需运行 `stack ghci` 即可获得交互式 Haskell 环境。
 
 **注意！** GHC 8.10.7 有一个 GHCi 错误，导致在基于 ARM 的系统上无法编辑行。解决方法是使用 `TERM=dumb stack ghci`。[更多信息在这里](https://gitlab.haskell.org/ghc/ghc/-/issues/20022)。
+
 # 1.5 Let's Start! 让我们开始吧！
+
 GHCi 是交互式 Haskell 解释器，例如这样：
 
-``` haskell
+```haskell
 $ stack ghci
 GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 Prelude> 1+1
@@ -165,29 +181,30 @@ Leaving GHCi.
 
 让我们来看看这个。如果您还不明白，请不要担心，这只是表达式和​​类型的第一次接触。
 
-``` haskell
+```haskell
 Prelude> 1+1
 2
 ```
+
 > TODO: 这里我看到的是ghci>, 不知道为什么 [stackoverflow解答](https://stackoverflow.com/questions/35167627/ghci-vs-prelude-command-prompt-in-haskell)
 
 `Prelude>` 是 GHCi 提示符。它表明我们可以使用 Haskell 基础库中名为 Prelude 的函数。我们计算 1 加 1，结果是 2。
 
-``` haskell
+```haskell
 Prelude> "asdf"
 "asdf"
 ```
 
 这里我们计算一个字符串文字，结果是相同的字符串。
 
-``` haskell
+```haskell
 Prelude> reverse "asdf"
 "fdsa"
 ```
 
 我们通过将函数 `reverse` 应用于值 `"asdf"` 来反转字符串。
 
-``` haskell
+```haskell
 Prelude> :type "asdf"
 "asdf" :: [Char]
 ```
@@ -196,7 +213,7 @@ Prelude> :type "asdf"
 
 除了计算表达式之外，我们还可以使用GHCi 命令—— `:type` （缩写为 `:t`）询问其类型。 `"asdf"` 的类型是字符列表（字符串）。以 `:` 开头的命令是 GHCi 用户交互界面的一部分，而不是 Haskell 语言的一部分。
 
-``` haskell
+```haskell
 Prelude> tail "asdf"
 "sdf"
 Prelude> :t tail "asdf"
@@ -205,36 +222,40 @@ tail "asdf" :: [Char]
 
 `tail` 函数适用于列表并返回除列表的第一个元素之外的所有元素。在这里我们看到 `tail` 应用于 `"asdf"`。我们还检查表达式的类型，它是一个字符列表，正如预期的那样。
 
-``` haskell
+```haskell
 Prelude> :t tail
 tail :: [a] -> [a]
 ```
 
 最后，这是 `tail` 函数的类型。它接受任何类型的列表作为参数，并返回相同类型的列表。
 
-``` haskell
+```haskell
 Prelude> :quit
 Leaving GHCi.
 ```
 
 你可以通过`:quit`命令退出 GHCi。
+
 # 1.6 Expressions and Types 表达式和类型
+
 就像我们在上面的 GHCi 示例中看到的那样，_expressions_ 和 _types_ 是 Haskell 的生计。事实上，Haskell 程序中的几乎所有内容都是一个表达式。特别是，没有像 Python、Java 或 C 那样的 _statements_。
 
 一个表达式有一个值 (value) 和一个类型 (type)。我们用这种方式来写表达式及其类型：`expression :: type`。下面是一些例子：
 
-| 表达式            | 类型       | 值        |
+| 表达式         | 类型     | 值       |
 | -------------- | -------- | -------- |
 | `True`         | `Bool`   | `True`   |
 | `not True`     | `Bool`   | `False`  |
 | `"as" ++ "df"` | `[Char]` | `"asdf"` |
+
 ## 1.6.1 表达式的语法
+
 表达式是由函数和参数构成的。在 Haskell 中，你可以通过将参数直接放在函数名后面来调用（或者说"应用"）一个函数。这里没有特殊的函数调用语法，比如其他语言中常见的圆括号。
 
-|Haskell|Python, Java or C|
-|---|---|
-|`f 1`|`f(1)`|
-|`f 1 2`|`f(1,2)`|
+| Haskell | Python, Java or C |
+| ------- | ----------------- |
+| `f 1`   | `f(1)`            |
+| `f 1 2` | `f(1,2)`          |
 
 你可以使用圆括号来 _组合_（group）表达式（这点和数学以及其他编程语言类似）。
 
@@ -247,18 +268,19 @@ Leaving GHCi.
 
 一些函数名由特殊字符组成，它们被用作运算符：这些运算符会放在参数之间，而不是参数之前。函数调用的优先级高于运算符，这类似于乘法优先级高于加法。
 
-|Haskell|Python, Java or C|
-|---|---|
-|`a + b`|`a + b`|
-|`f a + g b`|`f(a) + g(b)`|
-|`f (a + g b)`|`f(a+g(b))`|
+| Haskell       | Python, Java or C |
+| ------------- | ----------------- |
+| `a + b`       | `a + b`           |
+| `f a + g b`   | `f(a) + g(b)`     |
+| `f (a + g b)` | `f(a+g(b))`       |
 
 在 Haskell 中，函数应用是**左结合的**。也就是说，`f g x y` 实际上等同于 `(((f g) x) y)`。我们稍后会详细讨论这个话题。现在，你可以简单地理解为 `f g x y` 是将函数 `f` 应用于参数 `g`、`x` 和 `y`。
 
 ## 1.6.2 类型的语法
+
 下面我为你介绍一些 Haskell 的基本类型，帮助你入门。
 
-| 类型                    | Literals                        | 使用                          |                             |
+| 类型                  | Literals                        | 使用                        |                             |
 | --------------------- | ------------------------------- | --------------------------- | --------------------------- |
 | `Int`                 | `1`, `2`, `-3`                  | Number type (signed, 64bit) | `+`, `-`, `*`, `div`, `mod` |
 | `Integer`             | `1`, `-2`, `900000000000000000` | Unbounded number type       | `+`, `-`, `*`, `div`, `mod` |
@@ -275,27 +297,30 @@ Leaving GHCi.
 - 三参数函数：`参数1类型 -> 参数2类型 -> 参数3类型 -> 返回类型`
 
 这种写法看起来有点奇怪，对吧？别担心，我们稍后会详细解释这种表示方法。
+
 ## 1.6.3 可能误导性的类型
+
 有时候，你在 GHCi 中看到的类型可能会与你预想的有些不同。这里有两种常见的情况：
 
-1. 当你看到类型 `Num a => a` 时，现在你可以简单理解为"任何数字类型"。在 Haskell 中，数字字面量是_多态的_（overloaded），这意味着它们可以被解释为任何数字类型（比如 `Int` 或 `Double`）。我们会在后面讨论_类型类_（type classes）时详细解释 `Num a` 的实际含义。
+1. 当你看到类型 `Num a => a` 时，现在你可以简单理解为"任何数字类型"。在 Haskell 中，数字字面量是*多态的*（overloaded），这意味着它们可以被解释为任何数字类型（比如 `Int` 或 `Double`）。我们会在后面讨论*类型类*（type classes）时详细解释 `Num a` 的实际含义。
 
-``` haskell
+```haskell
 Prelude> :t 1+1
 1+1 :: Num a => a
 ```
 
 2. 类型 `String` 实际上只是 `[Char]` 类型的别名，`[Char]` 表示"字符列表"。我们会在下一讲详细讨论列表！无论如何，你可以互换使用 `String` 和 `[Char]`，但 GHCi 在描述类型时通常会使用 `[Char]`。
 
-``` haskell
+```haskell
 Prelude> :t "asdf"
 "asdf" :: [Char]
 ```
 
 # 1.7 Haskell 程序的结构
+
 这是一个简单的 Haskell 程序，它进行一些算术运算并打印一些值。
 
-``` haskell
+```haskell
 module Gold where
 
 -- The golden ratio 黄金比例
@@ -321,19 +346,19 @@ main = do
 
 让我们逐步解析这个文件。
 
-``` haskell
+```haskell
 module Gold where
 ```
 
 每个 Haskell 源文件对应一个模块。一个模块由多个定义组成。
 
-``` haskell
+```haskell
 -- The golden ratio 黄金比例
 ```
 
 这是一个注释。注释不是程序的实际部分，而是为程序的人类读者提供的说明文本。
 
-``` haskell
+```haskell
 phi :: Double
 phi = (sqrt 5 + 1) / 2
 ```
@@ -342,31 +367,32 @@ phi = (sqrt 5 + 1) / 2
 
 一般来说，一个定义（函数或常量）由一个可选的类型注解和一个或多个方程组成。
 
-``` haskell
+```haskell
 polynomial :: Double -> Double
 polynomial x = x^2 - x - 1
 ```
 
 这是名为 `polynomial` 的函数的定义。它有一个类型注解和一个方程。注意函数的方程与常量的方程的区别：在等号左侧有参数 `x`。还要注意，在 Haskell 中，`^` 是幂运算符，而不是像许多其他语言中的按位异或。
 
-``` haskell
+```haskell
 f x = polynomial (polynomial x)
 ```
 
 这是名为 `f` 的函数的定义。注意这里没有类型注解。你能推断出 `f` 的类型吗？
 
-``` haskell
+```haskell
 main = do
   print (polynomial phi)
   print (f phi)
 ```
 
 这描述了运行程序时会发生什么。它使用了 do 语法和 IO Monad。我们会在课程的第二部分详细讨论这些概念。
+
 # 1.8 使用示例
 
 当你看到像这样的定义时：
 
-``` haskell
+```haskell
 polynomial :: Double -> Double
 polynomial x = x^2 - x - 1
 ```
@@ -375,7 +401,7 @@ polynomial x = x^2 - x - 1
 
 1. 如果定义只有一行，你可以直接在 GHCi 中定义它：
 
-``` haskell
+```haskell
 Prelude> polynomial x = x^2 - x - 1
 Prelude> polynomial 3.0
 5.0
@@ -383,7 +409,7 @@ Prelude> polynomial 3.0
 
 2. 对于多行定义，你可以使用 ; 分隔行，或使用特殊的 :{ :} 语法将代码块粘贴到 GHCi 中：
 
-``` haskell
+```haskell
 Prelude> :{
 Prelude| polynomial :: Double -> Double
 Prelude| polynomial x = x^2 - x - 1
@@ -394,7 +420,7 @@ Prelude> polynomial 3.0
 
 3. 最后，你可以将代码粘贴到新的或现有的 .hs 文件中，然后使用 :load 将其加载到 GHCi 中。如果文件已经加载，你也可以使用 :reload。
 
-``` haskell
+```haskell
 -- 首先将定义复制并粘贴到 Example.hs 中，然后运行 GHCi
 Prelude> :load Example.hs
 [1 of 1] Compiling Main             ( Example.hs, interpreted )
@@ -411,10 +437,12 @@ Ok, one module loaded.
 ```
 
 运行示例后，尝试修改它，或创建一个相似但不同的函数。你需要通过编程来学习编程，而不是通过阅读！
+
 ## 1.8.1 处理错误
 
 由于 Haskell 是一种类型化语言，你可能很快就会遇到类型错误。以下是 GHCi 会话中的错误示例：
-``` plaintext
+
+```plaintext
 Prelude> "string" ++ True
 
 <interactive>:1:13: error:
@@ -435,10 +463,10 @@ Prelude> "string" ++ True
 - 完整的错误表达式是 "string" ++ True。如前所述，`String` 是 `[Char]`（字符列表类型）的类型别名。++ 的第一个参数是一个字符列表，由于 ++ 只能组合两个相同类型的列表，第二个参数也应该是 `[Char]` 类型。
 
 - `In an equation for 'it': it = "string" ++ True` 这一行说明该表达式出现在变量 it 的定义中，it 是 GHCi 用于独立表达式的默认变量名。如果我们在文件中有 `x = "string" ++ True` 这样的行，或在 GHCi 中有 `let x = "string" ++ True` 这样的声明，GHCi 会打印 `In an equation for 'x': x = "string" ++ True`。
-    
+
 还有其他类型的错误。
 
-``` plaintext
+```plaintext
 Prelude> True + 1
 
 <interactive>:6:1: error:
@@ -451,7 +479,7 @@ Prelude> True + 1
 
 最难追踪的错误通常是这个：
 
-``` plaintext
+```plaintext
 Prelude> True +
 
 <interactive>:10:7: error:
@@ -459,31 +487,33 @@ Prelude> True +
 ```
 
 有很多方式可能导致这个错误。可能是某处缺少了一些字符。我们稍后会在本讲中讨论缩进。
+
 ## 1.8.2 算术
+
 Haskell 算术中有一件事经常让初学者感到困惑，那就是除法。
 
 在 Haskell 中有两个除法函数，/ 运算符和 div 函数。div 函数进行整数除法：
 
-``` haskell
+```haskell
 Prelude> 7 `div` 2
 3
 ```
 
 / 运算符执行通常的除法：
 
-``` haskell
+```haskell
 Prelude> 7.0 / 2.0
 3.5
 ```
 
 然而，你只能在整数类型（如 Int 和 Integer）上使用 div，只能在小数类型（如 Double）上使用 /。以下是尝试混用它们时会发生的情况：
 
-``` haskell
+```haskell
 halve :: Int -> Int
 halve x = x / 2
 ```
 
-``` haskell
+```haskell
 error:
     • No instance for (Fractional Int) arising from a use of ‘/’
     • In the expression: x / 2
@@ -493,38 +523,43 @@ error:
 现在只需记住这一点。我们稍后会在讨论类型类时回到 / 和 div 的区别，以及 Num 和 Fractional 的含义。
 
 # 1.9 如何实际编写程序？
+
 到目前为止，你已经见过一些算术运算、字符串反转等操作。那么，如何在Haskell中编写实际的程序呢？Haskell中缺少了许多常见的编程结构，如循环、语句和赋值。接下来，我们将介绍Haskell程序的基本构建块：
 
 - 条件语句
 - 局部定义
 - 模式匹配
 - 递归
+
 ## 1.9.1 条件语句
+
 在其他语言中，`if` 通常是一个语句。它没有返回值，只是条件性地执行其他语句。
 
 而在Haskell中，`if` 是一个表达式。它有一个值，用于在两个表达式之间进行选择。它类似于C或Java中的 `?:` 运算符。
 
-``` Java
+```Java
 int price = product.equals("milk") ? 1 : 2;
 ```
 
 Python的条件表达式与Haskell的`if`非常接近：
 
-``` python
+```python
 price = 1 if product == "milk" else 2
 ```
 
 这是同样的例子在Haskell中的样子：
 
-``` haskell
+```haskell
 price = if product == "milk" then 1 else 2
 ```
 
 因为Haskell的`if`返回一个值，所以你总是需要一个`else`！
+
 ### 1.9.1.1 返回`Bool`的函数
+
 为了编写`if`表达式，你需要知道如何获得`Bool`类型的值。最常见的方式是比较。通常的`==`、`<`、`<=`、`>`和`>=`运算符在Haskell中都可以使用。你可以对各种数字进行有序比较（`<`，`>`），对几乎任何东西进行相等比较（`==`）：
 
-``` haskell
+```haskell
 Prelude> "foo" == "bar"
 False
 Prelude> 5.0 <= 7.2
@@ -535,7 +570,7 @@ True
 
 Haskell的一个特点是不等于运算符写作`/=`而不是通常的`!=`：
 
-``` haskell
+```haskell
 Prelude> 2 /= 3
 True
 Prelude> "bike" /= "bike"
@@ -543,30 +578,34 @@ False
 ```
 
 记住，除了这些比较之外，你还可以通过使用`&&`（"与"）和`||`（"或"）运算符，以及`not`函数来获得`Bool`值。
+
 ### 1.9.1.2 例子
-``` haskell
+
+```haskell
 checkPassword password = if password == "swordfish"
 						 then "You're in."
 						 else "ACCESS DENIED!"
 ```
 
-``` haskell
+```haskell
 absoluteValue n = if n < 0 then -n else n
 ```
 
-``` haskell
+```haskell
 login user password = if user == "unicorn73"
                       then if password == "f4bulous!"
                            then "unicorn73 logged in"
                            else "wrong password"
                       else "unknown user"
 ```
+
 ## 1.9.2 局部定义
+
 Haskell有两种不同的方式来创建局部定义：`let...in`和`where`。
 
 `where`为定义添加局部定义：
 
-``` haskell
+```haskell
 circleArea :: Double -> Double
 circleArea r = pi * rsquare
     where pi = 3.1415926
@@ -575,47 +614,48 @@ circleArea r = pi * rsquare
 
 `let...in`是一个表达式：
 
-``` haskell
+```haskell
 circleArea r = let pi = 3.1415926
                    rsquare = r * r
                in pi * rsquare
 ```
-  
+
 局部定义也可以是函数：
 
-``` haskell
+```haskell
 circleArea r = pi * square r
     where pi = 3.1415926
           square x = x * x
 ```
 
-``` haskell
+```haskell
 circleArea r = let pi = 3.1415926
                    square x = x * x
                in pi * square r
 ```
 
 我们稍后会回到`let`和`where`的区别，但大多数情况下你可以使用你喜欢的任何一个。
+
 ## 1.9.3 关于不可变性
 
 尽管像上面的`pi`这样的东西通常被称为变量，但我在这里选择称它们为定义。这是因为与Python或Java中的变量不同，这些定义的值是不能改变的。Haskell变量不是你可以放入新值的盒子，Haskell变量命名一个值（或者更确切地说，一个表达式），仅此而已。
 
 我们稍后会在本课程中再次讨论不可变性，但现在只需要知道像这样的东西是不起作用的：
 
-``` haskell
+```haskell
 increment x = let x = x+1
               in x
 ```
 
 这只是一个无限循环，因为它试图定义一个新的变量`x`，其属性为`x = x+1`。因此，在计算`x`时，Haskell只是不断地计算`1+1+1+1+...`无限地继续下去。
 
-``` haskell
+```haskell
 compute x = let a = x+1
                 a = a*2
             in a
 ```
 
-``` plaintext
+```plaintext
 error:
     Conflicting definitions for ‘a’
     Bound at: <interactive>:14:17
@@ -626,7 +666,7 @@ error:
 
 解释一下，局部定义可以**遮蔽**(shadow)在其他地方定义的变量的名称。遮蔽不是一个副作用。相反，遮蔽在更受限的作用域内创建一个新变量，该变量使用与外部作用域中某个变量相同的名称。例如，下面的函数`f`、`g`和`h`都是合法的：
 
-``` haskell
+```haskell
 x :: Int
 x = 5
 
@@ -642,7 +682,7 @@ h x = x where x = 3
 
 如果我们将它们应用于全局常量`x`，我们会看到遮蔽的效果：
 
-``` haskell
+```haskell
 f 1 ==> 2
 g 1 ==> 6
 h 1 ==> 3
@@ -654,18 +694,21 @@ h x ==> 3
 
 最好总是为局部变量选择新的名称，这样就永远不会发生遮蔽。这样，代码的读者就会理解表达式中使用的变量来自哪里。注意在下面的例子中，`f`和`g`并不遮蔽彼此的参数：
 
-``` haskell
+```haskell
 f :: Int -> Int
 f x = 2 * x + 1
 
 g :: Int -> Int
 g x = x - 2
 ```
+
 ## 1.9.4 模式匹配
+
 一个（函数的）定义可以由多个等式组成。这些等式按顺序与参数匹配，直到找到一个合适的。这被称为模式匹配。
 
 Haskell中的模式匹配非常强大，我们将在本课程中不断学习关于它的新知识，但这里有几个初步的例子：
-``` haskell
+
+```haskell
 greet :: String -> String -> String
 greet "Finland" name = "Hei, " ++ name
 greet "Italy"   name = "Ciao, " ++ name
@@ -675,7 +718,7 @@ greet _         name = "Hello, " ++ name
 
 `greet`函数根据给定的国家和名字（都是`String`类型）生成一个问候语。它有三个国家的特殊情况，和一个默认情况。它是这样工作的：
 
-``` haskell
+```haskell
 Prelude> greet "Finland" "Pekka"
 "Hei, Pekka"
 Prelude> greet "England" "Bob"
@@ -688,14 +731,14 @@ Prelude> greet "Greenland" "Jan"
 
 特殊模式`_`可以匹配任何东西。它通常用于默认情况。因为模式是按顺序匹配的，所以（通常）将`_`情况放在最后很重要。否则像下面这种情况：
 
-``` haskell
+```haskell
 brokenGreet _         name = "Hello, " ++ name
 brokenGreet "Finland" name = "Hei, " ++ name
 ```
 
 现在第一种情况会被选中用于处理所有输入。
 
-``` haskell
+```haskell
 Prelude> brokenGreet "Finland" "Varpu"
 "Hello, Varpu"
 Prelude> brokenGreet "Sweden" "Ole"
@@ -704,7 +747,7 @@ Prelude> brokenGreet "Sweden" "Ole"
 
 GHC甚至会给你一个关于这段代码的警告：
 
-``` plaintext
+```plaintext
 <interactive>:1:1: warning: [-Woverlapping-patterns]
     Pattern match is redundant
     In an equation for ‘brokenGreet’: brokenGreet "Finland" name = ...
@@ -712,7 +755,7 @@ GHC甚至会给你一个关于这段代码的警告：
 
 下面是更多的例子。但首先让我们介绍标准库函数`show`，它可以将（几乎！）任何东西转换为字符串：
 
-``` haskell
+```haskell
 Prelude> show True
 "True"
 Prelude> show 3
@@ -721,7 +764,7 @@ Prelude> show 3
 
 所以，这里是一个带有模式匹配和实际使用值的默认情况（而不是用`_`忽略它）的函数例子：
 
-``` haskell
+```haskell
 describe :: Integer -> String
 describe 0 = "zero"
 describe 1 = "one"
@@ -731,7 +774,7 @@ describe n = "the number " ++ show n
 
 它的结果像这样：
 
-``` haskell
+```haskell
 Prelude> describe 0
 "zero"
 Prelude> describe 2
@@ -742,13 +785,15 @@ Prelude> describe 7
 
 你甚至可以对多个参数进行模式匹配。同样，等式是按顺序尝试的。这是对前面`login`函数的重新实现：
 
-``` haskell
+```haskell
 login :: String -> String -> String
 login "unicorn73" "f4bulous!" = "unicorn73 logged in"
 login "unicorn73" _           = "wrong password"
 login _           _           = "unknown user"
 ```
+
 ## 1.9.5 递归
+
 在Haskell中，所有类型的循环都是用递归实现的。函数调用非常高效，所以你不需要担心性能。（我们稍后会讨论性能）。
 
 学习如何用Haskell中的递归做简单的事情将帮助你在更复杂的问题上使用递归。递归也经常是思考如何解决更难问题的有用方法。
@@ -758,7 +803,8 @@ login _           _           = "unknown user"
 `n! = n * (n-1) * … * 1`
 
 例如，`4! = 4 * 3 * 2 * 1 = 24`。总之，这里是阶乘的Haskell实现：
-``` haskell
+
+```haskell
 factorial :: Int -> Int
 factorial 1 = 1
 factorial n = n * factorial (n-1)
@@ -766,7 +812,7 @@ factorial n = n * factorial (n-1)
 
 这是它的工作原理。我们用`==>`表示"求值为"。
 
-``` haskell
+```haskell
 factorial 3
   ==> 3 * factorial (3-1)
   ==> 3 * factorial 2
@@ -779,19 +825,19 @@ factorial 3
 
 这是另一个例子：
 
-``` haskell
+```haskell
 -- compute the sum 1^2+2^2+3^2+...+n^2 计算1^2+2^2+3^2+...+n^2的和
 squareSum 0 = 0
 squareSum n = n^2 + squareSum (n-1)
 ```
-  
+
 一个函数可以多次递归地调用自己。让我们考虑数学中的斐波那契序列作为例子。斐波那契序列是一个具有以下定义的整数序列。
 
 序列从1, 1开始。要得到序列的下一个元素，将序列的前两个元素相加。
 
 斐波那契序列的前几个元素是1, 1, 2, 3, 5, 8, 13等等。这里有一个`fibonacci`函数，它计算斐波那契序列中的第n个元素。注意它如何反映数学定义。
 
-``` haskell
+```haskell
 -- 斐波那契数，慢速版本
 fibonacci 1 = 1
 fibonacci 2 = 1
@@ -800,7 +846,7 @@ fibonacci n = fibonacci (n-2) + fibonacci (n-1)
 
 这是`fibonacci 5`如何求值的：
 
-``` haskell
+```haskell
 fibonacci 5
   ==> fibonacci 3                 + fibonacci 4
   ==> (fibonacci 1 + fibonacci 2) + fibonacci 4
@@ -815,7 +861,6 @@ fibonacci 5
 
 ![计算结果树形图](https://haskell.mooc.fi/img/Fibonacci-step2.svg)
 
-  
 ![](https://haskell.mooc.fi/img/Fibonacci-step1.svg)
 
 ![](https://haskell.mooc.fi/img/Fibonacci-step2.svg)
@@ -832,7 +877,6 @@ fibonacci 5
 
 ![？](https://haskell.mooc.fi/img/Fibonacci-step8.svg)
 
-
 这棵树精确地对应于表达式(1 + 1) + (1 + (1 + 1))。递归经常可以产生链状、树状、嵌套或循环结构和计算。递归是函数式编程的主要技术之一，所以值得花些精力去学习它。
 
 # 1.10 All Together Now!
@@ -842,12 +886,13 @@ fibonacci 5
 对于任意正整数，它的考拉兹序列最后是否一定是1？
 
 具体来时，考拉兹序列是这样构造的。先选取任意的一个整数作为初始值，然后重复进行下面的操作：
+
 - 如果是偶数，除以`2`
 - 如果是奇数，乘以`3`再加`1`
 
 比如说，`3`的考拉兹序列是：`3, 10, 5, 16, 8, 4, 2, 1, 4, 2, 1, 4, 2, 1, ...`。你可以看到，这个序列出现了`1`之后就开始`4, 2, 1`的无限循环。
 
-``` haskell
+```haskell
 module Collatz where
 
 -- 生成下一个考拉兹序列的元素
@@ -880,7 +925,7 @@ longest' number maxlength n =
 
 我们可以在`GHCi`中运行上面这段程序并且自己试试看：
 
-``` haskell
+```haskell
 $ stack ghci
 GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 Prelude> :load Collatz.hs
@@ -891,7 +936,7 @@ Ok, one module loaded.
 
 让我们验证一下程序计算结果正确：
 
-``` haskell
+```haskell
 *Collatz> step 3
 10
 *Collatz> step 10
@@ -902,14 +947,14 @@ Ok, one module loaded.
 
 那么`3`的考拉兹序列需要多少步操作才会出现`1`呢？
 
-``` haskell
+```haskell
 *Collatz> collatz 3
 7
 ```
 
 对于所有小于`10`或者`100`的正整数，谁的考拉兹序列最长呢？
 
-``` haskell
+```haskell
 *Collatz> longest 10
 9
 *Collatz> longest 100
@@ -918,14 +963,17 @@ Ok, one module loaded.
 
 它们的考拉兹序列长度分别是：
 
-``` haskell
+```haskell
 *Collatz> collatz 9
 19
 *Collatz> collatz 97
 118
 ```
+
 # 1.11 缩进
+
 Haskell 和 python 一样，都需要严格遵循缩进的规则才能正常运行。但是 Haskell 中的缩进规则有点难以描述，就目前而言，你只需要记得：
+
 1. 属于同一组的代码应该从同一列开始
 2. 如果一个表达式/方程需要跨越多行，你应该增加缩进
 
@@ -933,7 +981,7 @@ Haskell 和 python 一样，都需要严格遵循缩进的规则才能正常运�
 
 下面是一些可行的示例代码：
 
-``` haskell
+```haskell
 i x = let y = x+x+x+x+x+x in div y 5
 
 -- let 和 in 属于同一组的代码
@@ -955,7 +1003,7 @@ l = a + b
 
 而下面这些代码就是错误的：
 
-``` haskell
+```haskell
 -- let 和 in 组成的表达式跨越多行但是没有相应地调整缩进
 i x = let y = x+x+x+x+x+x
 in div y 5
@@ -985,22 +1033,24 @@ where
 
 如果你的缩进有问题，典型的报错像这样：
 
-``` haskell
+```haskell
 Indent.hs:2:1: error: parse error on input ‘where’
 ```
 
 报错包含了行数，所以解决起来很方便。如果你实在无法解决缩进问题，你可以就把所有的东西都写在同一行上。
+
 # 1.12 小测
+
 在每一讲的最后都有这样的一个小测。小测不计分，但可以更好地帮助你检查自己是否理解本讲的内容。
 
-> [!question] Q1.如何在Haskell中写出像C/Java/Python这样的表达式：`combine(prettify(lawn),construct(house,concrete))`? 
+> [!question] Q1.如何在Haskell中写出像C/Java/Python这样的表达式：`combine(prettify(lawn),construct(house,concrete))`?
 > A. `combine prettify (lawn) construct (house concerete)`
 > B. `combine (prettify lawn (counstruct house concrete))`
 > C. `combine (prettify lawn) (construct house concrete)`
 
-> [!question] Q2.如何在Haskell中写出像C/Java/Python这样的表达式：`send metric (double population + increase)`? 
+> [!question] Q2.如何在Haskell中写出像C/Java/Python这样的表达式：`send metric (double population + increase)`?
 > A. `send(metric(double(population+increase)))`
->B. `send(metric(double(population)+increase))`
+> B. `send(metric(double(population)+increase))`
 > C. `send(metric,double(population)+increase)`
 > D. `send(metric,double(population+increase))`
 
@@ -1010,7 +1060,7 @@ Indent.hs:2:1: error: parse error on input ‘where’
 > C. 每个语句都有值
 
 > [!question] Q4.下面哪个关于 Haskell 的说法是对的？
-> 
+>
 > A. 不能重新使用变量的变量名
 > B. 可以给一个变量重新赋值
 > C. `if`必须要搭配`then`和`else`
@@ -1031,6 +1081,7 @@ Indent.hs:2:1: error: parse error on input ‘where’
 > C. 因为`...`用于分隔字符串
 
 > [!tip]- 答案
+>
 > 1. C
 > 2. C
 > 3. A
@@ -1040,6 +1091,7 @@ Indent.hs:2:1: error: parse error on input ‘where’
 > 7. A
 
 # 1.13 Working on the Exercises
+
 The course materials, including exercises, are available in a Git repository on GitHub at [https://github.com/moocfi/haskell-mooc](https://github.com/moocfi/haskell-mooc). If you’re not familiar with Git, see [GitHub’s instructions on cloning a repository](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
 Once you’ve cloned the `haskell-mooc` repository, go into the `exercises` directory. To download and build dependencies needed for running the exercise tests (such as the correct version of GHC and various libraries), run following command in your terminal:
@@ -1058,11 +1110,13 @@ Do note that the dependencies are multiple gigabytes and it will take a while fo
 There are primarily two types of files in the `exercises` directory: exercise sets named `SetNX.hs` and accompanying test program for the exercises named `SetNXTest.hs`. Both are Haskell source files, but only the exercise file should to be edited when solving the exercises. Instructions to all individual exercises are embedded in the exercise file as comments.
 
 Use the tests file to check your answers. For example when you have solved some of the exercises in `Set1.hs`, run the following command:
-``` bash
+
+```bash
 $ stack runhaskell Set1Test.hs
 ```
 
 The output of the tests looks something like this:
+
 ```
 ===== EXERCISE 1
 +++++ Pass
@@ -1115,7 +1169,8 @@ quadruple 1
 In the example above, I’ve made a mistake in exercise 3.
 
 To make debugging faster and more straightforward, I can load my exercise file in GHCi, which allows me to evaluate any top-level function manually. For instance I can verify the above mistake by:
- ```
+
+```
 $ stack ghci Set1.hs
 GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 [1 of 2] Compiling Mooc.Todo        ( Mooc/Todo.hs, interpreted )
@@ -1135,11 +1190,13 @@ Once you’re done with an exercise set, you can turn it in on the [Submit page
 $ cabal v2-build
 $ cabal v2-exec runhaskell Set1Test.hs
 ```
+
 ## 1.13.1 Model Solutions
 
 Once you’ve successfully completed all the exercises in a set, you can view the model solutions on the [My status page](https://haskell.mooc.fi/status). It’s useful to glance at the model solutions, they might show you a technique you’ve missed!
 
 > TODO Set1.hs中的第一个Ex1，产生疑问Int和Integer有什么区别？
+
 # 1.14 Exercises
 
 - [Set1](https://github.com/moocfi/haskell-mooc/blob/master/exercises/Set1.hs)

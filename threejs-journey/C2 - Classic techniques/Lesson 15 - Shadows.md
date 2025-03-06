@@ -1,4 +1,5 @@
 shadow 可以分为两种：
+
 - core shadow - 物体背面没有被光找到产生的阴影
 - drop shadow - 物体遮挡关系产生的阴影
 
@@ -12,7 +13,6 @@ The results are stored as textures and named shadow maps.
 You won't see those shadow maps directly, but they are used on every material supposed to receive shadows and projected on the geometry.
 
 Here's an excellent example of what the directional light and the spotlight see: [https://threejs.org/examples/webgl_shadowmap_viewer.html](https://threejs.org/examples/webgl_shadowmap_viewer.html)
-
 
 Only the following types of lights support shadows:
 
@@ -33,10 +33,10 @@ To change it, update the `renderer.shadowMap.type` property. The default is `
 
 ```javascript
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
-})
-renderer.shadowMap.enabled = true
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  canvas: canvas,
+});
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 ```
 
 在调整camera shadow的参数的时候，可以先打开helper camera，等调整完毕以后再设定visible = false

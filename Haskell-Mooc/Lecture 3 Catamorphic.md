@@ -8,19 +8,19 @@
 
 在 Haskell 中，函数是一种值，就像数字或列表一样。函数可以作为参数传递给其他函数。以下是一个简单的例子。函数 `applyTo1` 接受一个类型为 `Int -> Int` 的函数，将其应用于数字 `1`，并返回结果。
 
-``` haskell
+```haskell
 applyTo1 :: (Int -> Int) -> Int
 applyTo1 f = f 1
 ```
 
 定义一个简单的类型为 `Int -> Int` 的函数，看看 `applyTo1` 是如何运作的：
 
-``` haskell
+```haskell
 addThree :: Int -> Int
 addThree x = x + 3
 ```
 
-``` haskell
+```haskell
 applyTo1 addThree
   ==> addThree 1
   ==> 1 + 3
@@ -29,7 +29,7 @@ applyTo1 addThree
 
 让我们回到 `applyTo1` 的类型注解：
 
-``` haskell
+```haskell
 applyTo1 :: (Int -> Int) -> Int
 ```
 
@@ -37,12 +37,12 @@ applyTo1 :: (Int -> Int) -> Int
 
 让我们看一个稍微复杂一点的例子。这次我们将实现一个多态函数 `doTwice`。注意它可以与不同类型的值和函数一起使用：
 
-``` haskell
+```haskell
 doTwice :: (a -> a) -> a -> a
 doTwice f x = f (f x)
 ```
 
-``` haskell
+```haskell
 doTwice addThree 1
   ==> addThree (addThree 1)
   ==> 7
@@ -51,56 +51,57 @@ doTwice tail "abcd"
   ==> "cd"
 ```
 
-``` haskell
+```haskell
 makeCool :: String -> String
 makeCool str = "WOW " ++ str ++ "!"
 ```
 
-``` haskell
+```haskell
 doTwice makeCool "Haskell"
   ==> "WOW WOW Haskell!!"
 ```
+
 ### 3.1.1 列表上的函数式编程
 
 这有点无聊。幸运的是，有许多有用的列表函数可以将函数作为参数。顺便说一句，接受函数作为参数（或返回函数）的函数通常被称为**高阶函数(higher-order functions)**。
 
 最著名的这些用于列表处理的高阶函数是 `map`。它通过将给定函数应用于列表的所有元素来生成一个新列表。
 
-``` haskell
+```haskell
 map :: (a -> b) -> [a] -> [b]
 ```
 
-``` haskell
+```haskell
 map addThree [1,2,3]
   ==> [4,5,6]
 ```
 
 `map` 的“搭档”是 `filter`。`filter` 不会转换列表的所有元素，而是删除一些元素并保留其他元素。换句话说，`filter` 从列表中选择满足条件的元素。
 
-``` haskell
+```haskell
 filter :: (a -> Bool) -> [a] -> [a]
 ```
 
 下面是一个示例：从列表中选择正数：
 
-``` haskell
+```haskell
 positive :: Int -> Bool
 positive x = x>0
 ```
 
-``` haskell
+```haskell
 filter positive [0,1,-1,3,-3]
   ==> [1,3]
 ```
 
 注意 `map` 和 `filter` 的类型签名（类型注解）都是多态的。它们可以用于所有类型的列表。`map` 的类型签名（类型注解）甚至使用了两个类型参数！以下是使用 `map` 和 `filter` 进行类型推断的一些示例：
 
-``` haskell
+```haskell
 onlyPositive xs = filter positive xs
 mapBooleans f = map f [False,True]
 ```
- 
-``` haskell
+
+```haskell
 Prelude> :t onlyPositive
 onlyPositive :: [Int] -> [Int]
 Prelude> :t mapBooleans
@@ -111,21 +112,22 @@ mapBooleans not :: [Bool]
 
 再说一件事：还记得构造器只是函数吗？这意味着你可以将它们作为参数传递给其他函数！
 
-``` haskell
+```haskell
 wrapJust xs = map Just xs
 ```
 
-``` haskell
+```haskell
 Prelude> :t wrapJust
 wrapJust :: [a] -> [Maybe a]
 Prelude> wrapJust [1,2,3]
 [Just 1,Just 2,Just 3]
 ```
+
 ### 3.1.2 列表上的函数式编程示例
 
 在 `1` 和 `n` 之间有多少个“回文数”？
 
-``` haskell
+```haskell
 -- 判断一个字符串是否为回文
 palindrome :: String -> Bool
 palindrome str = str == reverse str
@@ -135,7 +137,7 @@ palindromes :: Int -> [String]
 palindromes n = filter palindrome (map show [1..n])
 ```
 
-``` haskell
+```haskell
 palindrome "1331" ==> True
 palindromes 150 ==>
   ["1","2","3","4","5","6","7","8","9",
@@ -146,56 +148,57 @@ length (palindromes 9999) ==> 198
 
 一个字符串中有多少单词以 “a” 开头？这需要使用 `Data.List` 模块中的 `words` 函数来将字符串分割成单词。
 
-``` haskell
+```haskell
 countAWords :: String -> Int
 countAWords string = length (filter startsWithA (words string))
   where startsWithA s = head s == 'a'
 ```
 
-``` haskell
+```haskell
 countAWords "does anyone want an apple?"
   ==> 3
 ```
 
 `Data.List` 中的 `tails` 函数返回列表的所有后缀（“尾部”）。我们可以使用 `tails` 进行许多字符串处理任务。以下是 `tails` 的工作方式：
 
-``` haskell
+```haskell
 tails "echo"
   ==> ["echo","cho","ho","o",""]
 ```
 
 下面是一个例子，我们找出在字符串中给定字符之后出现的所有字符。首先，我们使用 `tails`、`map` 和 `take` 获取所有指定长度的子字符串：
 
-``` haskell
+```haskell
 substringsOfLength :: Int -> String -> [String]
 substringsOfLength n string = map shorten (tails string)
   where shorten s = take n s
 ```
 
-``` haskell
+```haskell
 substringsOfLength 3 "hello"
   ==> ["hel","ell","llo","lo","o",""]
 ```
 
 末尾会留下一些较短的子字符串（你能看出为什么吗？），但它们目前对于我们的目的来说没问题。现在我们有了 `substringsOfLength`，可以实现函数 `whatFollows c k s`，它找到字符 `c` 在字符串 `s` 中的所有出现位置，并输出这些出现位置之后的 `k` 个字符。
 
-``` haskell
+```haskell
 whatFollows :: Char -> Int -> String -> [String]
 whatFollows c k string = map tail (filter match (substringsOfLength (k+1) string))
   where match sub = take 1 sub == [c]
 ```
 
-``` haskell
+```haskell
 whatFollows 'a' 2 "abracadabra"
   ==> ["br","ca","da","br",""]
 ```
+
 ## 3.2 部分应用(Partial Application)
 
 在使用高阶函数时，你可能会定义许多小的辅助函数，比如之前例子中的 `addThree` 或 `shorten`。从长远来看，这可能会有些繁琐，但幸运的是，Haskell 的函数行为有点特殊……
 
 让我们在 GHCi 中尝试下面代码：
 
-``` haskell
+```haskell
 Prelude> add a b = a+b
 Prelude> add 1 5
 6
@@ -206,7 +209,7 @@ Prelude> addThree 2
 
 我们定义了一个接受两个参数的函数 `add`，但只给了它一个参数。可这并没有导致类型错误，而是产生了一个新函数。这个新函数存储（或记住）了已提供的参数，等待另一个参数，然后将两个参数都交给 `add`。
 
-``` haskell
+```haskell
 Prelude> map addThree [1,2,3]
 [4,5,6]
 Prelude> map (add 3) [1,2,3]
@@ -217,12 +220,12 @@ Prelude> map (add 3) [1,2,3]
 
 这种现象被称为**部分应用(partial application)**。在 Haskell 中，所有的函数都可以这样使用。让我们仔细看看。以下是一个接受多个参数的函数：
 
-``` haskell
+```haskell
 between :: Integer -> Integer -> Integer -> Bool
 between lo high x = x < high && x > lo
 ```
 
-``` haskell
+```haskell
 Prelude> between 3 7 5
 True
 Prelude> between 3 6 8
@@ -231,7 +234,7 @@ False
 
 我们可以像对 `add` 所做的那样，给 `between` 更少的参数并获得新函数：
 
-``` haskell
+```haskell
 Prelude> (between 1 5) 2
 True
 Prelude> let f = between 1 5 in f 2
@@ -242,7 +245,7 @@ Prelude> map (between 1 3) [1,2,3]
 
 看看部分应用 `between` 的类型。它们表现得很有规律，随着值被添加到表达式中，参数逐个从类型中消失。
 
-``` haskell
+```haskell
 Prelude> :t between
 between :: Integer -> Integer -> Integer -> Bool
 Prelude> :t between 1
@@ -257,14 +260,14 @@ between 1 2 3 :: Bool
 
 这是另一个使用 `map` 进行部分应用的例子：
 
-``` haskell
+```haskell
 map (drop 1) ["Hello","World!"]
   ==> ["ello","orld!"]
 ```
 
 除了普通函数，部分应用也适用于运算符。对于运算符，你可以选择应用左侧或右侧参数。（部分应用的运算符也称为**区间 sections**或**运算符区间 operator sections**）。例如：
 
-``` haskell
+```haskell
 Prelude> map (*2) [1,2,3]
 [2,4,6]
 Prelude> map (2*) [1,2,3]
@@ -272,13 +275,14 @@ Prelude> map (2*) [1,2,3]
 Prelude> map (1/) [1,2,3,4,5]
 [1.0,0.5,0.3333333333333333,0.25,0.2]
 ```
+
 ## 3.3 前缀和中缀表示法
 
 普通的 Haskell 函数使用**前缀表示法(prefix notation)**，这只是一个表示函数名位于参数之前的说法。相比之下，运算符使用**中缀表示法(infix notation)** —— 函数名位于参数之间。
 
 可以通过给运算符添加括号将其转换为前缀函数。例如：
 
-``` haskell
+```haskell
 (+) 1 2 ==> 1 + 2 ==> 3
 ```
 
@@ -286,7 +290,7 @@ Prelude> map (1/) [1,2,3,4,5]
 
 例如，`zipWith` 函数接受两个列表和一个二元函数，并使用该函数合并列表。我们可以使用 `zipWith (+)` 来对两个列表逐个元素求和：
 
-``` haskell
+```haskell
 Prelude> :t zipWith
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 Prelude> zipWith (+) [0,2,5] [1,3,3]
@@ -297,7 +301,7 @@ Prelude> zipWith (+) [0,2,5] [1,3,3]
 
 请注意，省略括号会导致类型错误：
 
-``` haskell
+```haskell
 Prelude> zipWith + [0,2,5,3] [1,3,3]
 
 <interactive>:1:11: error:
@@ -319,27 +323,28 @@ Prelude> zipWith + [0,2,5,3] [1,3,3]
 
 Haskell 的另一个很好的特性是可以将一个二元函数当作中缀运算符来使用，只需用反引号（\`）将它括起来。例如：
 
-``` haskell
+```haskell
 6 `div` 2 ==> div 6 2 ==> 3
 (+1) `map` [1,2,3] ==> map (+1) [1,2,3] ==> [2,3,4]
 ```
+
 ## 3.4 Lambda 表达式
 
 函数式编程工具箱中我们需要的最后一个工具是 λ（lambda）。Lambda 表达式是**匿名函数(anonymous)**。考虑这样一种情况：你只需要一次性使用一个函数，例如在如下表达式中：
 
-``` haskell
+```haskell
 let big x = x>7 in filter big [1,10,100]
 ```
 
 Lambda 表达式允许我们直接写出这个函数，而不需要为辅助函数定义一个名字（如 `big`）：
 
-``` haskell
+```haskell
 filter (\x -> x>7) [1,10,100]
 ```
 
 下面是一些在 GHCi 中的示例：
 
-``` haskell
+```haskell
 Prelude> (\x -> x*x) 3
 9
 Prelude> (\x -> reverse x == x) "ABBA"
@@ -355,23 +360,24 @@ Haskell 中的 lambda 语法有点令人惊讶。反斜杠（`\`）代表希腊�
 **注意！** 你从不**必须**使用 lambda 表达式。你总是可以使用 `let` 或 `where` 来定义函数。
 
 顺便说一下，lambda 表达式是非常强大的构造，在其自身领域有着深厚的理论，称为[λ演算](https://en.wikipedia.org/wiki/Lambda_calculus)。有些人甚至认为，像 Haskell 这样的纯函数式编程语言是 λ演算的类型扩展，增加了额外的语法。
+
 ## 3.5 附注：`.` 和 `$` 运算符
 
 Haskell 代码中最常见的两个运算符可能就是 `.` 和 `$`。它们在编写使用高阶函数的代码时非常有用。首先，`.` 运算符是**函数组合**运算符。它的类型为：
 
-``` haskell
+```haskell
 (.) :: (b -> c) -> (a -> b) -> a -> c
 ```
 
 它的作用是：
 
-``` haskell
+```haskell
 (f.g) x ==> f (g x)
 ```
 
 你可以使用函数组合来构建函数，而不需要提及任何参数。例如：
 
-``` haskell
+```haskell
 double x = 2 * x
 quadruple = double . double  -- 计算 2 * (2 * x) == 4 * x
 f = quadruple . (+1)         -- 计算 4 * (x + 1)
@@ -381,12 +387,12 @@ third = head . tail . tail   -- 获取列表的第三个元素
 
 我们还可以用 `.` 重新实现 `doTwice`。注意我们可以只将 `doTwice` 应用于一个函数，或者应用于一个函数和一个值。
 
-``` haskell
+```haskell
 doTwice :: (a -> a) -> a -> a
 doTwice f = f . f
 ```
 
-``` haskell
+```haskell
 let ttail = doTwice tail
 in ttail [1,2,3,4]
   ==> [3,4]
@@ -398,51 +404,51 @@ doTwice tail [1,2,3,4] ==> [3,4]
 
 通常，函数组合并非用于定义新函数，而是为了避免定义辅助函数。例如，看看这两个表达式之间的区别：
 
-``` haskell
+```haskell
 let notEmpty x = not (null x)
 in filter notEmpty [[1,2,3],[],[4]]
   ==> [[1,2,3],[4]]
 ```
 
-``` haskell
+```haskell
 filter (not . null) [[1,2,3],[],[4]]
   ==> [[1,2,3],[4]]
 ```
 
 另一个运算符 `$` 比较微妙。让我们看看它的类型。
 
-``` haskell
+```haskell
 ($) :: (a -> b) -> a -> b
 ```
 
 它接受一个类型为 `a -> b` 的函数和一个类型为 `a` 的值，返回一个类型为 `b` 的值。换句话说，它是一个函数应用运算符。表达式 `f $ x` 与 `f x` 是一样的。这看起来似乎没什么用，但 `$` 运算符可以用来消除括号！这些表达式是等价的：
 
-``` haskell
+```haskell
 head (reverse "abcd")
 head $ reverse "abcd"
 ```
 
 当它用于消除一对括号时可能不那么引人注目，但与 `.` 一起使用可以消除很多括号！例如，我们把下面这个代码：
 
-``` haskell
+```haskell
 reverse (map head (map reverse (["Haskell","pro"] ++ ["dodo","lyric"])))
 ```
 
 重写成：
 
-``` haskell
+```haskell
 (reverse . map head . map reverse) (["Haskell","pro"] ++ ["dodo","lyric"])
 ```
 
 然后再进一步改写为：
 
-``` haskell
+```haskell
 reverse . map head . map reverse $ ["Haskell","pro"] ++ ["dodo","lyric"]
 ```
 
 有时，运算符 `.` 和 `$` 本身也可以用作函数。例如，可以使用 `map` 和 `$` 的区间将一个函数列表应用于一个参数：
 
-``` haskell
+```haskell
 map ($"string") [reverse, take 2, drop 2]
   ==> [reverse $ "string", take 2 $ "string", drop 2 $ "string"]
   ==> [reverse "string", take 2 "string", drop 2 "string"]
@@ -450,11 +456,12 @@ map ($"string") [reverse, take 2, drop 2]
 ```
 
 如果这看起来很复杂，不用担心。在你对它们感到熟悉之前，不需要在自己的代码中使用 `.` 和 `$`。然而，在阅读 Haskell 示例和网络上的代码时，你会遇到这两个运算符，因此了解它们是有益的。[这篇文章](https://typeclasses.com/featured/dollar) 也可能对你有所帮助。
+
 ## 3.6 示例：重写 `whatFollows` 函数
 
 现在，让我们使用刚才看到的工具重写之前的 `whatFollows` 示例。以下是原始版本：
 
-``` haskell
+```haskell
 substringsOfLength :: Int -> String -> [String]
 substringsOfLength n string = map shorten (tails string)
   where shorten s = take n s
@@ -466,7 +473,7 @@ whatFollows c k string = map tail (filter match (substringsOfLength (k+1) string
 
 首先，我们去掉辅助函数 `substringsOfLength`，将所有代码移到 `whatFollows` 中：
 
-``` haskell
+```haskell
 whatFollows c k string = map tail (filter match (map shorten (tails string)))
   where shorten s = take (k+1) s
         match sub = take 1 sub == [c]
@@ -474,33 +481,33 @@ whatFollows c k string = map tail (filter match (map shorten (tails string)))
 
 现在，我们使用部分应用来代替定义 `shorten`：
 
-``` haskell
+```haskell
 whatFollows c k string = map tail (filter match (map (take (k+1)) (tails string)))
   where match sub = take 1 sub == [c]
 ```
 
 接下来使用 `.` 和 `$` 消除一些括号：
 
-``` haskell
+```haskell
 whatFollows c k string = map tail . filter match . map (take (k+1)) $ tails string
   where match sub = take 1 sub == [c]
 ```
 
 我们还可以用 lambda 表达式替换 `match`：
 
-``` haskell
+```haskell
 whatFollows c k string = map tail . filter (\sub -> take 1 sub == [c]) . map (take (k+1)) $ tails string
 ```
 
 最后，我们可以不提及 `string` 参数，因为我们可以将 `whatFollows` 表达为 `map`、`filter`、`map` 和 `tails` 的组合：
 
-``` haskell
+```haskell
 whatFollows c k = map tail . filter (\sub -> take 1 sub == [c]) . map (take (k+1)) . tails
 ```
 
 我们甚至可以更进一步，通过运算符区间重写 lambda：
 
-``` haskell
+```haskell
     \sub -> take 1 sub == [c]
 === \sub -> (==[c]) (take 1 sub)
 === \sub -> (==[c]) ((take 1) sub)
@@ -511,48 +518,49 @@ whatFollows c k = map tail . filter (\sub -> take 1 sub == [c]) . map (take (k+1
 
 现在我们剩下的是：
 
-``` haskell
+```haskell
 whatFollows c k = map tail . filter ((==[c]) . take 1) . map (take (k+1)) . tails
 ```
 
 这是一种比较极端的函数版本，但在适当的情况下，使用这些技巧可以使代码更易读。
+
 ## 3.7 更多列表函数式编程示例
 
 这里有一些关于列表的函数式编程示例。我们先介绍几个新的列表函数：
 
-``` haskell
+```haskell
 takeWhile :: (a -> Bool) -> [a] -> [a]   -- 从列表中获取满足谓词（判断条件）的元素
 dropWhile :: (a -> Bool) -> [a] -> [a]   -- 从列表中丢弃满足谓词（判断条件）的元素
 ```
 
-``` haskell
+```haskell
 takeWhile even [2,4,1,2,3]   ==> [2,4]
 dropWhile even [2,4,1,2,3]   ==> [1,2,3]
 ```
 
 还有一个 `elem` 函数，可以用来检查列表中是否包含某个元素：
 
-``` haskell
+```haskell
 elem 3 [1,2,3]   ==> True
 elem 4 [1,2,3]   ==> False
 ```
 
 使用这些函数，我们可以实现一个 `findSubstring` 函数，找到字符串中只包含指定字符的最早和最长的子字符串。
 
-``` haskell
+```haskell
 findSubstring :: String -> String -> String
 findSubstring chars = takeWhile (\x -> elem x chars)
                       . dropWhile (\x -> not $ elem x chars)
 ```
 
-``` haskell
+```haskell
 findSubstring "a" "bbaabaaaab"              ==> "aa"
 findSubstring "abcd" "xxxyyyzabaaxxabcd"    ==> "abaa"
 ```
 
 `zipWith` 函数可以让你将两个列表的元素逐一组合：
 
-``` haskell
+```haskell
 zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
 ```
 
@@ -610,7 +618,7 @@ Prelude> :t (:)
 
 The `:` operator builds a list out of a head and a tail. In other words, `x : xs` is the same as `[x] ++ xs`. Why do we need an operator for this?
 
-Actually, `:` is the _constructor_ for lists: it returns a new linked list node. The other list constructor is `[]`, the empty list. All lists are built using `:` and `[]`. The familiar `[x,y,z]` syntax is actually just a nicer way to write `x:y:z:[]`, or even more explicitly, `x:(y:(z:[]))`. In fact `(++)` is defined in terms of `:` and recursion in the standard library.
+Actually, `:` is the *constructor* for lists: it returns a new linked list node. The other list constructor is `[]`, the empty list. All lists are built using `:` and `[]`. The familiar `[x,y,z]` syntax is actually just a nicer way to write `x:y:z:[]`, or even more explicitly, `x:(y:(z:[]))`. In fact `(++)` is defined in terms of `:` and recursion in the standard library.
 
 Here’s a picture of how `[1,2,3]` is structured in memory:
 
@@ -672,7 +680,7 @@ mytail [] = []
 mytail (first:rest) = rest
 ```
 
-You can _nest_ patterns. That is, you can pattern match more than one element from the start of a list. In this example, we use the pattern `(a:b:_)` which is the same as `(a:(b:_))`:
+You can *nest* patterns. That is, you can pattern match more than one element from the start of a list. In this example, we use the pattern `(a:b:_)` which is the same as `(a:(b:_))`:
 
 ```
 sumFirstTwo :: [Integer] -> Integer
@@ -802,7 +810,7 @@ filter pred (x:xs)
 
 ### 3.8.5 Tail Recursion and Lists
 
-When a recursive function evaluates to a new call to that same function with different arguments, it is called _tail-recursive_. (The recursive call is said to be in _tail position_.) This is the type of recursion that corresponds to an imperative loop. We’ve already seen many examples of tail-recursive functions, but we haven’t really contrasted the two ways for writing the same function. This is `sumNumbers` from earlier in this lecture:
+When a recursive function evaluates to a new call to that same function with different arguments, it is called *tail-recursive*. (The recursive call is said to be in *tail position*.) This is the type of recursion that corresponds to an imperative loop. We’ve already seen many examples of tail-recursive functions, but we haven’t really contrasted the two ways for writing the same function. This is `sumNumbers` from earlier in this lecture:
 
 ```
 -- Not tail recursive!
@@ -850,7 +858,7 @@ There is another reason to prefer the direct version: laziness. We’ll get back
 
 ## 3.9 Something Fun: List Comprehensions
 
-Haskell has _list comprehensions_, a nice syntax for defining lists that combines the power of `map` and `filter`. You might be familiar with Python’s list comprehensions already. Haskell’s work pretty much the same way, but their syntax is a bit different.
+Haskell has *list comprehensions*, a nice syntax for defining lists that combines the power of `map` and `filter`. You might be familiar with Python’s list comprehensions already. Haskell’s work pretty much the same way, but their syntax is a bit different.
 
 Mapping:
 
@@ -900,7 +908,7 @@ firstLetters "Hello World!"
 
 ## 3.10 Something Fun: Custom Operators
 
-In Haskell an _operator_ is anything built from the characters `!#$%&*+./<=>?@\^|-~`. Operators can be defined just like functions (note the slightly different type annotation):
+In Haskell an *operator* is anything built from the characters `!#$%&*+./<=>?@\^|-~`. Operators can be defined just like functions (note the slightly different type annotation):
 
 ```
 (<+>) :: [Int] -> [Int] -> [Int]
@@ -914,9 +922,9 @@ a +++ b = a ++ " " ++ b
 
 ## 3.11 Something Useful: Typed Holes
 
-Sometimes when writing Haskell it can be tricky to find expressions that have the right type. Luckily, the compiler can help you here! A feature called _Typed Holes_ lets you leave blanks in your code, and the compiler will tell you what type the expression in the blank should have.
+Sometimes when writing Haskell it can be tricky to find expressions that have the right type. Luckily, the compiler can help you here! A feature called *Typed Holes* lets you leave blanks in your code, and the compiler will tell you what type the expression in the blank should have.
 
-Blanks can look like `_` or `_name`. They can be confused with the “anything goes” pattern `_`, but the difference is that a hole occurs on the _right side_ of a `=`, while an anything goes pattern occurs on the _left side_ of a `=`.
+Blanks can look like `_` or `_name`. They can be confused with the “anything goes” pattern `_`, but the difference is that a hole occurs on the *right side* of a `=`, while an anything goes pattern occurs on the *left side* of a `=`.
 
 Let’s start with a simple example in GHCi:
 
@@ -1097,7 +1105,6 @@ What is the type of `const const`?
 2. `(c -> a -> b) -> a`
 3. `c -> (a -> b -> a)`
 4. `a -> b -> c -> a`
-
 
 ### 3.13.1 Common Errors
 

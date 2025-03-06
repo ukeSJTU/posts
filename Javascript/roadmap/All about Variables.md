@@ -11,6 +11,7 @@ Free Resources
 - [feedExplore top posts about JavaScript](https://app.daily.dev/tags/javascript?ref=roadmapsh)
 
 # Variable Declarations
+
 To use variables in JavaScript, we first need to create it i.e. declare a variable. To declare variables, we use one of the `var`, `let`, or `const` keywords.
 
 Visit the following resources to learn more:
@@ -29,8 +30,13 @@ Free Resources
 ## `const`
 
 # Hoisting
+
 # Variable Naming Rules
+
 # Variable Scopes
+
 ## Block
+
 ## Function
+
 ## Global

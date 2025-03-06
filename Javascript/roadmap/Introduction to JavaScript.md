@@ -17,6 +17,7 @@ Free Resources
 - [feedExplore top posts about JavaScript](https://app.daily.dev/tags/javascript?ref=roadmapsh)
 
 # What is JavaScript?
+
 JavaScript, often abbreviated JS, is a programming language that is one of the core technologies of the World Wide Web, alongside HTML and CSS. It lets us add interactivity to pages e.g. you might have seen sliders, alerts, click interactions, popups, etc on different websites — all of that is built using JavaScript. Apart from being used in the browser, it is also used in other non-browser environments as well such as Node.js for writing server-side code in JavaScript, Electron for writing desktop applications, React Native for mobile applications, and so on.
 
 Visit the following resources to learn more:
@@ -35,8 +36,8 @@ Free Resources
 - [videoLearn JavaScript - Full Course for Beginners](https://www.youtube.com/watch?v=PkZNo7MFNFg)
 - [feedExplore top posts about JavaScript](https://app.daily.dev/tags/javascript?ref=roadmapsh)
 
-
 # History of JavaScript
+
 JavaScript was initially created by Brendan Eich of NetScape and was first announced in a press release by Netscape in 1995. It has a bizarre history of naming; initially, it was named Mocha by the creator, which was later renamed LiveScript. In 1996, about a year later after the release, NetScape decided to rename it to JavaScript with hopes of capitalizing on the Java community (although JavaScript did not have any relationship with Java) and released Netscape 2.0 with the official support of JavaScript.
 
 Visit the following resources to learn more:
@@ -58,37 +59,44 @@ Free Resources
 所以，ECMAScript 是 JavaScript 的语言标准，而 JavaScript 则是该标准的实现。
 
 ## 别的编程语言有没有这样的关系？
+
 是的，其他编程语言中也存在类似 ECMAScript 与 JavaScript 的这种“标准与实现”的关系。以下是几个例子：
 
 ### 1. **C 语言与 ANSI C 标准**
-   - **标准**: ANSI C 是由美国国家标准协会（ANSI）发布的 C 语言标准，规定了 C 语言的语法、功能等内容。
-   - **实现**: 不同编译器实现了这个标准，比如 GCC（GNU Compiler Collection）和 Clang 都是遵循 ANSI C 标准的 C 编译器。不同的实现允许开发者在符合标准的情况下编写 C 语言代码。
+
+- **标准**: ANSI C 是由美国国家标准协会（ANSI）发布的 C 语言标准，规定了 C 语言的语法、功能等内容。
+- **实现**: 不同编译器实现了这个标准，比如 GCC（GNU Compiler Collection）和 Clang 都是遵循 ANSI C 标准的 C 编译器。不同的实现允许开发者在符合标准的情况下编写 C 语言代码。
 
 ### 2. **C++ 语言与 ISO C++ 标准**
-   - **标准**: C++ 是由国际标准化组织（ISO）制定标准的语言。每隔一段时间，ISO 会发布新的 C++ 标准版本，如 C++98、C++11、C++14、C++17、C++20 等。
-   - **实现**: 不同编译器（如 GCC、Clang 和 Microsoft Visual C++）都实现了 ISO C++ 标准中的功能，这些编译器可以在标准框架下对 C++ 代码进行编译。
+
+- **标准**: C++ 是由国际标准化组织（ISO）制定标准的语言。每隔一段时间，ISO 会发布新的 C++ 标准版本，如 C++98、C++11、C++14、C++17、C++20 等。
+- **实现**: 不同编译器（如 GCC、Clang 和 Microsoft Visual C++）都实现了 ISO C++ 标准中的功能，这些编译器可以在标准框架下对 C++ 代码进行编译。
 
 ### 3. **Python 与 CPython、PyPy**
-   - **标准**: Python 的语言规范由 Python Software Foundation 制定，定义了 Python 的语法和核心功能。
-   - **实现**: Python 的主要实现是 CPython，这是最常用的解释器，但还有其他实现，比如：
-     - **PyPy**: 以更快的执行速度著称，因为它采用了 Just-In-Time (JIT) 编译。
-     - **Jython**: 可以在 Java 虚拟机 (JVM) 上运行 Python 代码。
-     - **IronPython**: 适用于 .NET 平台的 Python 实现。
+
+- **标准**: Python 的语言规范由 Python Software Foundation 制定，定义了 Python 的语法和核心功能。
+- **实现**: Python 的主要实现是 CPython，这是最常用的解释器，但还有其他实现，比如：
+  - **PyPy**: 以更快的执行速度著称，因为它采用了 Just-In-Time (JIT) 编译。
+  - **Jython**: 可以在 Java 虚拟机 (JVM) 上运行 Python 代码。
+  - **IronPython**: 适用于 .NET 平台的 Python 实现。
 
 ### 4. **SQL 与 SQL 标准**
-   - **标准**: SQL 是结构化查询语言的标准，由 ISO 和 ANSI 制定。这个标准规定了 SQL 的基本操作，包括数据查询、插入、更新等。
-   - **实现**: 不同的数据库系统实现了 SQL 标准，但通常会有一些差异或扩展。常见的 SQL 实现包括：
-     - **MySQL**: 遵循 SQL 标准，但加入了一些特定功能。
-     - **PostgreSQL**: 被认为是一个严格遵循 SQL 标准的数据库，但也加入了一些扩展。
-     - **SQLite**: 一个轻量级的 SQL 数据库实现。
+
+- **标准**: SQL 是结构化查询语言的标准，由 ISO 和 ANSI 制定。这个标准规定了 SQL 的基本操作，包括数据查询、插入、更新等。
+- **实现**: 不同的数据库系统实现了 SQL 标准，但通常会有一些差异或扩展。常见的 SQL 实现包括：
+  - **MySQL**: 遵循 SQL 标准，但加入了一些特定功能。
+  - **PostgreSQL**: 被认为是一个严格遵循 SQL 标准的数据库，但也加入了一些扩展。
+  - **SQLite**: 一个轻量级的 SQL 数据库实现。
 
 ### 5. **HTML 与浏览器实现**
-   - **标准**: HTML 是一种由 W3C（万维网联盟）制定的网页标记语言标准，用于定义网页结构。
-   - **实现**: 各大浏览器（如 Chrome、Firefox、Safari、Edge）实现了 HTML 标准。这些浏览器都会尝试严格遵循 W3C 的规范，但实现细节可能有所不同，导致某些网页在不同浏览器上的显示效果略有差异。
+
+- **标准**: HTML 是一种由 W3C（万维网联盟）制定的网页标记语言标准，用于定义网页结构。
+- **实现**: 各大浏览器（如 Chrome、Firefox、Safari、Edge）实现了 HTML 标准。这些浏览器都会尝试严格遵循 W3C 的规范，但实现细节可能有所不同，导致某些网页在不同浏览器上的显示效果略有差异。
 
 ### 6. **CSS 与浏览器实现**
-   - **标准**: 与 HTML 类似，CSS 由 W3C 制定标准，用于定义网页的样式。
-   - **实现**: 各浏览器对 CSS 标准的实现可能存在差异，尽管近年来浏览器对标准的兼容性越来越好，但仍然可能存在某些特定 CSS 属性在某些浏览器中表现不同。
+
+- **标准**: 与 HTML 类似，CSS 由 W3C 制定标准，用于定义网页的样式。
+- **实现**: 各浏览器对 CSS 标准的实现可能存在差异，尽管近年来浏览器对标准的兼容性越来越好，但仍然可能存在某些特定 CSS 属性在某些浏览器中表现不同。
 
 总之，很多编程语言或技术都有一个“标准”或“规范”，由标准组织或开发者社区定义，随后多个实现者（如编译器、解释器、浏览器等）根据这些标准提供不同的实现。
 
@@ -109,20 +117,22 @@ Free Resources
 
 ## ECMAScript Editions
 
-| Ver | Official Name                                                                       | Description                                                                                                                                                                         |
-| --- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ES1 | ECMAScript 1 (1997)                                                                 | First edition                                                                                                                                                                       |
-| ES2 | ECMAScript 2 (1998)                                                                 | Editorial changes                                                                                                                                                                   |
-| ES3 | ECMAScript 3 (1999)                                                                 | Added regular expressions  <br>Added try/catch  <br>Added switch  <br>Added do-while                                                                                                |
-| ES4 | ECMAScript 4                                                                        | Never released                                                                                                                                                                      |
-| ES5 | ECMAScript 5 (2009)  <br>  <br>[Read More](https://www.w3schools.com/js/js_es5.asp) | Added "strict mode"  <br>Added JSON support  <br>Added String.trim()  <br>Added Array.isArray()  <br>Added Array iteration methods  <br>Allows trailing commas for object literals  |
-| ES6 | ECMAScript 2015  <br>  <br>[Read More](https://www.w3schools.com/js/js_es6.asp)     | Added let and const  <br>Added default parameter values  <br>Added Array.find()  <br>Added Array.findIndex()                                                                        |
-|     | ECMAScript 2016  <br>  <br>[Read More](https://www.w3schools.com/js/js_2016.asp)    | Added exponential operator (**)  <br>Added Array.includes()                                                                                                                         |
-|     | ECMAScript 2017  <br>  <br>[Read More](https://www.w3schools.com/js/js_2017.asp)    | Added string padding  <br>Added Object.entries()  <br>Added Object.values()  <br>Added async functions  <br>Added shared memory  <br>Allows trailing commas for function parameters |
-|     | ECMAScript 2018  <br>  <br>[Read More](https://www.w3schools.com/js/js_2018.asp)    | Added rest / spread properties  <br>Added asynchronous iteration  <br>Added Promise.finally()  <br>Additions to RegExp                                                              |
-|     | ECMAScript 2019  <br>  <br>[Read More](https://www.w3schools.com/js/js_2019.asp)    | String.trimStart()  <br>String.trimEnd()  <br>Array.flat()  <br>Object.fromEntries  <br>Optional catch binding                                                                      |
-|     | ECMAScript 2020  <br>  <br>[Read More](https://www.w3schools.com/js/js_2020.asp)    | The Nullish Coalescing Operator (??)                                                                                                                                                |
+| Ver | Official Name                                                                     | Description                                                                                                                                                                    |
+| --- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ES1 | ECMAScript 1 (1997)                                                               | First edition                                                                                                                                                                  |
+| ES2 | ECMAScript 2 (1998)                                                               | Editorial changes                                                                                                                                                              |
+| ES3 | ECMAScript 3 (1999)                                                               | Added regular expressions <br>Added try/catch <br>Added switch <br>Added do-while                                                                                              |
+| ES4 | ECMAScript 4                                                                      | Never released                                                                                                                                                                 |
+| ES5 | ECMAScript 5 (2009) <br> <br>[Read More](https://www.w3schools.com/js/js_es5.asp) | Added "strict mode" <br>Added JSON support <br>Added String.trim() <br>Added Array.isArray() <br>Added Array iteration methods <br>Allows trailing commas for object literals  |
+| ES6 | ECMAScript 2015 <br> <br>[Read More](https://www.w3schools.com/js/js_es6.asp)     | Added let and const <br>Added default parameter values <br>Added Array.find() <br>Added Array.findIndex()                                                                      |
+|     | ECMAScript 2016 <br> <br>[Read More](https://www.w3schools.com/js/js_2016.asp)    | Added exponential operator (\*\*) <br>Added Array.includes()                                                                                                                   |
+|     | ECMAScript 2017 <br> <br>[Read More](https://www.w3schools.com/js/js_2017.asp)    | Added string padding <br>Added Object.entries() <br>Added Object.values() <br>Added async functions <br>Added shared memory <br>Allows trailing commas for function parameters |
+|     | ECMAScript 2018 <br> <br>[Read More](https://www.w3schools.com/js/js_2018.asp)    | Added rest / spread properties <br>Added asynchronous iteration <br>Added Promise.finally() <br>Additions to RegExp                                                            |
+|     | ECMAScript 2019 <br> <br>[Read More](https://www.w3schools.com/js/js_2019.asp)    | String.trimStart() <br>String.trimEnd() <br>Array.flat() <br>Object.fromEntries <br>Optional catch binding                                                                     |
+|     | ECMAScript 2020 <br> <br>[Read More](https://www.w3schools.com/js/js_2020.asp)    | The Nullish Coalescing Operator (??)                                                                                                                                           |
+
 # How to run JavaScript?
+
 JavaScript can be run in the browser by including the external script file using the `script` tag, writing it within the HTML page using the `script` tag again, running it in the browser console or you can also use [REPL](https://www.digitalocean.com/community/tutorials/how-to-use-the-node-js-repl).
 
 Visit the following resources to learn more:

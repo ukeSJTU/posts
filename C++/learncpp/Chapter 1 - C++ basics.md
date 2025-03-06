@@ -28,13 +28,13 @@ In a high-level language such as C++, a single statement may compile into many m
 > There are many different kinds of statements in C++:  
 > C++ 中有许多不同种类的语句：
 >
-> -   **Declaration statements** 声明语句
-> -   **Jump statements** Jump 语句
-> -   **Expression statements** 表达式语句
-> -   **Compound statements** 复合语句
-> -   **Selection statements (conditionals)** 选择语句（条件）
-> -   **Iteration statements (loops)** 迭代语句（循环）
-> -   **Try blocks** Try 块
+> - **Declaration statements** 声明语句
+> - **Jump statements** Jump 语句
+> - **Expression statements** 表达式语句
+> - **Compound statements** 复合语句
+> - **Selection statements (conditionals)** 选择语句（条件）
+> - **Iteration statements (loops)** 迭代语句（循环）
+> - **Try blocks** Try 块
 >
 > **By the time you’re through with this tutorial series, you’ll understand what all of these are!**  
 > **当您完成本教程系列时，您将了解所有这些内容！**
@@ -236,8 +236,8 @@ std::cout << "Yeah!\n";
 > **Author’s note** 作者注  
 > In this tutorial series, our examples fall into one of the following categories: 在本教程系列中，我们的示例分为以下类别之一：
 >
-> -   Full programs (those with a `main()` function). These are ready to be compiled and run. 完整程序（具有  `main()`  函数的程序）。这些已准备好进行编译和运行。
-> -   Snippets (small pieces) of code, such as the statements above. We use these to demonstrate specific concepts in a concise manner. 代码片段（小段），例如上面的语句。我们使用这些来以简洁的方式演示特定概念。
+> - Full programs (those with a `main()` function). These are ready to be compiled and run. 完整程序（具有  `main()`  函数的程序）。这些已准备好进行编译和运行。
+> - Snippets (small pieces) of code, such as the statements above. We use these to demonstrate specific concepts in a concise manner. 代码片段（小段），例如上面的语句。我们使用这些来以简洁的方式演示特定概念。
 >
 > We don’t intend for you to compile snippets. But if you’d like to, you’ll need to turn them into a full program. Typically, that program will look something like this: 我们不打算让您编译代码段。但是，如果您愿意，则需要将它们转换为一个完整的程序。通常，该程序将如下所示：
 >
@@ -458,9 +458,9 @@ Commenting out code is a common thing to do while developing, so many IDEs provi
 
 ## Summary 总结
 
--   At the library, program, or function level, use comments to describe *what*.在库、程序或函数级别，使用注释来描述 _内容_ 。
--   Inside the library, program, or function, use comments to describe *how*.在库、程序或函数中，使用注释来描述 _如何操作_ 。
--   At the statement level, use comments to describe *why*.在语句级别，使用注释来描述 _原因_ 。
+- At the library, program, or function level, use comments to describe *what*.在库、程序或函数级别，使用注释来描述 _内容_ 。
+- Inside the library, program, or function, use comments to describe *how*.在库、程序或函数中，使用注释来描述 _如何操作_ 。
+- At the statement level, use comments to describe *why*.在语句级别，使用注释来描述 _原因_ 。
 
 # 1.3 - Introduction to objects and variables 对象和变量简介
 
@@ -1303,7 +1303,6 @@ When `\n` is not being embedded into an existing line of double-quoted text (e
 > This has two primary benefits:这有两个主要好处:
 >
 > 1. It’s simpler to double-quote all outputted text rather than having to determine what should be single-quoted and double-quoted.对所有输出的文本加双引号比必须确定哪些内容应该用单引号引起来更简单。
->
 > 2. More importantly, it helps avoid inadvertent multicharacter literals. We cover multicharacter literals and some of the unexpected output they can cause in lesson [4.11 -- Chars](https://www.learncpp.com/cpp-tutorial/chars/).更重要的是，它有助于避免无意的多字符文字。我们在课程  [4.11 -- Chars](https://www.learncpp.com/cpp-tutorial/chars/)  中介绍了多字符文字以及它们可能导致的一些意外输出。
 >
 > Single quotes should be preferred in non-output cases.在非输出情况下应首选单引号。
@@ -1396,8 +1395,8 @@ Values entered should be separated by whitespace (spaces, tabs, or newlines).输
 
 In a prior section, we noted that outputting data is actually a two stage process:在上一节中，我们注意到输出数据实际上是一个两个阶段的过程：
 
--   The data from each output request is added (to the end) of an output buffer.来自每个输出请求的数据被添加（到末尾）输出缓冲区。
--   Later, data from (the front of) the output buffer is flushed to the output device (the console).随后，来自输出缓冲区（前面）的数据将刷新到输出设备（控制台）。
+- The data from each output request is added (to the end) of an output buffer.来自每个输出请求的数据被添加（到末尾）输出缓冲区。
+- Later, data from (the front of) the output buffer is flushed to the output device (the console).随后，来自输出缓冲区（前面）的数据将刷新到输出设备（控制台）。
 
 > **Key insight** 关键见解
 >
@@ -1405,8 +1404,8 @@ In a prior section, we noted that outputting data is actually a two stage proces
 
 Similarly, inputting data is also a two stage process:同样，输入数据也是一个两阶段过程：
 
--   The individual characters you enter as input are added to the end of an input buffer (inside `std::cin`). The enter key (pressed to submit the data) is also stored as a `'\n'` character.您输入的各个字符将添加到输入缓冲区的末尾（在  `std::cin`  内）。 Enter 键（按下以提交数据）也存储为  `'\n'`  字符。
--   The extraction operator ‘>>’ removes characters from the front of the input buffer and converts them into a value that is assigned to the associated variable. This variable can then be used in subsequent statements.提取运算符“>>”从输入缓冲区的前面删除字符并将它们转换为分配给关联变量的值。然后可以在后续语句中使用该变量。
+- The individual characters you enter as input are added to the end of an input buffer (inside `std::cin`). The enter key (pressed to submit the data) is also stored as a `'\n'` character.您输入的各个字符将添加到输入缓冲区的末尾（在  `std::cin`  内）。 Enter 键（按下以提交数据）也存储为  `'\n'`  字符。
+- The extraction operator ‘>>’ removes characters from the front of the input buffer and converts them into a value that is assigned to the associated variable. This variable can then be used in subsequent statements.提取运算符“>>”从输入缓冲区的前面删除字符并将它们转换为分配给关联变量的值。然后可以在后续语句中使用该变量。
 
 > **Key insight** 关键见解
 >
@@ -1461,8 +1460,8 @@ Here’s a simplified view of how operator `>>` works for input:以下是运�
 
 The result of the extraction is as follows:提取结果如下：
 
--   If any characters were extracted in step 3 above, extraction is a success. The extracted characters are converted into a value that is then assigned to the variable.如果在上述步骤 3 中提取到任何字符，则提取成功。提取的字符将转换为值，然后分配给变量。
--   If no characters could be extracted in step 3 above, extraction has failed. The object being extracted to is assigned the value `0` (as of C++11), and any future extractions will immediately fail (until `std::cin` is cleared).如果在上述步骤 3 中无法提取字符，则提取失败。被提取到的对象被分配值  `0` （从 C++11 开始），任何未来的提取都将立即失败（直到  `std::cin`  被清除）。
+- If any characters were extracted in step 3 above, extraction is a success. The extracted characters are converted into a value that is then assigned to the variable.如果在上述步骤 3 中提取到任何字符，则提取成功。提取的字符将转换为值，然后分配给变量。
+- If no characters could be extracted in step 3 above, extraction has failed. The object being extracted to is assigned the value `0` (as of C++11), and any future extractions will immediately fail (until `std::cin` is cleared).如果在上述步骤 3 中无法提取字符，则提取失败。被提取到的对象被分配值  `0` （从 C++11 开始），任何未来的提取都将立即失败（直到  `std::cin`  被清除）。
 
 Any non-extracted characters (including newlines) remain available for the next extraction attempt.任何未提取的字符（包括换行符）仍可用于下一次提取尝试。
 
@@ -1487,11 +1486,11 @@ We’ll explore more cases in the quiz below.我们将在下面的测验中探�
 
 New programmers often mix up `std::cin`, `std::cout`, the insertion operator (`<<`) and the extraction operator (`>>`). Here’s an easy way to remember:新程序员经常混淆  `std::cin`、`std::cout`、插入运算符 (`<<`) 和提取运算符 (`>>`）。这是一个简单的记住方法：
 
--   `std::cin` and `std::cout` always go on the left-hand side of the operator.`std::cin`  和  `std::cout`  始终位于运算符的左侧。
--   `std::cout` is used to output a value (cout = character output).`std::cout`  用于输出一个值（cout = 字符输出）。
--   `std::cin` is used to get an input value (cin = character input).`std::cin`  用于获取输入值（cin = 字符输入）。
--   `<<` is used with `std::cout`, and shows the direction that data is moving. `std::cout << 4` moves the value `4` to the console.`<<`  与  `std::cout`  一起使用，显示数据移动的方向。 `std::cout << 4`  将值  `4`  移动到控制台。
--   `>>` is used with `std::cin`, and shows the direction that data is moving. `std::cin >> x` moves the value the user entered from the keyboard into variable `x`.`>>`  与  `std::cin`  一起使用，显示数据移动的方向。 `std::cin >> x`  将用户从键盘输入的值移动到变量  `x`  中。
+- `std::cin` and `std::cout` always go on the left-hand side of the operator.`std::cin`  和  `std::cout`  始终位于运算符的左侧。
+- `std::cout` is used to output a value (cout = character output).`std::cout`  用于输出一个值（cout = 字符输出）。
+- `std::cin` is used to get an input value (cin = character input).`std::cin`  用于获取输入值（cin = 字符输入）。
+- `<<` is used with `std::cout`, and shows the direction that data is moving. `std::cout << 4` moves the value `4` to the console.`<<`  与  `std::cout`  一起使用，显示数据移动的方向。 `std::cout << 4`  将值  `4`  移动到控制台。
+- `>>` is used with `std::cin`, and shows the direction that data is moving. `std::cin >> x` moves the value the user entered from the keyboard into variable `x`.`>>`  与  `std::cin`  一起使用，显示数据移动的方向。 `std::cin >> x`  将用户从键盘输入的值移动到变量  `x`  中。
 
 We’ll talk more about operators in lesson [1.9 -- Introduction to literals and operators](https://www.learncpp.com/cpp-tutorial/introduction-to-literals-and-operators/).我们将在[1.9——文字和运算符简介](https://www.learncpp.com/cpp-tutorial/introduction-to-literals-and-operators/)课程中详细讨论运算符。
 
@@ -1630,9 +1629,9 @@ Note that `".\n"` must be double-quoted since we’re outputting more than one
 >
 > 总结一下：
 >
-> -   初始化 = 对象在定义点被赋予已知值。
-> -   赋值 = 对象在定义点之后被赋予已知值。
-> -   未初始化 = 对象尚未被赋予已知值。
+> - 初始化 = 对象在定义点被赋予已知值。
+> - 赋值 = 对象在定义点之后被赋予已知值。
+> - 未初始化 = 对象尚未被赋予已知值。
 >
 > 相关地，考虑以下变量定义：
 
@@ -1714,14 +1713,14 @@ int main()
 
 实现未定义行为的代码可能表现出以下任何症状：
 
--   你的程序每次运行都产生不同的结果。
--   你的程序始终产生相同的错误结果。
--   你的程序行为不一致（有时产生正确结果，有时不正确）。
--   你的程序看起来工作正常，但在程序后面产生错误结果。
--   你的程序崩溃，可能立即崩溃，也可能稍后崩溃。
--   你的程序在某些编译器上可以工作，但在其他编译器上不行。
--   你的程序工作正常，直到你更改了一些看似无关的代码。
--   或者，你的代码可能实际上仍然产生正确的行为。
+- 你的程序每次运行都产生不同的结果。
+- 你的程序始终产生相同的错误结果。
+- 你的程序行为不一致（有时产生正确结果，有时不正确）。
+- 你的程序看起来工作正常，但在程序后面产生错误结果。
+- 你的程序崩溃，可能立即崩溃，也可能稍后崩溃。
+- 你的程序在某些编译器上可以工作，但在其他编译器上不行。
+- 你的程序工作正常，直到你更改了一些看似无关的代码。
+- 或者，你的代码可能实际上仍然产生正确的行为。
 
 > **作者注**
 >

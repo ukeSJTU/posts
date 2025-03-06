@@ -1,4 +1,3 @@
-
 在软件开发的世界里，版本号不仅仅是一串数字，它们是软件演进过程中的里程碑，是开发者与用户之间的一种沟通方式。而 Semantic Versioning（语义化版本）则为这种沟通提供了一个清晰、统一的语言。
 
 ## 什么是 Semantic Versioning？
@@ -128,7 +127,7 @@ farewell() {
 
 ```javascript
 class SuperLib {
-  constructor(name, greeting = 'Hello') {
+  constructor(name, greeting = "Hello") {
     this.name = name;
     this.greeting = greeting;
   }
@@ -197,7 +196,7 @@ class TimeGreeter extends Greeter {
     if (hour < 12) timeGreeting = "Good morning";
     else if (hour < 18) timeGreeting = "Good afternoon";
     else timeGreeting = "Good evening";
-    
+
     return `${timeGreeting}, ${name}!`;
   }
 }

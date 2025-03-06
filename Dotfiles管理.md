@@ -1,7 +1,9 @@
 # 方法 0
+
 This is a template guide for actual methods of syncing dotfiles
 
 ## 概述
+
 - **核心概念和目的**：在不同设备或系统间管理和同步配置文件（dotfiles），以提高工作效率并保持一致性。
 - **使用场景和优势**：
   - 适用于多设备用户。
@@ -11,6 +13,7 @@ This is a template guide for actual methods of syncing dotfiles
 ## 安装与初始化
 
 - **安装过程**：如何在不同平台上安装该方法。
+
   - 例如，使用 `apt`、`brew` 等工具安装。
     - 对于 `chezmoi`，可以使用 `brew install chezmoi` 安装。
     - 对于 `git` 和 `stow`，可以使用 `apt install git stow` 或 `brew install git stow`。
@@ -23,6 +26,7 @@ This is a template guide for actual methods of syncing dotfiles
 ## 管理 Dotfiles
 
 - **添加 Dotfiles**：如何将你的 dotfiles 添加到该管理方法中。
+
   - 例如，如何使用 `stow` 创建符号链接，或 `chezmoi` 同步文件。
     - 对于 `stow`，你可以将每个文件夹（如 `.vimrc`、`.bashrc`）放入一个仓库中，通过 `stow` 来管理它们。
     - 对于 `chezmoi`，可以通过 `chezmoi add` 来将文件加入管理。
@@ -33,6 +37,7 @@ This is a template guide for actual methods of syncing dotfiles
 ## 同步与更新
 
 - **同步**：如何在不同设备或系统间同步 dotfiles。
+
   - 通过 Git 进行同步，推送更新到 Git 仓库后，在其他设备上拉取并应用更新。
   - 对于 `chezmoi`，通过 `chezmoi apply` 将更新的 dotfiles 应用到目标系统。
 
@@ -44,6 +49,7 @@ This is a template guide for actual methods of syncing dotfiles
 ## 备份与恢复
 
 - **备份**：如何创建 dotfiles 的备份。
+
   - 使用 Git 管理的 dotfiles 会自动享有版本控制，便于备份。
   - 对于 `chezmoi`，使用 `chezmoi export` 将配置备份到一个压缩文件中。
 
@@ -53,6 +59,7 @@ This is a template guide for actual methods of syncing dotfiles
 ## 自动化与维护
 
 - **自动化**：是否可以自动化配置和更新。
+
   - 使用 Git Hooks 自动化推送与拉取操作，保持多设备同步。
   - 对于 `chezmoi`，可以通过编写自定义脚本实现更新与配置的自动化。
 
@@ -63,6 +70,7 @@ This is a template guide for actual methods of syncing dotfiles
 ## 优缺点分析
 
 - **优点**：
+
   - 适合需要在多个设备之间同步配置的用户。
   - 通过 Git 和版本控制，能够轻松追踪和恢复更改。
   - `chezmoi` 提供的自动化与安全功能（如加密敏感数据）是其突出优点。
@@ -75,16 +83,17 @@ This is a template guide for actual methods of syncing dotfiles
 
 - **Q**：如何避免在使用 Git 时出现冲突？
   - **A**：保持每台设备的配置文件尽量一致，定期推送与拉取更新，避免大规模改动。
-  
 - **Q**：如何使用 `chezmoi` 同步敏感数据？
   - **A**：`chezmoi` 提供了加密功能，可以使用 `chezmoi encrypt` 来加密敏感文件。
 
 ---
 
 # 方法 1
+
 也就是目前我采用的方法：Git repo 配合自定义的 bash 脚本。
 
 ## 概述
+
 - **核心概念和目的**：将所有的 dotfiles 放入一个 Git 仓库，配合自定义的 bash 脚本管理配置与符号链接。
 - **使用场景和优势**：
   - 适合需要完全控制 dotfiles 的高级用户。
@@ -120,7 +129,6 @@ This is a template guide for actual methods of syncing dotfiles
 - **优点**：
   - 灵活性高，可以定制化管理 dotfiles。
   - 可以精确控制同步与更新过程。
-  
 - **缺点**：
   - 脚本复杂度较高，难以快速上手。
   - 需要手动管理符号链接和配置文件。
@@ -133,9 +141,11 @@ This is a template guide for actual methods of syncing dotfiles
 ---
 
 # 方法 2
+
 还是用 Git repo 但是自定义的 bash 脚本如果不会写的话可以用 GNU Stow 工具来自动创建 symlink。
 
 ## 概述
+
 - **核心概念和目的**：结合 Git 和 GNU Stow，利用 Stow 自动管理符号链接，简化配置文件的管理过程。
 - **使用场景和优势**：
   - 对于不熟悉 bash 脚本的用户，GNU Stow 提供了一个简单的自动化方式来管理符号链接。
@@ -171,7 +181,6 @@ This is a template guide for actual methods of syncing dotfiles
 - **优点**：
   - 比手动创建符号链接更简单，适合新手。
   - 自动化程度较高。
-  
 - **缺点**：
   - 可能对于一些复杂的配置文件（例如涉及多个目录的配置）支持不好。
   - 需要手动管理仓库。
@@ -180,5 +189,3 @@ This is a template guide for actual methods of syncing dotfiles
 
 - **Q**：如何避免在不同设备上 `stow` 出现冲突？
   - **A**：确保在每台设备上保持一致的符
-
-

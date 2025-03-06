@@ -1,6 +1,7 @@
 ```python
 print("Hello Python")
 ```
+
 ## 1. 基础语法结构
 
 ### 1.1 程序入口

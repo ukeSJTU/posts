@@ -1,14 +1,23 @@
 # 8.1 Control flow introduction
 
 # 8.2 If statements and blocks
+
 # 8.3 Common if statement problems
+
 # 8.4 Constexpr if statements
+
 # 8.5 Switch statement basics
+
 # 8.6 Switch fallthrough and scoping
+
 # 8.7 Goto statements
+
 # 8.8 循环和`while`语句简介
+
 TODO 本文都需要重新确定翻译
+
 ## 循环简介
+
 现在真正的乐趣开始了 —— 在接下来的一系列课程中,我们将学习循环。循环是一种控制流结构,允许一段代码重复执行,直到满足某个条件为止。循环为您的编程工具箱增添了很大的灵活性,让您能够做许多原本困难的事情。
 
 例如,假设您想打印1到10之间的所有数字。如果不使用循环,您可能会尝试这样做:
@@ -27,7 +36,9 @@ int main()
 虽然这是可行的,但当您想打印更多数字时,这种方法就变得越来越不实际:如果您想打印1到1000之间的所有数字呢?那将需要大量的输入!但是这种程序之所以可以这样编写,是因为我们在编译时就知道要打印多少个数字。
 
 现在,让我们稍微改变一下参数。如果我们想让用户输入一个数字,然后打印1到用户输入的数字之间的所有数字呢?用户将会输入的数字在编译时是未知的。那么我们该如何解决这个问题呢?
+
 ## `while`语句
+
 `while`语句(也称为`while`循环)是C++提供的三种循环类型中最简单的一种,它的定义与if语句非常相似:
 
 ```cpp
@@ -505,7 +516,9 @@ int main()
 ```
 
 # 8.9 Do while statements
-# 8.10 For语句 
+
+# 8.10 For语句
+
 TODO 翻译需要修改
 到目前为止，C++中最常用的循环语句是for语句。当我们有一个明显的循环变量时，for语句（也称为for循环）是首选，因为它让我们能够轻松简洁地定义、初始化、测试和改变循环变量的值。
 
@@ -525,7 +538,7 @@ for (init-statement; condition; end-expression)
     init-statement; // 用于定义循环中使用的变量
     while (condition)
     {
-        statement; 
+        statement;
         end-expression; // 用于在重新评估条件之前修改循环变量
     }
 } // 在循环内定义的变量在这里超出作用域
@@ -623,8 +636,8 @@ std::int64_t pow(int base, int exponent)
 这是一个简单的递增for循环，`i`从0循环到（但不包括）`exponent`。
 
 - 如果`exponent`为0，for循环将执行0次，函数将返回1。
-- 如果`exponent`为1，for循环将执行1次，函数将返回1 * base。
-- 如果`exponent`为2，for循环将执行2次，函数将返回1 * base * base。
+- 如果`exponent`为1，for循环将执行1次，函数将返回1 \* base。
+- 如果`exponent`为2，for循环将执行2次，函数将返回1 _ base _ base。
 
 虽然大多数for循环将循环变量递增1，但我们也可以递减它：
 
@@ -990,8 +1003,13 @@ fizzbuzzpop
 ```
 
 # 8.11 Break and continue
+
 # 8.12 Halts (exiting your program early)
+
 # 8.13 Introduction to random number generation
+
 # 8.14 Generating random numbers using Mersenne Twister
+
 # 8.15 Global random numbers (Random.h)
+
 # 8.x Chapter 8 summary and quiz

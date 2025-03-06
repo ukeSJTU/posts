@@ -23,21 +23,19 @@ R 连续替换多个字符，换句话说替换后可以继续替换后面的字
 u 撤销上一步操作 undo
 U 撤销上一次对一行的操作
 
-d motion 删除内容 delete 
+d motion 删除内容 delete
 dd 删除整行（并且内容存入 vim 的寄存器）
 dw dnw de d$
 
 p 复制？光标后（如果整行删除，则在光标下方新添加一行） paste
 
 c motion 删除光标后面的内容并且进入 insert 模式 change?
-cw ce c$ 
-
+cw ce c$
 
 G 跳转到最后一行 goto
 gg 跳转到第一行
 ctrl+G 显示光标所在行位置和文件信息
 345G 跳转到第345行（注意G大写）
-
 
 /foobar 在文件中从光标向后查询 foobar
 ?foobar 在文件中从光标前查询 foobar
@@ -87,24 +85,28 @@ p 粘贴
 'hls' 'hlsearch'        高亮显示所有的匹配短语
 
 选项名可以用完整版本，也可以用缩略版本。
-     
+
+    
 /ignore\c 在此次搜索时忽略大小写
-
-
 
 以上内容从 vimtutor 整理而得，这是可以上手 vim 编辑器最基本的命令操作。
 
 以下内容则是根据 pratical vim edition2 书中提炼而出
 
 # Part1 Modes
+
 vim 中有个概念叫做 modes 模式，在不同模式下按同一个键效果不一样。比如normal modes按下x是删除当前光标所在的字符，而在insert modes下则是输入x字符
+
 ## chapter 2 normal mode
+
 在normal mode下，许多命令都可以通过在前面添加一个数字来重复运行，例如w是移动到下一个单词首字母，那么5w就是向后5个单词。
 
 ### tip7 pause with Your Brush Off the Page
+
 为什么我们需要normal mode？作者举例：正如画家也并不总是在画画，他们也需要时间构图，调色等，程序员也并不总是在写程序，更多时候你可能是在阅读代码，思考下面该写什么，甚至哪怕当你开始写代码了你也不一定要进入insert mode，你完全可以从别的地方复制/重构/删除代码。
 
 ### tip8 chunk your undos
+
 在别的文本编辑器中，undo指令（一般是ctrl+z）会撤销对于最后输入/更改的单词/赐福。但是在vim中，我们可以控制undo命令的颗粒度。
 
 我认为想要理解undo的颗粒度，换句话说undo命令会revert最近的一次修改，但是一次修改指的是什么？这包括从normal，visual，command-line三种模式下触发的命令，也包括在insert模式下插入的text内容，例如 i{insert some text}<\Esc> 就是一次change。
@@ -114,6 +116,7 @@ vim 中有个概念叫做 modes 模式，在不同模式下按同一个键效果
 值得注意的是，在insert mode下如果你用方向键控制光标移动，这会另外新建一个undo chunk。
 
 ### tip9 compose repeatable changes
+
 vim 针对重复的操作做了大量优化，例如 `.` 可以重复执行上一次操作。那么为了能够最大限度的利用这一特性，我们需要着重考虑我们如何构成可重复的编辑/改变 changes。
 
 下面举了一个例子：
@@ -139,6 +142,7 @@ d + aw：delete a word
 对于方法三而言，. 命令会重复执行daw，相当于一个按键执行三个按键，非常好！
 
 ### tip10 use count to do simple arithmetics
+
 在vim的normal-mode中，有很多命令可以通过在前面增加count来重复执行命令制定次数，例如3j是乡下移动三行，等等。
 
 vim中还有一对很有趣的命令：当光标位于一个数字上时，ctrl-a会+1， ctrl-x会-1.两者结合在一起：光标位于数字9上，在normal mode下输入5ctrl-x会得到4（9-5=4）。
@@ -148,14 +152,21 @@ vim中还有一对很有趣的命令：当光标位于一个数字上时，ctrl-
 但如果光标根本不在数字上呢？根据文档，:h ctrl-a, vim会向后找到第一个数字并进行处理。作者提供了一个例子，我简化一下：
 初始文本（这是一段css，光标位于第一个字符上）
 
-``` css
-.blog { background-position: 0px 0px }
+```css
+.blog {
+  background-position: 0px 0px;
+}
 ```
 
 想要改成：
-``` css
-.blog { background-position: 0px 0px }
-.news { background-position: -180px 0px }
+
+```css
+.blog {
+  background-position: 0px 0px;
+}
+.news {
+  background-position: -180px 0px;
+}
 ```
 
 很显然，整个修改过程应该要分成三步：先复制粘贴行，然后修改blog->news，最后数字0改成-180.
@@ -163,20 +174,20 @@ vim中还有一对很有趣的命令：当光标位于一个数字上时，ctrl-
 第一步很简单：yyp 就可以，光标移动到了第二行第一个字符上`.`。
 第二步：cW.news Esc. c
 
-
 ### tip12 combine and conquer
+
 这一节的核心要点在于：`{operator}+{motion}={action}`。常用的`operator`如下：
 
-| 按键   | 效果                                                |
+| 按键 | 效果                                              |
 | ---- | ------------------------------------------------- |
 | `c`  | change                                            |
-| `d`  | 删除                                                |
+| `d`  | 删除                                              |
 | `y`  | yank                                              |
-| `g~` | 切换大小写                                             |
-| `gu` | 小写                                                |
-| `gU` | 大写                                                |
-| `>`  | 向右移动                                              |
-| `<`  | 向左移动                                              |
+| `g~` | 切换大小写                                        |
+| `gu` | 小写                                              |
+| `gU` | 大写                                              |
+| `>`  | 向右移动                                          |
+| `<`  | 向左移动                                          |
 | `=`  | autoindent                                        |
 | `!`  | Filter {motion} lines through an external program |
 
@@ -195,6 +206,7 @@ vim 还允许你自定义 operator 和 motion，你可以通过 `:h :map-operato
 那么在你按下 operator 之后，按下 motion 之前 vim 在干什么呢？实际上，vim 还有一种模式：operator-pending mode。在这个状态下，它一直等待你按下 motion 以执行操作，当然你也可与你按esc取消这次操作。值得注意的是，我们前面提到的`gu`这些命令，g不会进入 operator-pending mode, 毕竟g本身并不是operator，只有和别的例如u组合在一起才有意义。
 
 ## chapter 3 insert mode
+
 对于很多初学者而言，也正如我们前面提到的各种快捷键/命令，想要执行复制/删除等等操作总是需要退出到 normal mode 下才可以用。这就有时候让人感觉很麻烦。在本chapter中，实际上你在 insert mode 下，也可以通过某些按键轻松做到。
 
 在本章，你还会学到如何在vim中方便地输入不在键盘上的键。
@@ -204,41 +216,41 @@ replace mode 是 insert mode 的一种特殊情况，前面我们提到，当你
 我们还会深度讨论自动补全（autocompletion）。
 
 ### tip13 在insert模式下立即作出修改
+
 在 insert 模式下输入的时候，打错字是很常有的情况。例如下面，当你输入完后，你发现你把`main`拼写成`mian`。
 
-``` plaintext
+```plaintext
 int mian
 ```
 
 如果你什么都不懂，你大概率会是这个流程：`<Esc>`退出insert mode，移动光标到单词开头，然后`dw`删除这个单词，再`i`进入insert mode，最后重新输入正确拼写的单词：`main`。当然`cw`也是可以的。可是无论怎样，这样的流程总是包含：`insert -> normal -> insert`模式的切换。有没有更方便的操作呢？
 
-
-| 按键           | 作用       |
-| ------------ | -------- |
+| 按键         | 作用             |
+| ------------ | ---------------- |
 | `backspace`  | 向前删除一个字符 |
 | `<ctrl - h>` | 向前删除一个字符 |
 | `<ctrl - w>` | 向前删除一个单词 |
-| `<ctrl - u>` | 向前删除到行首  |
+| `<ctrl - u>` | 向前删除到行首   |
 
 > [!tip] 提示：
 > 上面这些命令不仅仅可以在 vim （insert mode）中使用，你也可以在vim的command mode下甚至是shell环境中使用。
 
 ### tip14 返回 normal mode
+
 初学者可能会使用 `<Esc>` 从 insert 退出到 normal mode中。但很快你会发现这并不方便，`<Esc>`这个键离我们的常用打字区域太远了。于是有些人会修改键盘键位映射，将`Capslock`键映射成`<Esc>`键，这样当你按下`Capslock`的时候，vim会从insert mode退出到normal mode下。
 
 > **重新映射`<Capslock>`键**
-> 
+>
 > 我们知道jk在normal mode下分别是将光标向下移动或者向上移动一行。但如果你不小心按到了`<Capslock>`键，相当于你输入了J或者K，前者会将当前行和下一行拼接在一起，后者会查看当前光标所在的单词的说明页（manpage）。这可能会在不经意间打乱你的文本，所以有些人会将`<Capslock>`映射到别的键，最常见的就是`<Esc>`(我们前面提到的)或者`<Ctrl>`键。
-> 
+>
 > 一般来说，这个映射是发生在操作系统层面的，也就是说你最好google搜索如何在**你的**操作系统上映射键。并且因为这个重新映射是发生在操作系统层面的，这意味着你所有的键盘使用都是被重新映射过的，而不仅仅是在vim中。
 
 实际上你还有些别的方法：vim内置了`ctrl-[`来起到相同的作用。有些人会配置快捷键`jj`或者`jk`来快速退出。
 
 但这些都避免不了一个问题：有的时候我在insert mode下想要执行一个normal mode中的命令，但是执行完以后我希望接着编辑文本，如果退出了insert mode我仍然需要按i重新进入insert mode下，甚至可能还需要调整光标所在位置，vim特意为此设置了一个子模式：insert normal mode模式。
 
-
-| 按键         | 效果                   |
-| ---------- | -------------------- |
+| 按键       | 效果                      |
+| ---------- | ------------------------- |
 | `<Esc>`    | 切换到 normal 模式        |
 | `<ctrl-[>` | 切换到 normal 模式        |
 | `<ctrl-o>` | 切换到 insert normal 模式 |
@@ -246,24 +258,28 @@ int mian
 insert normal mode是normal mode的一个特殊情况。它允许我们在这个模式下触发一次normal mode中的命令，然后就会自动回到 insert mode 下，允许我们继续编辑。例如，`zz`命令可以将当前行移动到屏幕正中间，所以当你想要写着写着想要看看下方是什么内容的时候可以组合按键：`<ctrl-o>zz`。
 
 TODO 也许应该有个更好的标题：paste from a register without leaving insert mode
+
 ### tip15 在不离开insert模式的前提下从寄存器粘贴
+
 我们之前学习的vim 中的yank和put操作都是在normal mode下进行的，但如果我们想要在insert mode下进行put操作该怎么办呢？
 
 我们来看一个具体情景：
-``` plaintext
+
+```plaintext
 Practical Vim, by Drew Neil
 Read Drew Neil's
 ```
 
 期望的最终结果是：
-``` plaintext
+
+```plaintext
 Practical Vim, by Drew Neil
 Read Drew Neil's Practical Vim
 ```
 
 操作步骤：
+
 - `yt,`
 - `jA<Space>`
 - `Ctrl-r0`
 - `.<Esc>`
-
