@@ -1,6 +1,6 @@
 {
   "showRibbon": true,
-  "cssTheme": "Monokai",
+  "cssTheme": "Minimal",
   "translucency": false,
-  "accentColor": "#f2ad18"
+  "accentColor": ""
 }
