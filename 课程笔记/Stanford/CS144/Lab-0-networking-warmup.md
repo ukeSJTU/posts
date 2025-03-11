@@ -46,8 +46,8 @@ Let’s get started with using the network. You are going to do two tasks by han
 
 1. In a Web Browser, visit http://cs144.keithw.org/hello and observe the result.
 2. Now, you'll do the same thing the browser does, by hand.
-   1. **On your VM** (or on your own computer - e.g. the Terminal program in macOS), run `telnet cs144.keithw.org http`. This tells the telnet program to open a reliable byte stream between your computer and another computer (named `cs144.keithw.org`), and with a particular _service_ running on that computer: the "http" service, for the Hyper-Text Transfer Protocol, used by the World Wide Web.
-      If your computer has been set up properly and is on the Internet, you will see:
+   3. **On your VM** (or on your own computer - e.g. the Terminal program in macOS), run `telnet cs144.keithw.org http`. This tells the telnet program to open a reliable byte stream between your computer and another computer (named `cs144.keithw.org`), and with a particular _service_ running on that computer: the "http" service, for the Hyper-Text Transfer Protocol, used by the World Wide Web.[^1]
+	If your computer has been set up properly and is on the Internet, you will see:
       ```bash
        user@computer:~$ telnet cs144.keithw.org http
        Trying 104.196.238.229...
@@ -55,18 +55,67 @@ Let’s get started with using the network. You are going to do two tasks by han
        Escape character is '^]'.
       ```
       If you need to quit, hold down `ctrl` and press `]`, and then type `close<CR>`
-   2. type `GET /hello HTTP/1.1 <CR>`. This tells the server the _path_ part of the URL. (The part starting with the third slash.)
-   3. Type `Host: cs144.keithw.org <CR>`. This tells the server the _host_ part of the URL. (The part between `http://` and the third slash.)
-   4. Type `Connection: close <CR>`. This tells the server that you are finished making requests, and it should close the connection as soon as it finished replying.
-   5. Hit the Enter key one more time: `<CR>`. This sends an empty line and tells the server that you are done with your HTTP request.
-   6. If all went well, you will see the same response that your browser saw, preceded by HTTP _headers_ that tell the browser how to interpret the response.
-3. **Assignment:** Now that you know how to fetch a Web page by hand, show us you can! Use the above technique to fetch the URL http://cs144.keithw.org/lab0/sunetid, replacing _sunetid_ with your own primary SUNet ID. You will receive a secret code in the `X-Your-Code-Is: header`. Save your SUNet ID and the code for inclusion in your writeup.
+   4. type `GET /hello HTTP/1.1 <CR>`. This tells the server the _path_ part of the URL. (The part starting with the third slash.)
+   5. Type `Host: cs144.keithw.org <CR>`. This tells the server the _host_ part of the URL. (The part between `http://` and the third slash.)
+   6. Type `Connection: close <CR>`. This tells the server that you are finished making requests, and it should close the connection as soon as it finished replying.
+   7. Hit the Enter key one more time: `<CR>`. This sends an empty line and tells the server that you are done with your HTTP request.
+   8. If all went well, you will see the same response that your browser saw, preceded by HTTP _headers_ that tell the browser how to interpret the response.
+3. 9. ssignment:** Now that you know how to fetch a Web page by hand, show us you can! Use the above technique to fetch the URL http://cs144.keithw.org/lab0/sunetid, replacing _sunetid_ with your own primary SUNet ID. You will receive a secret code in the `X-Your-Code-Is: header`. Save your SUNet ID and the code for inclusion in your writeup.
 
 ### 2.2 Send yourself an email
 
+Now that you know how to fetch a Web page, it's time to send an email message, again using a reliable byte stream to a service running on another computer.
+1. SSH to `sunetid@cardinal.stanford.edu` (to make sure you are on Stanford's network), then run `telnet 148.163.153.234 smtp`.[^2] The "smtp" service refers to the Simple Mail Transfer Protocol, used to send email messages. If all goes well, you will see:
+```plaintext
+user@computer:~$ telnet 148.163.153.234 smtp
+Trying 148.163.153.234...
+Connected to 148.163.153.234.
+Escape character is '^]'.
+220 mx0b-00000d03.pphosted.com ESMTP mfa-m0214089
+```
+2. First step: identify your computer to the email server. Type `HELO mycomputer.stanford.edu <CR>`. Wait to see something like `"250 ... Hello cardinal3.stanford.edu [171.67.24.75], pleased to meet you"`.
+3. Next step: who is sending the email? Type `MAIL FROM: sunetid@stanford.edu <CR>`. Replace *`sunetid`* with your SUNet ID.[^3] If all goes well, you will see `"250 2.1.0 Sender ok"`.
+4. Next: who is the recipient? For starters, try sending an email message to yourself. Type `RCPT TO:: sunetid@stanford.edu <CR>`. Replace *`sunetid`* with your own SUNet ID. If all goes well, you will see `"250 2.1.5 Recipient ok"`.
+5. It's time to upload the email message itself. Type `DATA <CR>` to tell the server you're ready to start. If all goes well you will see `"354 End data with <CR><LF>.<CR><LF>"`.
+6. Now you are typing an email message to yourself. First, start by typing the *headers* that you will see in your email client. Leave a blank line at the end of the headers.
+```plaintext
+354 End data with <CR><LF>.<CR><LF>
+From: sunetid@stanford.edu <CR>
+To: sunetid@stanford.edu <CR>
+Subject: Hello from CS144 Lab 0! <CR>
+<CR>
+```
+7. Type the *body* of the email message - anything you like. When finished, end with a dot on a line by itself: `. <CR>`. Expect to see something like: `"250 2.0.0 33h24dpdsr-1 Message accepted for delivery"`.
+8. Type `QUIT <CR>` to end the conversation with the email server. Check your inbox and spam folder to make sure you got the email.
+9. **Assignment:** Now that you know how to send an email by hand to yourself, try sending one to a friend or lab partner and make sure they get it. Finally, show us you can send one to us. Use the above technique to send an email, from yourself, to `cs144grader@gmail.com`.
+
 ### 2.3 Listening and connecting
 
+You've seen what you can do with `telnet`: a **client** program that makes outgoing connections to programs running on other computers. Now it's time to experiment with being a simple **server**: the kind of program that waits around for clients to connect to it.
+
+1. In one terminal window, run `netcat -v -l -p 9090` **on your VM**. You should see:
+```plaintext
+user@computer:~$ netcat -v -l -p 9090
+Listening on [0.0.0.0] (family 0, port 9090)
+```
+2. Leave `netcat` running. In another terminal window, run `telnet localhost 9090` (also on your VM).
+3. If all goes well, the `netcat` will have printed something like `"Conenction from localhost 53500 received!"`.
+4. Now try typing in either terminal window - the `netcat` (server) or the `telnet` (client). Notice that anything you type in one window appears in the other, and vice versa. You'll have to hit `<CR>` for bytes to be transferred.
+5. In the `netcat` window, quit the program by typing `<CTRL>-C`. Notice that the `telnet` program immediately quits as well.
+
 ## 3 Writing a network program using an OS stream socket
+
+In the next part of this warmup lab, you will write a short program that fetches a Web page over the Internet. You will make use of a feature provided by the Linux kernel, and by most other operating systems: the ability to create a *reliable bidirectional byte stream* between two programs, one running on your computer, and the other on a different computer across the Internet (e.g., a Web server such as `Apache` or `nginx`, or the `netcat` program).
+
+This feature is known as a *stream socket*. To your program and to the Web server, the socket looks like an ordinary file descriptor (similar to a file on disk, or to the `stdin` or `stdout` I/O streams). When two stream sockets are *connected*, any bytes written to one socket will eventually come out in the same order from the other socket on the other computer.
+
+In reality, however, the Internet doesn’t provide a service of reliable byte-streams. Instead, the only thing the Internet really does is to give its "best effort" to deliver short pieces of data, called *Internet datagrams*, to their destination. Each datagram contains some metadata (headers) that specifies things like the source and destination addresses—what computer it came from, and what computer it’s headed towards—as well as some *payload* data (up to about 1,500 bytes) to be delivered to the destination computer.
+
+Although the network tries to deliver every datagram, in practice datagrams can be (1) lost, (2) delivered out of order, (3) delivered with the contents altered, or even (4) duplicated and delivered more than once. It’s normally the job of the operating systems on either end of the connection to turn "best-effort datagrams" (the abstraction the Internet provides) into “reliable byte streams” (the abstraction that applications usually want).
+
+The two computers have to cooperate to make sure that each byte in the stream eventually gets delivered, in its proper place in line, to the stream socket on the other side. They also have to tell each other how much data they are prepared to accept from the other computer, and make sure not to send more than the other side is willing to accept. All this is done using an agreed-upon scheme that was set down in 1981, called the Transmission Control Protocol, or TCP.
+
+In this lab, you will simply use the operating system’s pre-existing support for the Transmission Control Protocol. You’ll write a program called "**`webget`**" that creates a TCP stream socket, connects to a Web server, and fetches a page—much as you did earlier in this lab. In future labs, you’ll implement the other side of this abstraction, by implementing the Transmission Control Protocol yourself to create a reliable byte-stream out of not-so-reliable datagrams.
 
 ### 3.1 Let's get started - setting up the repository on your VM and on Github
 
@@ -85,7 +134,7 @@ Let’s get started with using the network. You are going to do two tasks by han
 
 ### 3.2 Compiling the started code
 
-1. Still in the "minnow" directory, create a directory to compile the lab software: `cmake -S . -B build`
+1. Still in the "minnow" directory, create a directory to compile the lab software: `cmake -S . -B build`.
 2. Compile the source code: `cmake --build build`
 3. Using your favorite text editor (many students prefer VS Code editing files over SSH, but you can use whatever you want): open and start editing the `writeups/check0.md` file. This is the template for your lab checkpoint writeup and will be included in your submission.
 
@@ -245,93 +294,15 @@ HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 
 看返回的数据，`X-Your-Code-Is: 403269`。感觉应该其实是要把`sunetid`替换成自己的，但是我没有办法注册，所以先这样。
 
----
-
-后面要设置github等等，在github上面创建一个属于自己的private的minnow仓库，然后在linux上执行：
-
-```bash
-git remote add github https://github.com/ukeSJTU/minnow
-```
-
-链接一下git相关的操作：[[git]]
-
-如果和下面结果一样说明操作正确：
-
-```bash
-$ git remote -v
-github  https://github.com/ukeSJTU/minnow (fetch)
-github  https://github.com/ukeSJTU/minnow (push)
-origin  https://github.com/cs144/minnow (fetch)
-origin  https://github.com/cs144/minnow (push)
-
-$ git push github
-Enumerating objects: 64, done.
-Counting objects: 100% (64/64), done.
-Delta compression using up to 8 threads
-Compressing objects: 100% (57/57), done.
-Writing objects: 100% (64/64), 40.84 KiB | 13.61 MiB/s, done.
-Total 64 (delta 4), reused 52 (delta 3), pack-reused 0
-remote: Resolving deltas: 100% (4/4), done.
-To https://github.com/ukeSJTU/minnow
- * [new branch]      main -> main
-```
-
-[[cmake]]:
-
-是的，cmake -S . -B build 和 cmake .. 在某些情况下作用相似，但它们的使用方式和适用场景有所不同。
-
-1. cmake -S . -B build
-
-这是 推荐的 CMake 现代用法，适用于 任何地方运行：
-• -S .（source）明确指定源码目录。
-• -B build（build）明确指定构建目录。
-
-优点：
-• 语义清晰，适用于任何终端环境（不受当前工作目录影响）。
-• 不会污染源码目录，始终在 build/ 目录中生成构建文件。
-• 现代 CMake 推荐这种写法，适合自动化脚本。
-
-1. cmake ..
-
-这是 传统用法，适用于 你已经 cd 进入 build/ 目录：
-
-mkdir build
-cd build
-cmake ..
-
-    •	.. 指代上一级目录，即源码所在目录。
-    •	这等价于 cmake -S .. -B .，即：
-    •	源码在 ..（上一级）
-    •	构建目录是当前目录 .
-
-缺点：
-• 必须手动 cd build 进入构建目录后再执行，稍显繁琐。
-• 不适用于自动化脚本（可能因为目录问题出错）。
-• 容易混淆：如果你不在 build/ 目录执行，可能会污染源码目录。
-
-什么时候用哪种？
-
-用法 适用场景
-cmake -S . -B build 推荐方式，适用于任何地方运行，现代 CMake 用法
-cmake .. 适用于你已经 cd build，传统方式
-
-推荐方式：
-
-cmake -S . -B build
-cmake --build build
-
-这样不需要 cd build，更加通用。
-
-如果你之前在某些项目执行 cmake ..，那说明当时你是手动进入 build/ 目录执行的，和 cmake -S . -B build 的方式本质上是相同的，只是使用方式不同。
 
 ---
 
-开始实现`webget`
 
-可以直接运行编译好的`webget`程序查看example用法：
+# Footnotes
 
-```bash
-$ ./build/apps/webget
-Usage: ./build/apps/webget HOST PATH
-        Example: ./build/apps/webget stanford.edu /class/cs144
-```
+
+[^1]: The computer's name has a numerical equivalent (104.196.238.229, an *Internet Protocol v4 address*), and so does the service's name (80, a *TCP port number*). We'll talk more about these later.
+
+[^2]: These instructions might also work from outside Stanford’s network, but we can’t guarantee it.
+
+[^3]: Yes, it’s possible to give a phony "from" address. Electronic mail is a bit like real mail from the postal service, in that the accuracy of the return address is (mostly) on the honor system. You can write anything you like as the return address on a postcard, and the same is largely true of email. Please do not abuse this—seriously. With engineering knowledge comes responsibility! Sending email with a phony "from" address is commonly done by spammers and criminals so they can pretend to be somebody else. It’s fun to play around with this and pretend to be santaclaus@northpole.gov, but **make sure you don’t deceive any recipient**. And: even if the recipient is in on the joke, **do not send email pretending to be any Stanford employee** (otherwise you may set off the university’s IT security alerts).
