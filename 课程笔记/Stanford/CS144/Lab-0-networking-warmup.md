@@ -270,7 +270,10 @@ For any late-breaking questions, please check out the lab FAQ on the [course web
 
 # 中文
 
+
 # 我的实现
+
+## 1 Set up
 
 我用的是arm64版本的macOS，提前安装了orbstack所以我决定利用orbstack创建一个ubuntu24.04的容器。（我感觉这个类似windows上的wsl的操作）
 
@@ -299,7 +302,12 @@ sudo apt update && sudo apt install git cmake gdb build-essential clang \
 
 总之我们还可以用vscode的ssh-remote插件连接进去进行开发。
 
----
+## 2 Networking by hand
+
+### 2.1 Fetch a Web Page
+
+
+
 
 访问页面：http://cs144.keithw.org/hello，看到内容是`Hello, CS144!`
 
@@ -353,8 +361,35 @@ HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 
 看返回的数据，`X-Your-Code-Is: 403269`。感觉应该其实是要把`sunetid`替换成自己的，但是我没有办法注册，所以先这样。
 
+### 2.2 Send yourself an email
 
----
+我没有sunetid，所以没有办法完全按照上面的要求进行实验，但是可以自己搭建一个smtp服务器，然后来测试。我们选择postfix。
+
+
+#### 设置postfix
+
+#### mail命令快速测试
+
+#### telnet使用
+
+
+
+### 2.3 Listening and connecting
+
+## 3 Writing a network program using an IS stream socket
+### 3.1 Let's get started
+
+### 3.2 Compiling the started code
+
+### 3.3 Modern C++
+
+### 3.4 Reading the Minnow support code
+
+### 3.5 Writing `webget`
+
+## 4 An in-memory reliable byte stream
+
+
 
 
 # Footnotes
