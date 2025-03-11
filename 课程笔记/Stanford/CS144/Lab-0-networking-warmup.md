@@ -6,7 +6,7 @@ Welcome to CS144: Introduction to Computer Networking. In this warmup, you will 
 
 - It’s a good idea to read the whole document before diving in!
 - Over the course of this 8-part lab assignment, you’ll be building up your own implementation of a significant portion of the Internet—a router, a network interface, and the TCP protocol (which transforms unreliable datagrams into a reliable byte stream). Most weeks will build on work you have done previously, i.e., you are building up your own implementation gradually over the course of the quarter, and you’ll continue to use your work in future weeks. This makes it hard to "skip" a checkpoint.
-- If you don’t meet the CS144 prerequisites, please don’t take this class yet—our teaching staff’s resources are limited. And please use checkpoints 0 and 1 as a gauge: if you find yourself uncomfortable with the programming in the first two checkpoints, please consider taking CS144 in a later year after you’ve attained more comfort with this kind of programming (perhaps after taking CS 106L, embarking on a self-directed programming project, or otherwise building up your comfort and experience level).
+- If you don’t meet the CS144 prerequisites, please don’t take this class yet—our teaching staff’s resources are limited. And please use checkpoints 0 and 1 as a gauge: if you find yourself uncomfortable with the programming in the first two checkpoints, please consider taking CS144 in a later year after you’ve attained more comfort with this kind of programming (perhaps after taking CS 106L, embarking on a self-directed programming project, or otherwise building up your comfort and experience level).
 - The lab documents aren’t "specifications"—meaning they’re not intended to be consumed in a one-way fashion. They’re written closer to the level of detail that a software engineer will get from a boss or client. We expect that you’ll benefit from attending the lab sessions and asking clarifying questions if you find something to be ambiguous and you think the answer matters. We’ll update the "lab FAQ" document on the course website in response to late questions that need clarification.
 
 ## 0 Collaboration Policy
@@ -111,7 +111,7 @@ This feature is known as a *stream socket*. To your program and to the Web serve
 
 In reality, however, the Internet doesn’t provide a service of reliable byte-streams. Instead, the only thing the Internet really does is to give its "best effort" to deliver short pieces of data, called *Internet datagrams*, to their destination. Each datagram contains some metadata (headers) that specifies things like the source and destination addresses—what computer it came from, and what computer it’s headed towards—as well as some *payload* data (up to about 1,500 bytes) to be delivered to the destination computer.
 
-Although the network tries to deliver every datagram, in practice datagrams can be (1) lost, (2) delivered out of order, (3) delivered with the contents altered, or even (4) duplicated and delivered more than once. It’s normally the job of the operating systems on either end of the connection to turn "best-effort datagrams" (the abstraction the Internet provides) into “reliable byte streams” (the abstraction that applications usually want).
+Although the network tries to deliver every datagram, in practice datagrams can be (1) lost, (2) delivered out of order, (3) delivered with the contents altered, or even (4) duplicated and delivered more than once. It’s normally the job of the operating systems on either end of the connection to turn "best-effort datagrams" (the abstraction the Internet provides) into "reliable byte streams” (the abstraction that applications usually want).
 
 The two computers have to cooperate to make sure that each byte in the stream eventually gets delivered, in its proper place in line, to the stream socket on the other side. They also have to tell each other how much data they are prepared to accept from the other computer, and make sure not to send more than the other side is willing to accept. All this is done using an agreed-upon scheme that was set down in 1981, called the Transmission Control Protocol, or TCP.
 
@@ -200,14 +200,73 @@ ERROR: webget returned output that did not match the test's expectations
 After completing the assignment, you will see:
 
 ```bash
-
+$ cmake --build build --target check_webget
+Test project /home/cs144/minnow/build
+Start 1: compile with bug-checkers
+1/2 Test #1: compile with bug-checkers ........ Passed 1.09 sec
+Start 2: t_webget
+2/2 Test #2: t_webget ......................... Passed 0.72 sec
+100% tests passed, 0 tests failed out of 2
 ```
 
-1. The graders will run your `webget` program with a different hostname and path than `make check_webget` runs — so make sure it doesn’t _only_ work with the hostname and path used by the unit tests.
+7. The graders will run your `webget` program with a different hostname and path than `make check_webget` runs — so make sure it doesn’t _only_ work with the hostname and path used by the unit tests.
 
 ## 4 An in-memory reliable byte stream
 
+By now, you’ve seen how the abstraction of a *reliable byte stream* can be useful in communicating across the Internet, even though the Internet itself only provides the service of "best-effort” (unreliable) datagrams.
+
+To finish off this week’s lab, you will implement, in memory on a single computer, an object that provides this abstraction. (You may have done something similar in CS 110/111.) Bytes are written on the "input” side and can be read, in the same sequence, from the "output” side. The byte stream is finite: the writer can end the input, and then no more bytes can be written. When the reader has read to the end of the stream, it will reach "EOF” (end of file) and no more bytes can be read.
+
+Your byte stream will also be *flow-controlled* to limit its memory consumption at any given time. The object is initialized with a particular “capacity”: the maximum number of bytes it’s willing to store in its own memory at any given point. The byte stream will limit the writer in how much it can write at any given moment, to make sure that the stream doesn’t exceed its storage capacity. As the reader reads bytes and drains them from the stream, the writer is allowed to write more. Your byte stream is for use in a *single* thread—you don’t have to worry about concurrent writers/readers, locking, or race conditions.
+
+To be clear: the byte stream is finite, but it can be *almost arbitrarily long*[^4] before the writer ends the input and finishes the stream. Your implementation must be able to handle streams that are much longer than the capacity. The capacity limits the number of bytes that are held in memory (written but not yet read) at a given point, but does not limit the length of the stream. An object with a capacity of only one byte could still carry a stream that is terabytes and terabytes long, as long as the writer keeps writing one byte at a time and the reader reads each byte before the writer is allowed to write the next byte.
+
+Here’s what the interface looks like for the writer:
+
+```cpp
+void push( std::string data ); // Push data to stream, but only as much as available capacity allows.
+void close(); // Signal that the stream has reached its ending. Nothing more will be written.
+
+bool is_closed() const; // Has the stream been closed?
+
+uint64_t available_capacity() const; // How many bytes can be pushed to the stream right now?
+uint64_t bytes_pushed() const; // Total number of bytes cumulatively pushed to the stream
+```
+
+And here is the interface for the reader:
+
+```cpp
+std::string_view peek() const; // Peek at the next bytes in the buffer
+void pop( uint64_t len ); // Remove `len` bytes from the buffer
+
+bool is_finished() const; // Is the stream finished (closed and fully popped)?
+bool has_error() const; // Has the stream had an error?
+
+uint64_t bytes_buffered() const; // Number of bytes currently buffered (pushed and not popped)
+uint64_t bytes_popped() const; // Total number of bytes cumulatively popped from stream
+```
+
+Please open the `src/byte_stream.hh` and `srrc/byte_stream.cc` files, and implement an object that provides this interface. AS you develop your byte stream implementation, you can run the automated tests with `cmake --build build --target check0`.
+
+If all tests pass, the `check0` test will then run a speed benchmark of your implementation. Anything **faster than** 0.1 Gbit/s (in other words, 100 million bits per second) is acceptable for purposes of this class, for the three pop lengths tested. (It is possible for an implementation to perform faster than 10 Gbit/s, but this depends on the speed of your computer and is not required.)
+
+For any late-breaking questions, please check out the lab FAQ on the [course website](https://cs144.stanford.edu/) or ask your classmates or the teaching staff in the lab session (or on EdStem).
+
+*What’s next?* Over the next four weeks, you’ll implement a system to provide the same interface, no longer in memory, but instead over an unreliable network. This is the Transmission Control Protocol—and its implementations are arguably the **most prevalent computer program in the world.**
+
 ## Submit
+
+1. In your submission, please only make changes to `webget.cc` and the source code in the top level of `src` (`byte_stream.hh` and `byte_stream.cc`). Please don’t modify any of the tests or the helpers in `util`.
+2. Remember to make small commits as you code, with good commit messages. After making a commit, back up your VM’s repository to your private GitHub repository often by running `git push github`. Your code needs to be committed and pushed to GitHub for it to be gradable.
+3. Before handing in any assignment, please run these in order:
+	1. Make sure you have committed all of your changes to the Git repository. You can run `git status` to make sure there are no outstanding changes. Remember: make small commits as you code.
+	2. `cmake --build build --target format` (to normalize the coding style)
+	3. `cmake --build build --target check0` (to make sure the automated tests pass)
+	4. Optional: `cmake --build build --target tidy` (suggests improvements to follow good C++ programming practices)
+4. Finish editing `writeups/check0.md`, filling in the number of hours this assignment took you and any other comments.
+5. Make sure your code is committed and pushed to your private GitHub repository (`git push github`)
+6. There will be a Gradescope assignment due Sunday 11:59 p.m. for you to submit the commit ID of your submission.
+7. Please let the course staff know ASAP of any problems at the Wednesday lab session, or by posting a question on EdStem. Good luck and welcome to CS144!
 
 # 中文
 
@@ -306,3 +365,5 @@ HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 [^2]: These instructions might also work from outside Stanford’s network, but we can’t guarantee it.
 
 [^3]: Yes, it’s possible to give a phony "from" address. Electronic mail is a bit like real mail from the postal service, in that the accuracy of the return address is (mostly) on the honor system. You can write anything you like as the return address on a postcard, and the same is largely true of email. Please do not abuse this—seriously. With engineering knowledge comes responsibility! Sending email with a phony "from" address is commonly done by spammers and criminals so they can pretend to be somebody else. It’s fun to play around with this and pretend to be santaclaus@northpole.gov, but **make sure you don’t deceive any recipient**. And: even if the recipient is in on the joke, **do not send email pretending to be any Stanford employee** (otherwise you may set off the university’s IT security alerts).
+
+[^4]: At least up to 2^64 bytes, which in this class we will regard as essentially arbitrarily long
