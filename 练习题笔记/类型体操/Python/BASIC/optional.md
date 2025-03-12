@@ -16,7 +16,7 @@ def foo(x):
 
 ## Testcase
 
-```plaintext
+```python
 foo(10)
 foo(None)
 foo()
