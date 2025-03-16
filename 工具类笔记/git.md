@@ -33,3 +33,8 @@ git config --global core.quotepath false
 
 ---
 
+## Conventional Commits
+
+[官网](https://www.conventionalcommits.org/en/v1.0.0/)
+
+TODO：补全内容

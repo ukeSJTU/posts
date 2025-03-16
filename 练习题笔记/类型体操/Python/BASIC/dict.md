@@ -1,4 +1,5 @@
 ## Problem
+
 ```python
 """
 TODO:
@@ -15,8 +16,8 @@ def foo(x):
 
 ## Testcase
 
-```plaintext
-foo({"foo": "bar"}) 
+```python
+foo({"foo": "bar"})
 foo({"foo": 1})  # expect-type-error
 
 ```
@@ -62,6 +63,7 @@ def foo(x: Mapping[str, str]):
 ### `Mapping` vs `dict`
 
 #### 遵循依赖倒置原则
+
 "依赖倒置原则"，即依赖于抽象而非具体实现。使用抽象类型（如 `Mapping`）而非具体实现（如 `dict`）可以让你的代码更加灵活。
 
 #### `Mapping`有更好的兼容性和灵活性
@@ -75,11 +77,13 @@ def foo(x: Mapping[str, str]):
 - 任何其他实现了映射协议的自定义类
 
 “实现了映射协议的自定义类”指的是任何实现了 Python 映射协议（Mapping Protocol）的自定义类。在 Python 中，协议是一组方法的集合，实现了这些方法的类被认为遵循该协议。而映射协议要求实现的核心方法：
+
 - `__getitem__(self, key)`: 允许使用 `obj[key]` 语法
 - `__iter__(self)`: 允许迭代所有键
 - `__len__(self)`: 返回映射中项目的数量
 
 下面是个自定义映射类的例子：
+
 ```python
 from typing import Iterator, TypeVar, Generic, Dict, Mapping
 
@@ -88,34 +92,34 @@ V = TypeVar('V')
 
 class ReadOnlyDict(Generic[K, V]):
     """一个只读的字典类，实现了映射协议"""
-    
+
     def __init__(self, data: Dict[K, V]):
         self._data = dict(data)  # 创建一个副本
-    
+
     def __getitem__(self, key: K) -> V:
         """实现 obj[key] 语法"""
         return self._data[key]
-    
+
     def __iter__(self) -> Iterator[K]:
         """实现 for key in obj 语法"""
         return iter(self._data)
-    
+
     def __len__(self) -> int:
         """实现 len(obj) 函数"""
         return len(self._data)
-    
+
     def items(self):
         """实现 .items() 方法"""
         return self._data.items()
-    
+
     def keys(self):
         """实现 .keys() 方法"""
         return self._data.keys()
-    
+
     def values(self):
         """实现 .values() 方法"""
         return self._data.values()
-    
+
     def get(self, key: K, default=None) -> V:
         """实现 .get() 方法"""
         return self._data.get(key, default)
@@ -137,9 +141,9 @@ print_names(employee_data)  # 可以正常工作，因为 ReadOnlyDict 实现了
 #### 什么时候用`dict`而不是`Mapping`?
 
 在下面这些情况下，使用`dict`可能更合适：
+
 1. **返回值类型**：如果你的函数明确返回一个 `dict` 对象，使用 `dict` 作为返回类型注解更准确。
 2. **需要特定方法**：如果你的函数需要使用 `dict` 特有的方法（如 `update()`、`clear()`等），则应使用 `dict` 或 `MutableMapping`。
-
 
 ### 内置的`dict`
 
@@ -149,7 +153,7 @@ print_names(employee_data)  # 可以正常工作，因为 ReadOnlyDict 实现了
 
 #### 字典对象及相关方法
 
-> A [mapping](https://docs.python.org/3.12/glossary.html#term-mapping) object maps [hashable](https://docs.python.org/3.12/glossary.html#term-hashable) values to arbitrary objects. Mappings are mutable objects. There is currently only one standard mapping type, the _dictionary_.
+> A [mapping](https://docs.python.org/3.12/glossary.html#term-mapping) object maps [hashable](https://docs.python.org/3.12/glossary.html#term-hashable) values to arbitrary objects. Mappings are mutable objects. There is currently only one standard mapping type, the *dictionary*.
 
 本系列教程主要聚焦于类型体操，所以就不展开`dict`类型的方法了。
 
@@ -180,11 +184,11 @@ def analyze_scores(class_scores: dict[str, list[int]]) -> float:
     """分析每个学生的成绩列表，返回平均分"""
     total_score = 0
     total_count = 0
-    
+
     for student, scores in class_scores.items():
         total_score += sum(scores)
         total_count += len(scores)
-    
+
     return total_score / total_count if total_count > 0 else 0
 
 # 使用示例
@@ -201,7 +205,7 @@ average = analyze_scores(scores)
 ```python
 def process_department_data(company_data: dict[str, dict[str, list[str]]]) -> None:
     """处理公司部门数据
-    
+
     参数:
         company_data: 一个字典，键是部门名称，值是另一个字典，
                      内层字典的键是团队名称，值是团队成员列表
@@ -226,4 +230,3 @@ company = {
 }
 process_department_data(company)
 ```
-

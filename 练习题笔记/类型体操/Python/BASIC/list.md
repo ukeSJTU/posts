@@ -16,7 +16,7 @@ def foo(x):
 
 ## Testcase
 
-```plaintext
+```python
 foo(["foo", "bar"])
 foo(["foo", 1])  # expect-type-error
 
