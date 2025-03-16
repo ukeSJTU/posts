@@ -29,11 +29,7 @@ $$T(n) = aT(n/b) + n^d\log^w n, \text{ for } n \geq b$$
 
 Solving this by iterating the recurrence:
 
-$$\begin{align}
-T(n) &= aT(n/b) + n^d\log^w n \\
-&= a^2T(n/b^2) + an^d(1/b)^d\log^w(n/b) + n^d\log^w n \\
-&= a^3T(n/b^3) + a^2n^d(1/b^2)^d\log^w(n/b^2) + an^d(1/b)^d\log^w(n/b) + n^d\log^w n
-\end{align}$$
+$T(n) = aT(n/b) + n^d\log^w n$ $= a^2T(n/b^2) + an^d(1/b)^d\log^w(n/b) + n^d\log^w n$ $= a^3T(n/b^3) + a^2n^d(1/b^2)^d\log^w(n/b^2) + an^d(1/b)^d\log^w(n/b) + n^d\log^w n$
 
 Continuing this pattern for $k = \log_b n$ iterations (until reaching the base case):
 
@@ -364,17 +360,14 @@ When we find the minimum element in the middle column, if it's not a local minim
 For the general $n×m$ case, I'll divide along the shorter dimension to achieve the most efficient algorithm:
 
 **Algorithm:**
-1. If $\min(n,m) = 1$, use the 1D algorithm from part (a)
+1. If $\min(n,m) = 1$, use the 1-D algorithm from part (a)
 2. Otherwise:
    - If $n ≤ m$: Find the middle row $i = ⌊n/2⌋$, find the minimum element $A[i,j]$ in that row, check if it's a local minimum. If not, recurse on the half with a smaller adjacent element.
    - If $n > m$: Find the middle column $j = ⌊m/2⌋$, find the minimum element $A[i,j]$ in that column, check if it's a local minimum. If not, recurse on the half with a smaller adjacent element.
 
 **Recurrence Relation:**
-$$T(n,m) = \begin{cases}
-    T(n/2,m) + O(m) & \text{if } n ≤ m \text{ and } n > 1 \\
-    T(n,m/2) + O(n) & \text{if } n > m \text{ and } m > 1
-\end{cases}$$
 
+$$ T(n,m) = \begin{cases} T(n/2,m) + O(m) & \text{if } n ≤ m \text{ and } n > 1 \\ T(n,m/2) + O(n) & \text{if } n > m \text{ and } m > 1 \end{cases} $$
 **Time Complexity Analysis:**
 This recurrence solves to:
 $T(n,m) = O(\max(n,m) · \log(\min(n,m)))$
