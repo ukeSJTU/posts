@@ -302,6 +302,24 @@ sudo apt update && sudo apt install git cmake gdb build-essential clang \
 
 总之我们还可以用vscode的ssh-remote插件连接进去进行开发。
 
+这里补充一个内容：我配置完orbstack的VM以后出现了没有办法执行git push的情况。哪怕我已经按照github的教程创建了公私钥，还是出现报错如下：
+
+```plaintext
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 20.205.243.166 port 22
+```
+
+我不确定这个和Orbstack在创建ubuntu的时候自动配置了ssh相关设置的原因，我暂时通过下面这个办法解决了，参考的[StackExchange](https://unix.stackexchange.com/questions/717583/connection-to-github-com-closed-by-remote-host)
+
+大概操作就是在`~/.ssh/config`中添加：
+
+```plaintext
+Host github.com
+Hostname ssh.github.com
+Port 443
+User git
+```
+
 ## 2 Networking by hand
 
 ### 2.1 Fetch a Web Page
