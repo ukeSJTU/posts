@@ -1,6 +1,7 @@
 # English
 
 ## 0 Overview
+
 For Checkpoint 0, you used an *Internet stream socket* to fetch information from a website and send an email message, using Linux's built-in implementation of the Transmission Control Protocol (TCP). This TCP implementation managed to produce a pair of *reliable in-order byte streams* (one from you to the server, and one in the opposite direction), even though the underlying network only delivers "best-effort" datagrams. By this we mean: short packets of data that can be lost, reordered, altered, or duplicated. You also implemented the byte-stream abstraction yourself, in memory within one computer. Over the coming weeks, you'll implement TCP yourself, to provide the byte-stream abstraction between a pair of computers separated by an unreliable datagram network.
 
 > *Why am I doing this?* Providing a service or an abstraction on top of a different less-reliable service accounts for many of the interesting problems in networking. Over the last 40 years, researchers and practitioners have figured out how to convey all kinds of things—messaging and e-mail, hyperlinked documents, search engines, sound and video, virtual worlds, collaborative file sharing, digital currencies—over the Internet.TCP's own role, providing a pair of reliable byte streams using unreliable datagrams, is one of the classic examples of this. A reasonable view has it that TCP implementations count as the **most widely used** nontrivial computer programs on the planet.
@@ -29,7 +30,6 @@ We have created a private network for the CS144 class. This will allow your VM t
 4. Every time you reboot your VM, you'll have to rejoin the network (if you want to be able to send datagrams to and from other students in this class). You don't have to register a new public key each time, but you do have to rerun the commands on that webpage. The commands will be the same each time.
 
 ### 2.1 Ping a friend and look at the datagrams
-
 
 1. On your own computer (e.g. your Mac or Windows machine—not your VM), install the"wireshark" program by following the instructions at https://www.wireshark.org/. (If you are using Debian or Ubuntu GNU/Linux, the command is `sudo apt install wireshark`.
 2. Ask a groupmate for their IP address (the one shown on the https://cs144.net/wgwebpage **for them**). Using the `ping` command, send some "echo request" datagrams to your friend, and make sure that you get some "echo reply" datagrams back.
@@ -156,3 +156,73 @@ You may find this picture useful as you implement the `Reassembler` and work thr
 # 中文
 
 # 我的实现
+
+## 0 Overview
+
+所谓的hands-on component这一部分是今年(2025)新加入的，所以可能有很多无法操作的地方。
+
+## 1 Getting Started
+
+这里按照lab的要求操作就可以了，如果没有冲突的话应该正常merge就行。
+
+## 2 Hand-on component: a private network for the class
+
+因为我不是斯坦福的学生，所以没有办法加入到cs144课程官方的wireguard网络中去，我决定利用一个云服务器组建一个开放的wireguard网络，这样其他人都可以加入进来。
+
+### 2.1 Ping a friend and look at the datagrams
+
+TODO：等待上面的配置完成
+
+### 2.2 Send an Internet datagram by hand
+
+TODO：等待上面的配置完成
+
+## 3 Implementation: putting substrings in sequence
+
+这节课负责在TCP接收端重新按照顺序组装接收到的数据。
+
+### 3.1 What should the Reassembler store internally?
+
+### 3.2 FAQs
+
+这里提到了一个提供的[[SLOC]]的脚本`./scripts/lines-of-code`，我运行的时候提示：
+
+```bash
+$ ./scripts/lines-of-code 
+bash: ./scripts/lines-of-code: cannot execute: required file not found
+```
+
+这个报错是因为shebang行用到的`/usr/bin/python`不存在，我的ubuntu里面有`/usr/bin/python3`。两种办法：
+
+**1. 创建符号链接：**
+
+```bash
+sudo ln -s /usr/bin/python3 /usr/bin/python
+```
+
+这会在`/usr/bin/`目录下创建一个名为`python`的符号链接，指向`python3`。这样当脚本调用`/usr/bin/python`时，实际上会使用`python3`。
+
+**2. 直接用python3解释器运行脚本：**
+
+```bash
+python3 ./scripts/lines-of-code
+```
+
+这种方式会忽略脚本中的shebang行，直接使用指定的解释器。
+
+如果运行脚本还是报错：
+
+```plaintext
+FileNotFoundError: [Errno 2] No such file or directory: 'sloccount'
+```
+
+这个是因为系统没有安装`sloccount`程序。
+
+```bash
+sudo apt-get update
+sudo apt-get install sloccount
+```
+
+## 4 Development and debugging advice
+
+## 5 Submit
