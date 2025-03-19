@@ -21,7 +21,6 @@ O(n^d \log^{w+1} n), & \text{if } a = b^d
 \end{cases}
 $$
 
-
 ## Answer-1
 
 For the recurrence relation:
@@ -129,14 +128,14 @@ In conclusion, $T(n) = O(n^c)$, where $c = 1.5 < 2$.
 
 ### (b)
 
-**Forward direction:** 
+**Forward direction:**
 Suppose $x_i$ and $x_j$ are compared during quicksort. This means one of them must be a pivot when they are compared.
 
 Without loss of generality, assume $x_i$ is chosen as a pivot first. Then $x_i$ will be compared with all other elements in its current subarray, including $x_j$ if $x_j$ is still in the same subarray. For $x_j$ to be in the same subarray as $x_i$ when $x_i$ becomes a pivot, no element from the set $\{x_i, x_{i+1}, ..., x_j\}$ could have been chosen as a pivot earlier (otherwise, $x_i$ and $x_j$ would have been separated into different subarrays). Therefore, $x_i$ must be the first pivot chosen from the set $\{x_i, x_{i+1}, ..., x_j\}$.
 
 Similarly, if $x_j$ is chosen as a pivot first, then $x_j$ must be the first pivot from the set $\{x_i, x_{i+1}, ..., x_j\}$.
 
-**Reverse direction:** 
+**Reverse direction:**
 Now suppose either $x_i$ or $x_j$ is the first element chosen as a pivot among $\{x_i, x_{i+1}, ..., x_j\}$.
 
 If $x_i$ is chosen first as a pivot, then at that point, $x_j$ must still be in the same subarray (since no element between $x_i$ and $x_j$ has been chosen as a pivot yet). When $x_i$ is the pivot, it will be compared with all elements in its subarray, including $x_j$. Thus, $x_i$ and $x_j$ will be compared.
@@ -190,7 +189,7 @@ Use **divide and conquer** to find an $O(n \log n)$ algorithm to compute a direc
 
 ## Answer-3
 
-### (a) 
+### (a)
 
 Let the vertex sequence of path P be $v_0 \to v_1 \to \cdots \to v_k$.
 
@@ -210,30 +209,28 @@ Therefore, we can always find a position to insert u into path P.
 
 ### (b)
 
-
 ```
 function FindHamiltonianPath(G = (V, A)):
     // Base case
     if |V| = 1:
         return the single vertex as a path
-    
+
     // Divide
     Split V into two roughly equal subsets V₁ and V₂
-    
+
     // Conquer
     P₁ = FindHamiltonianPath(G[V₁])  // Subgraph induced by V₁
     P₂ = FindHamiltonianPath(G[V₂])  // Subgraph induced by V₂
-    
+
     // Combine
     return MergePaths(P₁, P₂, A)
 ```
-
 
 ```
 function MergePaths(P₁, P₂, A):
     Let a₁ and aₘ be the first and last vertices of P₁
     Let b₁ and bₖ be the first and last vertices of P₂
-    
+
     // Check six possible connection configurations
     if aₘ → b₁ exists:
         return P₁ followed by P₂
@@ -298,14 +295,16 @@ Suppose $m = n$. Design a divide-and-conquer-based algorithm for the problem abo
 
 ### (c) (10 points)
 
-Generalize your algorithm such that it works for general $m$ and $n$.  The running time of your algorithm should *smoothly* interpolate between the running times for the first two parts.
+Generalize your algorithm such that it works for general $m$ and $n$. The running time of your algorithm should _smoothly_ interpolate between the running times for the first two parts.
 
 ## Answer-4
+
 ### (a)
 
 When m = 1, we have a 1D array $A[0...n-1]$. I'll design a divide-and-conquer algorithm to find a local minimum:
 
 **Algorithm:**
+
 1. Find the middle element $A[mid]$ where $mid = ⌊(low + high)/2⌋$
 2. Check if $A[mid]$ is a local minimum:
    - If $0 < mid < n-1$: Check if $A[mid] < A[mid-1]$ and $A[mid] < A[mid+1]$
@@ -317,6 +316,7 @@ When m = 1, we have a 1D array $A[0...n-1]$. I'll design a divide-and-conquer al
    - Otherwise, recurse on the right half $[mid+1...high]$
 
 **Recurrence Relation:**
+
 ```
 T(n) = T(n/2) + O(1)
 ```
@@ -333,6 +333,7 @@ The key insight is that if $A[mid]$ is not a local minimum, then at least one of
 For an $n×n$ matrix, I'll design a divide-and-conquer algorithm:
 
 **Algorithm:**
+
 1. Find the middle column $j = ⌊n/2⌋$
 2. Find the minimum element $A[i,j]$ in column $j$
 3. Check if $A[i,j]$ is a local minimum by comparing with its neighbors
@@ -346,6 +347,7 @@ $$T(n,n) = T(n,n/2) + O(n)$$
 
 **Time Complexity Analysis:**
 Let's expand the recurrence:
+
 - After 1 division: $T(n,n) = T(n,n/2) + O(n)$
 - After 2 divisions: $T(n,n) = T(n,n/4) + O(n) + O(n) = T(n,n/4) + 2·O(n)$
 - After $\log(n)$ divisions: $T(n,n) = T(n,1) + \log(n)·O(n) = O(\log n) + O(n \log n) = O(n \log n)$
@@ -360,6 +362,7 @@ When we find the minimum element in the middle column, if it's not a local minim
 For the general $n×m$ case, I'll divide along the shorter dimension to achieve the most efficient algorithm:
 
 **Algorithm:**
+
 1. If $\min(n,m) = 1$, use the 1-D algorithm from part (a)
 2. Otherwise:
    - If $n ≤ m$: Find the middle row $i = ⌊n/2⌋$, find the minimum element $A[i,j]$ in that row, check if it's a local minimum. If not, recurse on the half with a smaller adjacent element.
@@ -373,6 +376,7 @@ This recurrence solves to:
 $T(n,m) = O(\max(n,m) · \log(\min(n,m)))$
 
 This smoothly interpolates between our previous results:
+
 - When $m = 1$: $T(n,1) = O(\log n)$
 - When $n = m$: $T(n,n) = O(n \log n)$
 - When $n > m > 1$: $T(n,m) = O(n \log m)$

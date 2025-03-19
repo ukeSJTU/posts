@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# 获取提交信息文件路径
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+
+# 如果是合并提交或从模板创建的提交，不修改
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "template" ]; then
+    exit 0
+fi
+
+# 获取当前提交信息
+current_msg=$(cat "$COMMIT_MSG_FILE")
+
+# 检查是否已经有时间戳前缀
+if [[ ! "$current_msg" =~ ^vault\ backup:\ [0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}:[0-9]{2} ]]; then
+    # 生成时间戳
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # 创建新的提交信息
+    echo "vault backup: $timestamp" > "$COMMIT_MSG_FILE.tmp"
+    
+    # 如果原始提交信息不为空，添加到新信息后面
+    if [ -n "$current_msg" ]; then
+        echo "" >> "$COMMIT_MSG_FILE.tmp"
+        echo "$current_msg" >> "$COMMIT_MSG_FILE.tmp"
+    fi
+    
+    # 替换原始提交信息文件
+    mv "$COMMIT_MSG_FILE.tmp" "$COMMIT_MSG_FILE"
+fi

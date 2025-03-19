@@ -1,13 +1,13 @@
-Banner Image Description: _A simple illustration of Java programming essentials: a variable represented by a labeled box, different data types symbolized by basic icons (e.g., a number, a character, a boolean), and mathematical operators (+, -, _, /) in a balanced composition._
+Banner Image Description: _A simple illustration of Java programming essentials: a variable represented by a labeled box, different data types symbolized by basic icons (e.g., a number, a character, a boolean), and mathematical operators (+, -, _, /) in a balanced composition.\_
 
 ---
-
 
 Types, variables, Operators
 
 Goal is to learn enough Java to do something useful.
 
-Examples: 
+Examples:
+
 - Simulate a natural/engineering process.
 - Manipulate PDFs
 - Draw pretty graphics
@@ -17,10 +17,12 @@ The computer can be thought as composed of three main parts: memory, CPU and IO 
 The CPU receives instructions: `z=x+y` needs to read location x, read location y, add and write to location z.
 
 programming languages:
+
 - easier to understand than CPU instructions
 - needs translation before CPU to understand it
 
 JAVA:
+
 - Most popular
 - Runs on. a virtual machine called JVM
 - More complex than some others: python
@@ -30,6 +32,7 @@ Compiling Java:
 source code(.java) --javac--> Byte Code(.class) ----> java
 
 First program:
+
 ```java
 class Hello {
   public static void main(String[] args) {
@@ -42,6 +45,7 @@ class Hello {
 The above should be saved to which file? How to run and see the result?
 
 Program structure:
+
 ```java
 class CLASSNAME {
     public static void main(String[] arguments) {
@@ -83,7 +87,7 @@ String foo;
 Assignment:
 Use = to give variables a value.
 
-Example: 
+Example:
 String foo;
 foo="IAP 6.092";
 
@@ -97,6 +101,7 @@ multiplication: `*`
 division: `/`
 
 Operators have orders which follows standard math rules:
+
 1. parentheses
 2. multiplication and division
 3. addition and subtraction
@@ -126,6 +131,7 @@ public class DoMath2 {
 ```
 
 String concatenation(`+`)
+
 ```java
 String text = "hello" + " world";
 text = text + " number " + 5;
@@ -134,7 +140,7 @@ text = text + " number " + 5;
 
 Assignment: GravityCalculator
 Compute the position of a falling object:
-$$ x(t)=0.5\times at^2+v_{i}t+x_{i}$$
+$$ x(t)=0.5\times at^2+v*{i}t+x*{i}$$
 
 NOTE: code and explanation for assignments should be found at another dedicated git repo. This line should also be removed upon publication.
 

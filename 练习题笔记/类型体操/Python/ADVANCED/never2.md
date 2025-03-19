@@ -1,14 +1,7 @@
 ## Problem
 
-
 ## Testcase
-
-
 
 ## Solution
 
-
-
 ## Note
-
-

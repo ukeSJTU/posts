@@ -78,9 +78,4 @@ Mac OS X comes with the Java development tools. Run Software Update to ensure th
 
 If you are using Linux, you probably don’t need our help to get Java and Eclipse running yourself. If you do need help, ask one of the instructors during the first lecture.
 
-
 ---
-
-
-
-

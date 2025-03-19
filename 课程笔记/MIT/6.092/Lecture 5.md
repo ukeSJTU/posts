@@ -65,7 +65,7 @@ Counter counter1 = new Counter();
 
 | Class Counter | Object counter1 |
 | ------------- | --------------- |
-| ourCount = 0 | myCount = 0 |
+| ourCount = 0  | myCount = 0     |
 
 ```java
 Counter counter1 = new Counter();
@@ -74,7 +74,7 @@ Counter counter2 = new Counter();
 
 | Class Counter | Object counter1 | Object counter2 |
 | ------------- | --------------- | --------------- |
-| ourCount = 0 | myCount = 0 | myCount = 0 |
+| ourCount = 0  | myCount = 0     | myCount = 0     |
 
 ```java
 Counter counter1 = new Counter();
@@ -84,7 +84,7 @@ counter1.increment();
 
 | Class Counter | Object counter1 | Object counter2 |
 | ------------- | --------------- | --------------- |
-| ourCount = 1 | myCount = 1 | myCount = 0 |
+| ourCount = 1  | myCount = 1     | myCount = 0     |
 
 ```java
 Counter counter1 = new Counter();
@@ -95,7 +95,7 @@ counter1.increment();
 
 | Class Counter | Object counter1 | Object counter2 |
 | ------------- | --------------- | --------------- |
-| ourCount = 2 | myCount = 2 | myCount = 0 |
+| ourCount = 2  | myCount = 2     | myCount = 0     |
 
 ```java
 Counter counter1 = new Counter();
@@ -107,7 +107,7 @@ counter2.increment();
 
 | Class Counter | Object counter1 | Object counter2 |
 | ------------- | --------------- | --------------- |
-| ourCount = 3 | myCount = 2 | myCount = 1 |
+| ourCount = 3  | myCount = 2     | myCount = 1     |
 
 因此输出就会是：
 
@@ -121,6 +121,7 @@ Counter 2: 1 3
 Access Control
 
 先来看个例子：
+
 ```java
 public class CreditCard {
     String cardNumber;
@@ -141,6 +142,7 @@ public class CreditCard {
 ```
 
 上面的代码看似没有问题，但是如果有人要做坏事，我们用下面的代码模拟：
+
 ```java
 public class Malicious {
     public static void main(String[] args) {
@@ -159,12 +161,14 @@ public class Malicious {
 我们需要一种语法机制来保护类内部的methods/fields。
 
 Public vs Private:
+
 - Public: others can use this.
 - Private: only the class can use this.
 
 public/private applies to any **field** or **method**.
 
 还是上面这段代码：
+
 ```java
 public class CreditCard {
     String cardNumber;
@@ -185,6 +189,7 @@ public class CreditCard {
 ```
 
 我们添加access control后如下：
+
 ```java
 public class CreditCard {
     private String cardNumber;
@@ -205,12 +210,14 @@ public class CreditCard {
 ```
 
 这个时候maliciousMethod就没有办法起作用了：
+
 ```plaintext
 The field Creditcard.expenses is not visible
 The field Creditcard.cardNumber is not visible
 ```
 
 Why Access Control
+
 - Protect private information(sorta)
 - Clarify how others should use your class
 - Keep implementation separate from interface
@@ -219,10 +226,7 @@ Why Access Control
 
 Class Scope
 
-
-
-
-______________________________________________________________________
+---
 
 Packages
 
@@ -232,6 +236,7 @@ Packages
 - Classes in other packages need to be imported
 
 defining packages:
+
 ```java
 package path.to.package.foo;
 
@@ -241,6 +246,7 @@ class Foo {
 ```
 
 Using Packages:
+
 ```java
 import path.to.package.foo.Foo;
 import path.to.package.foo.*;
@@ -281,12 +287,13 @@ public class Parent {
 TODO: 这里需要更具体，包括每个文件名字，文件位置关系，如何运行等等的一个小Demo，上面的代码对于初学者可能理解有难度。
 
 Why Packages?
+
 - Combine similar functionality
-	- `org.boston.libraries.Library`
-	- `org.boston.libraries.Book`
+  - `org.boston.libraries.Library`
+  - `org.boston.libraries.Book`
 - Separate similar names
-	- `shopping.List`
-	- `packing.List`
+  - `shopping.List`
+  - `packing.List`
 
 Special Packages:
 All classes can "see" classes in the same package, so no import needed.
@@ -294,7 +301,6 @@ All classes can "see" classes in the same package, so no import needed.
 All classes "see" classes in java.lang
 
 Example: `java.lang.String`; `java.lang.System`
-
 
 ---
 
@@ -306,7 +312,7 @@ you should reuse classes to avoid extra work. 你可以在这个网站看到Java
 
 下面从java api里面选一些内容讲解，重在体会感受使用别人已经写好的API带来的便捷之处：
 
-Create the array bigger than you need. Track the next "available" slot. 
+Create the array bigger than you need. Track the next "available" slot.
 这个问题其实在assignment 4中，实现`addBook`方法的时候应该有所感受。
 
 ```java
@@ -324,12 +330,14 @@ Java除了最基本的Array，还有一个叫做ArrayList的数据结构。
 Arraylist is a Modifiable list, which is inetrnally implemented with arrays.
 
 Features:
+
 - Get/put items by index
 - Add items
 - Delete items
 - Loop over all items
 
 上面的代码经过我们用`ArrayList`可以改写成：
+
 ```java
 // Book[] books = new Book[10];
 // nextIndex = 0;
@@ -371,6 +379,7 @@ public class ArrayListExample {
 ```
 
 运行结果：
+
 ```java
 3
 Evan
@@ -383,10 +392,12 @@ Adam
 
 Sets:
 sets are like ArrayList, but:
+
 - Only one copy of each object, and
 - No array index
 
 Features:
+
 - Add objects to the set
 - Remove objects from the set
 - Is an object in the set?
@@ -419,6 +430,7 @@ class SetExample {
 ```
 
 输出结果：
+
 ```plaintext
 3
 Adam
@@ -480,10 +492,12 @@ Assignment
 In the last assignment you learned how to create your own simple objects. One of the advantages of building software using objects is that it makes it relatively easy to use software components that other people have built. In this assignment, you will use the Java's built-in graphics and containers, combined with a simple framework that we provide.
 
 Requirements (in brief)
+
 - Add three different shapes to the initial window we provide.
 - Add three instances of the `BouncingBox` class to your window, moving in different directories. Use an `ArrayList` to hold them.
 
 Setup
+
 1. (Optional) Create a new project i Eclipse, with whatever name you want.
 2. Create three classes: `SimpleDraw`, `BouncngBox`, and `DrawGraphics`. Coy and paste the code for these classes from below.
 3. Run the example program. If Eclipse gives you trouble, open `SimpleDraw` and run that, as it contains the `main` method for the program. You should see a window that looks like the following.
@@ -494,21 +508,22 @@ TODO：补充运行截图。
 
 Part One： Drawing Graphics
 
-Open the `DrawGraphics` class. The `draw` method is what draws the contents of the window. Currently, there is a line and a square with a border around it. Feel free to remove these, if you want. Add at least three *different* shapes to the window. Read the API documentation for the [`java.awt.Graphics`](https://docs.oracle.com/javase/6/docs/api/java/awt/Graphics.html) class to find what methods are provided. You can draw rectangles, arcs, lines, text, ovals, polygons, and, if you want to do some extra work, images. Be creative! 
+Open the `DrawGraphics` class. The `draw` method is what draws the contents of the window. Currently, there is a line and a square with a border around it. Feel free to remove these, if you want. Add at least three _different_ shapes to the window. Read the API documentation for the [`java.awt.Graphics`](https://docs.oracle.com/javase/6/docs/api/java/awt/Graphics.html) class to find what methods are provided. You can draw rectangles, arcs, lines, text, ovals, polygons, and, if you want to do some extra work, images. Be creative!
 
-*Note:* You should only modify the `DrawGraphics` class for this step. The other classes contain a bunch of code required to create a window in Java that you do not need to change or understand.
+_Note:_ You should only modify the `DrawGraphics` class for this step. The other classes contain a bunch of code required to create a window in Java that you do not need to change or understand.
 
 Part Two: Containers and Animation
 
-The `DrawGraphics` class supports animation. The `draw` method gets called 20 times a second, in order to draw each individual frame. The `BouncingBox` class also includes animation support. To get the box to move, call `setMovementVector` method from the `DrawGraphics` constructor, providing an x and y offset. For example, the value (1, 0) moves the box to the right slowly, while (0, -2) will move it up faster. You only need to call this method *once* to keep it moving in that direction. In other words, don't call `setMovementVector` from the `draw` method, call it from the *constructor*.
+The `DrawGraphics` class supports animation. The `draw` method gets called 20 times a second, in order to draw each individual frame. The `BouncingBox` class also includes animation support. To get the box to move, call `setMovementVector` method from the `DrawGraphics` constructor, providing an x and y offset. For example, the value (1, 0) moves the box to the right slowly, while (0, -2) will move it up faster. You only need to call this method _once_ to keep it moving in that direction. In other words, don't call `setMovementVector` from the `draw` method, call it from the _constructor_.
 
-Add at least three boxes to your window, moving in different directions. To do this, put three `BouncingBox` instances in an [`ArrayList`](https://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html), as part of the `DrawGraphics` constructor. Then, call the `draw` method on each of the boxes from `DrawGraphics.draw`, using a loop. 
+Add at least three boxes to your window, moving in different directions. To do this, put three `BouncingBox` instances in an [`ArrayList`](https://docs.oracle.com/javase/6/docs/api/java/util/ArrayList.html), as part of the `DrawGraphics` constructor. Then, call the `draw` method on each of the boxes from `DrawGraphics.draw`, using a loop.
 
-*Optional:* If you want to experiment, create your own animated object. Copy `BouncingBox` as a starting point, then edit the code in its `draw` method. You could create something with more complicated movement, and/or something that looks better than what I created in five minutes.
+_Optional:_ If you want to experiment, create your own animated object. Copy `BouncingBox` as a starting point, then edit the code in its `draw` method. You could create something with more complicated movement, and/or something that looks better than what I created in five minutes.
 
 TODO: 上面的补充链接都是java6的，我学习的时候已经更新到java23了，考虑是不是应该更新一下，或者应该添加说明。
 
 `SimpleDraw.java`
+
 ```java
 import java.awt.Color;
 import java.awt.Dimension;
@@ -609,6 +624,7 @@ public class SimpleDraw extends JPanel implements Runnable {
 ```
 
 `BouncingBox.java`
+
 ```java
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -670,13 +686,14 @@ public class BouncingBox {
 ```
 
 `DrawGraphics.java`
+
 ```java
 import java.awt.Color;
 import java.awt.Graphics;
 
 public class DrawGraphics {
     BouncingBox box;
-    
+
     /** Initializes this class for drawing. */
     public DrawGraphics() {
         box = new BouncingBox(200, 50, Color.RED);
@@ -687,5 +704,5 @@ public class DrawGraphics {
         surface.drawLine(50, 50, 250, 250);
         box.draw(surface);
     }
-} 
+}
 ```

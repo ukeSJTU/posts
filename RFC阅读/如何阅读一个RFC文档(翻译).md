@@ -5,7 +5,8 @@ For better or worse, Requests for Comments (RFCs) are how we specify many protoc
 
 无论是好是坏，意见征求稿（RFC，Requests for Comments）是互联网上许多协议规范的制定方式。开发人员对待这些文档的态度可谓两极：一方面将其视为神圣文本，试图解读其中隐含的意义；另一方面又因其难以理解而弃之不用。这种情况常常导致挫败感，更重要的是，还会引发互操作性和安全性问题。然而，只要了解这些文档的构建和发布方式，理解它们就会变得相对容易一些。
 
-### Here’s my take, informed from my experiences with HTTP and a few [other things](https://datatracker.ietf.org/person/Mark%20Nottingham). 
+### Here’s my take, informed from my experiences with HTTP and a few [other things](https://datatracker.ietf.org/person/Mark%20Nottingham).
+
 ### 以下是一些基于我在HTTP和[其他项目](https://datatracker.ietf.org/person/Mark%20Nottingham)方面的经验的见解。
 
 ## Where to start? 从何处着手？

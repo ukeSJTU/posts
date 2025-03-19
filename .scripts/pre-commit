@@ -1,0 +1,100 @@
+#!/bin/bash
+
+# 定义颜色输出
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo -e "${GREEN}开始处理Markdown文件...${NC}"
+
+# 检查prettier是否安装
+if ! command -v npx &> /dev/null; then
+    echo -e "${RED}错误: npx 未安装，请安装Node.js和npm${NC}"
+    exit 1
+fi
+
+# 检查是否有prettier配置文件，如果没有则使用适合Markdown的默认配置
+PRETTIER_CONFIG=""
+if [ -f .prettierrc ] || [ -f .prettierrc.js ] || [ -f .prettierrc.json ] || [ -f .prettierrc.yaml ] || [ -f .prettierrc.yml ] || [ -f prettier.config.js ]; then
+    echo -e "${GREEN}使用项目中的Prettier配置${NC}"
+else
+    echo -e "${YELLOW}未找到Prettier配置，使用适合Markdown的默认配置${NC}"
+    PRETTIER_CONFIG="--print-width 80 --prose-wrap always --tab-width 2 --use-tabs false"
+fi
+
+# 定义格式化工具
+FORMATTER="npx prettier --write --embedded-language-formatting=auto $PRETTIER_CONFIG"
+
+# 获取所有即将提交的 Markdown 文件
+STAGED_MD_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.md$' || true)
+
+# 如果没有 Markdown 文件，跳过格式化
+if [[ -z "$STAGED_MD_FILES" ]]; then
+  echo -e "${YELLOW}没有暂存的Markdown文件，跳过格式化${NC}"
+  exit 0
+fi
+
+# 统计文件数量
+FILE_COUNT=$(echo "$STAGED_MD_FILES" | wc -l)
+echo -e "${GREEN}发现 ${FILE_COUNT} 个Markdown文件需要格式化${NC}"
+
+# 创建临时文件列表以处理文件名中的空格
+TEMP_FILE=$(mktemp)
+echo "$STAGED_MD_FILES" > "$TEMP_FILE"
+
+# 检查文件是否存在并格式化
+echo -e "${GREEN}正在格式化文件...${NC}"
+FORMAT_FAILED=0
+
+while IFS= read -r file; do
+  # 跳过不存在的文件
+  if [[ ! -f "$file" ]]; then
+    echo -e "${YELLOW}警告: 文件 '$file' 不存在，跳过${NC}"
+    continue
+  fi
+  
+  # 检查文件是否为空
+  if [[ ! -s "$file" ]]; then
+    echo -e "${YELLOW}警告: 文件 '$file' 为空，跳过${NC}"
+    continue
+  fi
+  
+  echo -e "处理: $file"
+  
+  # 备份文件内容以检测更改
+  cp "$file" "$file.bak"
+  
+  # 格式化文件
+  $FORMATTER "$file" > /dev/null 2>&1
+  
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}格式化 '$file' 失败${NC}"
+    FORMAT_FAILED=1
+    # 恢复备份
+    mv "$file.bak" "$file"
+  else
+    # 检查文件是否有实际更改
+    if ! cmp -s "$file" "$file.bak"; then
+      echo -e "${GREEN}✓ 文件 '$file' 已格式化${NC}"
+    else
+      echo -e "${GREEN}✓ 文件 '$file' 已符合格式要求${NC}"
+    fi
+    # 删除备份
+    rm "$file.bak"
+    # 重新添加到暂存区
+    git add "$file"
+  fi
+done < "$TEMP_FILE"
+
+# 清理临时文件
+rm "$TEMP_FILE"
+
+# 如果有任何格式化失败，阻止提交
+if [ $FORMAT_FAILED -ne 0 ]; then
+  echo -e "${RED}提交被阻止：格式化过程中出现错误${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}✓ 所有Markdown文件格式化完成${NC}"
+exit 0

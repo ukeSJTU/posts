@@ -1,4 +1,4 @@
-Banner Image Description: _A simple illustration of Java programming essentials: a variable represented by a labeled box, different data types symbolized by basic icons (e.g., a number, a character, a boolean), and mathematical operators (+, -, _, /) in a balanced composition._
+Banner Image Description: _A simple illustration of Java programming essentials: a variable represented by a labeled box, different data types symbolized by basic icons (e.g., a number, a character, a boolean), and mathematical operators (+, -, _, /) in a balanced composition.\_
 
 ---
 
@@ -33,7 +33,7 @@ graph TD;
     CPU -->|Data Flow| Memory;
     CPU -->|Data Flow| IO_Devices;
     IO_Devices -->|Data Flow| CPU;
-    
+
     style Memory fill:#ffffff,stroke:#000,stroke-width:2px;
     style CPU fill:#ffffff,stroke:#000,stroke-width:2px;
     style IO_Devices fill:#ffffff,stroke:#000,stroke-width:2px;
@@ -49,7 +49,6 @@ When you write `z = x + y`, the computer:
 2. Finds y in memory
 3. Adds them together
 4. Stores the result as z
-
 
 ### 1. Goal of this course
 
@@ -69,8 +68,6 @@ Think of a computer as having three main parts:
 - **CPU**: The "brain" that processes instructions
 - **I/O Devices**: Ways to communicate with the computer (keyboard, screen, etc.)
 
-
-
 When you write code like `z = x + y`, the computer:
 
 1. Finds the value in box 'x'
@@ -78,14 +75,13 @@ When you write code like `z = x + y`, the computer:
 3. Adds them together
 4. Puts the result in box 'z'
 
-
-
-
 programming languages:
+
 - easier to understand than CPU instructions
 - needs translation before CPU to understand it
 
 JAVA:
+
 - Most popular
 - Runs on. a virtual machine called JVM
 - More complex than some others: python
@@ -95,6 +91,7 @@ Compiling Java:
 source code(.java) --javac--> Byte Code(.class) ----> java
 
 First program:
+
 ```java
 class Hello {
   public static void main(String[] args) {
@@ -107,6 +104,7 @@ class Hello {
 The above should be saved to which file? How to run and see the result?
 
 Program structure:
+
 ```java
 class CLASSNAME {
     public static void main(String[] arguments) {
@@ -148,7 +146,7 @@ String foo;
 Assignment:
 Use = to give variables a value.
 
-Example: 
+Example:
 String foo;
 foo="IAP 6.092";
 
@@ -162,6 +160,7 @@ multiplication: `*`
 division: `/`
 
 Operators have orders which follows standard math rules:
+
 1. parentheses
 2. multiplication and division
 3. addition and subtraction
@@ -191,6 +190,7 @@ public class DoMath2 {
 ```
 
 String concatenation(`+`)
+
 ```java
 String text = "hello" + " world";
 text = text + " number " + 5;
@@ -199,7 +199,7 @@ text = text + " number " + 5;
 
 Assignment: GravityCalculator
 Compute the position of a falling object:
-$$ x(t)=0.5\times at^2+v_{i}t+x_{i}$$
+$$ x(t)=0.5\times at^2+v*{i}t+x*{i}$$
 
 NOTE: code and explanation for assignments should be found at another dedicated git repo. This line should also be removed upon publication.
 

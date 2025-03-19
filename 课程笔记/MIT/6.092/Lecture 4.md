@@ -2,7 +2,6 @@ Banner Image Description: _A clean line art illustration of object-oriented prog
 
 ---
 
-
 Classes and Objects
 
 Solution to assignment 3.
@@ -53,11 +52,11 @@ class Marathon {
 =
 ```
 
-
 Q&A也就是复习环节：
 先是一些常见的问题：
 Popular Issues 1:
 要区分Array Index vs Array Value
+
 ```java
 int[] values = {99, 100, 101};
 System.out.println(values[0]);  // 99
@@ -96,6 +95,7 @@ public static void main(String[] arguments) {
 ```
 
 Should be better written as:
+
 ```java
 public static void main(String[] arguments) {
 	...
@@ -121,11 +121,12 @@ minVal = vals[i];
 
 }
 ```
+
 Debugging Notes 2
 多利用现代编辑器的自动化format功能。
 
-
 Today's Topics:
+
 - Object oriented programming
 - Defining Classes
 - Using Classes
@@ -140,6 +141,7 @@ Baby
 Baby: Name, Sex, Weight, Decibels and `# poops so far`
 
 Objects group together:
+
 - Primitives: int, double, char, etc...
 - Objects: String, etc...
 
@@ -152,6 +154,7 @@ int numPoops
 
 Why use classes?
 Why not just primitives?
+
 ```java
 // little baby Alex:
 String nameAlex;
@@ -163,6 +166,7 @@ double weightDavid;
 ```
 
 The code would become terrible if we have another baby called David:
+
 ```java
 // little baby Alex:
 String nameAlex;
@@ -190,6 +194,7 @@ TODO：上面这一段文本一定需要适当调整文字表述，给初学者�
 Defining classes
 Class-overview
 Below is an example of class definition:
+
 ```java
 public class Baby {
 	String name;
@@ -204,34 +209,42 @@ public class Baby {
 	}
 }
 ```
+
 class instance:
+
 ```java
 Baby myBaby = new Baby();
 ```
 
 Let's declare a baby:
+
 ```java
 public class Baby {
 	// fieds
-	
+
 	// methods
 }
 ```
+
 a class is composed of two parts: fields and methods. 我们前面已经讲过methods了，需要简单讲讲fields。
 
 Note:
+
 1. class names are Capitalized
 2. 1 class = 1 file
 3. having a `main` method means the class can be run
 
 Baby fields:
+
 ```java
 public class Baby {
 	TYPE var_name;
 	TYPE var_name = some_value;
 }
 ```
+
 example
+
 ```java
 public class Baby {
 	String name;
@@ -241,7 +254,7 @@ public class Baby {
 }
 ```
 
-What about Baby siblings? Think for a second and check the answer below. Note that fields are quite similar to defining a variable with a syntax of  `TYPE var_name = some_value`.
+What about Baby siblings? Think for a second and check the answer below. Note that fields are quite similar to defining a variable with a syntax of `TYPE var_name = some_value`.
 
 ```java
 public class Baby {
@@ -254,6 +267,7 @@ public class Baby {
 ```
 
 Ok, let's make this baby!
+
 ```java
 Baby ourBbay = new Baby();
 ```
@@ -261,6 +275,7 @@ Baby ourBbay = new Baby();
 But what about its name? its sex?
 
 Constructors
+
 ```java
 public class CLASSNAME {
 	CLASSNAME() {
@@ -275,16 +290,19 @@ CLASSNAME obj2 = new CLASSNAME([ARGUMENTS]);
 ```
 
 Constructors:
+
 - Constructor name is the name of the class
 - No return type - constructor should never return anything
 - Constructor is usually used to initialize fields
 - All classes need at least one constructor, and if you don't write one, it defaults to:
+
 ```java
 CLASSNAME() {
 }
 ```
 
 Let's go back to the Baby example to see how to write a constructor:
+
 ```java
 public class Baby {
 	String name;
@@ -297,6 +315,7 @@ public class Baby {
 ```
 
 Baby methods
+
 ```java
 public class Baby {
 	String name = "Slim Shady";
@@ -308,6 +327,7 @@ public class Baby {
 ```
 
 we could also define some more methods for Baby class:(原本pdf这里第二行是`String weight = 5.0`结合后面来看应该是打错了，应该是`double`)
+
 ```java
 public class Baby {
 	double weight = 5.0;
@@ -321,6 +341,7 @@ public class Baby {
 ```
 
 Now we have a baby class like this:
+
 ```java
 public class Baby {
 	String name;
@@ -328,7 +349,7 @@ public class Baby {
 	boolean isMale;
 	int numPoops = 0;
 	Baby[] siblings;
-	
+
 	void sayHi() {...}
 	void eat(double foodWeight) {...}
 }
@@ -336,6 +357,7 @@ public class Baby {
 
 Using classes:
 Classes and Instances
+
 ```java
 // class Definition
 public class Baby {...}
@@ -347,6 +369,7 @@ Baby knox = new Baby("Knox Jolie-Pitt", true);
 
 Accessing fields:
 syntax:`Object.FIELDNAME`
+
 ```java
 Baby shiloh = new Baby("Shiloh Jolie-Pitt", true);
 
@@ -368,30 +391,36 @@ shiloh.eat(1);
 
 References vs Values
 Primitive types are basic java types:
+
 - int, long, double, boolean, char, short, byte, float
 - The actual values are stored in the variable
 
 Reference types are arrays and objects
+
 - String, int[], Baby(what we just learned), ...
 
 How java stores primitives
+
 - Variables are like fixed size cups
 - Primitives are small enough that they just fix into the cup
 
 But Objects are too big to fit in a variable.
+
 - Stored somewhere else
 - Variable stores a number that locates the object
 
 TODO: 上面这个可能需要稍微多一点的文字解释，但是同时需要注意到这个课程面向新手，所以不要太涉及计算机底层知识。
 
 References
-the object's location is called a reference. 
+the object's location is called a reference.
 `==` compares the references:
+
 ```java
 Baby shiloh1 = new Baby("Shiloh");
 Baby shiloh2 = new Baby("Shiloh");
 ```
-Does `shiloh1 == shiloh2`? Before proceeding think it for yourself. 
+
+Does `shiloh1 == shiloh2`? Before proceeding think it for yourself.
 
 the answer is NO. Because TODO文字解释一下。如果能让读者简单构建程序验证一下就更好了。
 
@@ -404,10 +433,12 @@ Static types and methods
 static
 it is a keyword, which can be applied to fields and methods
 it means that the field/method:
+
 - is defined for the class declaration
 - is not unique for each instance
 
 Let's first see an example:
+
 ```java
 public class Baby {
 	static int numBabiesMade = 0;
@@ -428,6 +459,7 @@ D. 100 2
 TODO: correct answer and 需要解释为什么
 
 利用这种static特性，我们可以keep track of the number of babies that have been made.
+
 ```java
 public class Baby {
 	static int numBabiesMade = 0;
@@ -438,6 +470,7 @@ public class Baby {
 ```
 
 你可以分别运行上面这个和下面这个两段代码，比较输出的结果差异，体会static的作用。
+
 ```java
 public class Baby {
 	int numBabiesMade = 0;
@@ -458,6 +491,7 @@ public class Baby {
 ```
 
 OR
+
 ```java
 public class Baby {
 	void cry() {
@@ -470,6 +504,7 @@ Static notes:
 Non-static methods can reference static methods, but not the other way around. Why?
 
 下面是原本lecture里面给的代码：
+
 ```java
 public class baby {
 	String name = "DMX";
@@ -482,8 +517,6 @@ public class baby {
 读者可以自己利用前面学的static-method相关的知识编写代码进行测试。然后思考并回答上面的问题，下面是我的解释。
 In Java, the reason **non-static methods can reference static methods**, but **static methods cannot reference non-static methods** directly, lies in how static and non-static members are tied to instances and the class itself:
 
-  
-
 **1. Non-static methods (Instance methods):**
 
 • Non-static methods belong to **instances** of the class. This means that they require an **object** to be created before they can be called.
@@ -492,8 +525,6 @@ In Java, the reason **non-static methods can reference static methods**, but **s
 
 • A non-static method can reference static methods without any issues because static methods are shared across all instances of the class. The static method does not depend on any particular instance to be called.
 
-  
-
 **2. Static methods:**
 
 • Static methods, on the other hand, belong to the **class itself** rather than to instances of the class. This means that they can be invoked without needing to create an object.
@@ -501,8 +532,6 @@ In Java, the reason **non-static methods can reference static methods**, but **s
 • A static method does not have access to **instance variables** or **instance methods** because it is not tied to any particular instance. Since static methods can be called without an object, there is no guarantee that any instance of the class exists when the static method is invoked.
 
 • Static methods **cannot reference non-static methods directly** because non-static methods require an instance of the class to be called. The static method does not know which instance to refer to, as no instance might exist at the time the static method is called.
-
-  
 
 **Key Point:**
 
@@ -521,7 +550,6 @@ In Java, the reason **non-static methods can reference static methods**, but **s
 Assignment 4
 
 The libraries of SmallTownX need a new electronic rental system, and it is up to you to build it. SmallTownX has two libraries. Each library offers many books to rent. Customers can print the list of available books, borrow, and return books.
-
 
 Problem
 
@@ -554,6 +582,7 @@ Notes:
 - You must not modify the main method.
 
 The output when you run this program should be similar to the following:
+
 ```plaintext
 Library hours:
 Libraries are open daily from 9am to 5pm.
@@ -586,6 +615,7 @@ The Lord of the Rings
 ```
 
 Skeleton code for Book.java:
+
 ```java
 public class Book {
 
@@ -631,6 +661,7 @@ public class Book {
 ```
 
 Skeleton code for `Library.java`
+
 ```java
 public class Library {
     // Add the missing implementation to this class
@@ -680,5 +711,5 @@ public class Library {
         System.out.println("Books available in the first library:");
         firstLibrary.printAvailableBooks();
     }
-} 
+}
 ```

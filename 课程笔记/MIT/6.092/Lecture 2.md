@@ -2,9 +2,9 @@ Banner Image Description: _An abstract representation of Java programming concep
 
 ---
 
-
 More types, Methods, Conditionals
 Outline:
+
 - Lecture 1 Review
 - More types
 - Methods
@@ -25,19 +25,19 @@ public class GravityCalculator {
     double initialPosition = 0.0;
     double finalPosition = .5 * gravity * fallingTime *
     fallingTime;
-    
+
     finalPosition = finalPosition +
-    
+
     initialVelocity * fallingTime;
     finalPosition = finalPosition + initialPosition;
     System.out.println("An object's position after " +
     fallingTime + " seconds is " +
     finalPosition + "m.");
-    }  
+    }
 }
 ```
 
-这里提到了： finalPosition = finalPosition + initialVelocity * fallingTime; finalPosition = finalPosition + initialPosition; OR finalPosition += initialVelocity * fallingTime; finalPosition += initialPosition;
+这里提到了： finalPosition = finalPosition + initialVelocity _ fallingTime; finalPosition = finalPosition + initialPosition; OR finalPosition += initialVelocity _ fallingTime; finalPosition += initialPosition;
 
 有两种写法。
 
@@ -61,11 +61,12 @@ parenthesis increase precedence.
 
 ```java
 double x = 3 / 2 + 1; // x = 2.0
-double y = 3 / (2 + 1); // y = 1.0 
+double y = 3 / (2 + 1); // y = 1.0
 ```
 
 Mismatched Types
 Java verifies that types always match:
+
 ```java
 String five = 5; // This ERRORS!!!
 ```
@@ -73,6 +74,7 @@ String five = 5; // This ERRORS!!!
 可能需要补充具体报错信息。
 
 Conversion by casting
+
 ```java
 int a = 2; // a = 2
 
@@ -90,26 +92,31 @@ double a = (double)2/3; // a = 0.6666…
 我感觉这个`double a = 2/3; // a = 0.0`可以稍微再解释一下：我们前面提到`=`右侧先计算，2和3都是integer,所以计算结果是0，然后给double类型的变量a赋值，也就是casting conversion, 因此最终a是0.0。
 
 Methods
+
 ```java
 public static void main(String[] arguments) {
 	System.out.println("hi");
 }
 ```
+
 根据上面这个Snippet简单介绍method的构成部分。不需要过多的涉及class的相关概念，因为到现在这个lecture2还没有学到class。
 
 可以通过下面的语法添加一个method：
+
 ```java
 public static void NAME() {
 	STATEMENTS
 }
 ```
 
-to call a method: 
+to call a method:
+
 ```java
 NAME();
 ```
 
 example code：
+
 ```java
 class NewLine {
     public static void newLine() {
@@ -131,6 +138,7 @@ class NewLine {
 ```
 
 Parameters
+
 ```java
 public static void NAME(TYPE NAME) {
 	STATEMENTS
@@ -138,11 +146,13 @@ public static void NAME(TYPE NAME) {
 ```
 
 To call the method with params:
+
 ```java
 NAME(EXPRESSION);
 ```
 
 example code:
+
 ```java
 class Square {
     public static void printSquare(int x) {
@@ -159,6 +169,7 @@ class Square {
 ```
 
 但是下面这个代码中两个对于`printSquare`方法的调用就都是错的，可以自己想一想为什么是错的
+
 ```java
 class Square2 {
     public static void printSquare(int x) {
@@ -175,6 +186,7 @@ class Square2 {
 TODO：这里用折叠的样子补充上面这个问题的答案。
 
 然后PPT上：
+
 ```java
 class Square3 {
     public static void printSquare(double x) {
@@ -186,9 +198,11 @@ class Square3 {
     }
 }
 ```
+
 仍然在问What's wrong？TODO: 这里我就有些不懂，类型确实不匹配，但是仍然可以转换，程序运行不会报错。
 
 Multiple parameters:
+
 ```java
 public static void NAME(TYPE NAME, TYPE NAME) {
 	STATEMENTS
@@ -196,11 +210,13 @@ public static void NAME(TYPE NAME, TYPE NAME) {
 ```
 
 to call
+
 ```java
 NAME(arg1, arg2);
 ```
 
 example code:
+
 ```java
 public class Multiply {
     public static void times(double a, double b) {
@@ -215,6 +231,7 @@ public class Multiply {
 ```
 
 Return values
+
 ```java
 public static TYPE NAME() {
 	STATEMENTS
@@ -225,6 +242,7 @@ public static TYPE NAME() {
 `void` means "no type".
 
 再看一下`Square3`的例子，和下面的`Square4`的例子，对比地看。
+
 ```java
 class Square4 {
     public static double square(double x) {
@@ -237,7 +255,6 @@ class Square4 {
     }
 }
 ```
-
 
 如果你是编程初学者，下面的概念可能稍微有一些迷惑，你可以按照
 Variable Scope:
@@ -262,9 +279,11 @@ public class SquareChange {
     }
 }
 ```
+
 用一段文字结合上面的代码讲解Scope到底该怎么理解。
 
 另一个example code：
+
 ```java
 class Scope {
     public static void main(String[] args) {
@@ -282,12 +301,14 @@ class Scope {
 这个代码无法正确执行。需要补充原因解释。
 
 Methods: Building Blocks
+
 - Big programs are built out of small methods
 - Methods can be individually developed
 - User of method does not need to know how it works
 - In CS, this is called "abstraction"
 
 Mathematical Functions
+
 ```java
 Math.sin(x)
 Math.cos(Math.PI / 2)
@@ -297,6 +318,7 @@ Math.log(Math.log(x+y))
 
 Conditionals
 if statement
+
 ```java
 if(CONDITION) {
 	STATEMENTS
@@ -304,6 +326,7 @@ if(CONDITION) {
 ```
 
 example code
+
 ```java
 class Condition {
     public static void test(int x) {
@@ -313,13 +336,14 @@ class Condition {
     }
     public static void main(String[] args) {
         test(6);
-        test(5);    
+        test(5);
         test(4);
     }
 }
 ```
 
 Comparison operators
+
 ```
 x > y: x is greater than y
 x < y: x is less than y
@@ -327,6 +351,7 @@ x >= y: x is greater than or equal to x
 x <= y: x is less than or equal to y
 x == y: x equals y
 ```
+
 Notice that: `==` means equality, `=` means assignment.
 
 Boolean operators
@@ -342,6 +367,7 @@ if(x>6) {
 ```
 
 is equivalent to:
+
 ```java
 if(x>6 && x<9) {
 	...
@@ -349,6 +375,7 @@ if(x>6 && x<9) {
 ```
 
 else statement
+
 ```java
 if(CONDITION) {
 	STATEMENTS
@@ -358,6 +385,7 @@ if(CONDITION) {
 ```
 
 example code:
+
 ```java
 class Condition2 {
     public static void test(int x) {
@@ -369,13 +397,14 @@ class Condition2 {
     }
     public static void main(String[] args) {
         test(6);
-        test(5);    
+        test(5);
         test(4);
     }
 }
 ```
 
 else if statement
+
 ```java
 if (CONDITION) {
 	STATEMENTS
@@ -389,6 +418,7 @@ if (CONDITION) {
 ```
 
 example code:
+
 ```java
 class Condition3 {
     public static void test(int x) {
@@ -459,6 +489,7 @@ Good luck!
 Below is some supplementary
 Conversion by method
 `int` to `sSTring`
+
 ```java
 String five = 5; // EERROR!
 String five = Integer.toString(5); // OK!
@@ -466,6 +497,7 @@ String five = "" + 5; // five="5"
 ```
 
 `String` to `int`
+
 ```java
 int foo = "18"; // ERROR!
 int foo = Integer.parseInt("18"); // OK!
@@ -473,6 +505,7 @@ int foo = Integer.parseInt("18"); // OK!
 
 Comparison operators
 Do NOT call `==` on doubles! EVER!
+
 ```java
 double a = Math.cos(Math.PI / 2);
 double b = 0.0;

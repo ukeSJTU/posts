@@ -1,4 +1,3 @@
-
 ## BFS and Dijkstra
 
 ### BFS
@@ -28,6 +27,7 @@ BFS算法的分析
 |     |     |
 |     |     |
 |     |     |
+
 ### Dijkstra
 
 如果边上有权重怎么办？基于BFS的思路拓展。
@@ -53,7 +53,6 @@ x2的路径可能存在，但是即使存在也应该非负。如果可以为负
 
 #### 算法伪代码
 
-
 #### 时间复杂度分析
 
 先分析：得到结论是V+E
@@ -64,16 +63,13 @@ x2的路径可能存在，但是即使存在也应该非负。如果可以为负
 
 如果用堆：还有各种各样的堆。
 
-
 | Heap type     | Pop Min | Insert | Update Key | Merge |
 | ------------- | ------- | ------ | ---------- | ----- |
 | Binary Heap   |         |        |            |       |
 | d-nary Heap   |         |        |            |       |
 | Binomial Heap |         |        |            |       |
 | Fibonacci     |         |        |            |       |
+
 我们下面还会学习这个FIbonacci-Heap
 
 先复习一下Binary Heap
-
-
-
