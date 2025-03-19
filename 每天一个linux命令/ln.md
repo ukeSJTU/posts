@@ -121,8 +121,7 @@ ln -s 源文件 链接名
 
 ```bash
 # 创建实验目录并进入
-mkdir ln_playground
-cd ln_playground
+mkdir ln_playground && cd $_
 
 # 创建一个测试文件
 echo "这是原始文件内容" > original.txt
@@ -139,7 +138,9 @@ ls -li original.txt  # -i 选项显示inode编号
 1234567 -rw-r--r-- 1 user user 24 Mar 18 21:30 original.txt
 ```
 
-### 实验1：创建并测试硬链接
+> 注意：显示的信息可能会有所不同，具体取决于您的系统和文件属性。
+
+### 实验 1：创建并测试硬链接
 
 ```bash
 # 创建硬链接
@@ -149,7 +150,7 @@ ln original.txt hard_link.txt
 ls -li original.txt hard_link.txt
 ```
 
-输出示例（注意两个文件有相同的inode号）：
+输出示例（注意两个文件有**相同**的 inode 号）：
 
 ```
 1234567 -rw-r--r-- 2 user user 24 Mar 18 21:30 original.txt
@@ -166,7 +167,7 @@ cat original.txt
 
 输出示例（原始文件内容也被修改）：
 
-```
+```plaintext
 这是原始文件内容
 通过硬链接添加的内容
 ```
@@ -186,7 +187,7 @@ cat hard_link.txt
 通过硬链接添加的内容
 ```
 
-### 实验2：创建并测试软链接
+### 实验 2：创建并测试软链接
 
 ```bash
 # 创建新的原始文件
@@ -199,7 +200,7 @@ ln -s new_original.txt soft_link.txt
 ls -li new_original.txt soft_link.txt
 ```
 
-输出示例（注意两个文件有不同的inode号）：
+输出示例（注意两个文件有不同的 inode 号）：
 
 ```
 2345678 -rw-r--r-- 1 user user 24 Mar 18 21:35 new_original.txt
@@ -235,7 +236,7 @@ cat soft_link.txt
 cat: soft_link.txt: No such file or directory
 ```
 
-### 实验3：目录链接（只能用软链接）
+### 实验 3：目录链接（只能用软链接）
 
 ```bash
 # 创建测试目录和文件
@@ -263,10 +264,10 @@ ln test_dir hard_dir_link
 输出示例：
 
 ```
-ln: test_dir: hard link not allowed for directory
+ln: test_dir: Is a directory
 ```
 
-### 实验4：观察文件大小差异
+### 实验 4：观察文件大小差异
 
 ```bash
 # 创建一个较大的文件
@@ -288,4 +289,4 @@ ls -lh large_file.bin hard_link_large.bin soft_link_large.bin
 lrwxrwxrwx 1 user user  14 Mar 18 21:40 soft_link_large.bin -> large_file.bin
 ```
 
-通过这些实验，您可以亲身体验并理解软链接和硬链接的不同特性，包括inode共享、内容修改的影响、原始文件删除后的行为、目录链接的限制，以及文件大小的差异。这些实践操作有助于加深对链接概念的理解。
+通过这些实验，您可以亲身体验并理解软链接和硬链接的不同特性，包括 inode 共享、内容修改的影响、原始文件删除后的行为、目录链接的限制，以及文件大小的差异。这些实践操作有助于加深对链接概念的理解。
