@@ -6,7 +6,47 @@ Go 特别擅长构建高性能网络服务、分布式系统和云原生应用�
 
 这些独特优势使 Go 成为云计算、微服务和容器技术领域的主导语言，驱动了众多重要项目如 Docker、Kubernetes 和 Prometheus 的发展。
 
+## A Tour of Go 课程介绍
+
+"A Tour of Go" 是由 Go 编程语言官方项目提供的一个交互式教程，旨在帮助开发者快速入门 Go 语言。这个教程以模块化的方式组织，覆盖了 Go 语言的基础知识和核心特性，让学习者能够边学边实践。
+
+我觉得这门课程是一个很好的起点，尤其适合初学者快速了解 Go，但是后续深入学习需要其他更加系统的课程。
+
+这个课程的一个优点是提供了本地运行版本：[Go offline](https://go.dev/tour/welcome/3)。要在本地运行 A Tour of Go 这门课程，先[安装 Go](https://go.dev/doc/install)，然后运行：
+
+```bash
+go install golang.org/x/website/tour@latest
+```
+
+这将在你的 GOPATH 的 bin 目录中放置一个`tour`二进制文件。当你运行`tour`程序时，它将打开一个网页浏览器，显示本地版本的 A Tour of Go 课程。
+
+### 课程结构
+
+#### Basics
+
+1. Packages, variables and functions
+2. Flow control statements: `for`, `if`, `else`, `switch` and `defer`
+3. More types: `structs`, `slices`, and `maps`
+
+#### Methods and interfaces
+
+1. Methods and interfaces
+
+#### Generics
+
+1. Generics
+
+#### Concurrency
+
+1. Concurrency
+
 ## Go by Example
+
+Go by Example 课程通过一系列简洁的代码示例，帮助学习者快速掌握 Go 语言的基本概念和用法。每个示例都包含详细的注释，解释了代码的功能和实现原理。
+
+### 课程结构
+
+![[GoByExample/README.md]]
 
 ### 相关资源概述
 
