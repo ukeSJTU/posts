@@ -6,6 +6,8 @@ Go 特别擅长构建高性能网络服务、分布式系统和云原生应用�
 
 这些独特优势使 Go 成为云计算、微服务和容器技术领域的主导语言，驱动了众多重要项目如 Docker、Kubernetes 和 Prometheus 的发展。
 
+---
+
 ## A Tour of Go 课程介绍
 
 "A Tour of Go" 是由 Go 编程语言官方项目提供的一个交互式教程，旨在帮助开发者快速入门 Go 语言。这个教程以模块化的方式组织，覆盖了 Go 语言的基础知识和核心特性，让学习者能够边学边实践。
@@ -39,6 +41,8 @@ go install golang.org/x/website/tour@latest
 #### Concurrency
 
 1. Concurrency
+
+---
 
 ## Go by Example
 
