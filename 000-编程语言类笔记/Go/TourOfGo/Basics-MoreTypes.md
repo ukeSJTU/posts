@@ -457,3 +457,160 @@ func main() {
 }
 
 ```
+
+### Appending to a slice
+
+It is common to append new elements to a slice, and so Go provides a built-in `append` function. The [documentation](https://go.dev/pkg/builtin/#append) of the built-in package describes `append`.
+
+```go
+func append(s []T, vs ...T) []T
+```
+
+The first parameter `s` of `append` is a slice of type `T`, and the rest are `T` values to append to the slice.
+
+The resulting value of `append` is a slice containing all the elements of the original slice plus the provided values.
+
+If the backing array of `s` is too small to fit all the given values a bigger array will be allocated. The returned slice will point to the newly allocated array.
+
+(To learn more about slices, read the [Slices: usage and internals](https://go.dev/blog/go-slices-usage-and-internals) article.)
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var s []int
+	printSlice(s)
+
+	// append works on nil slices.
+	s = append(s, 0)
+	printSlice(s)
+
+	// The slice grows as needed.
+	s = append(s, 1)
+	printSlice(s)
+
+	// We can add more than one element at a time.
+	s = append(s, 2, 3, 4)
+	printSlice(s)
+}
+
+func printSlice(s []int) {
+	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+```
+
+### Range
+
+The `range` form of the `for` loop iterates over a slice or map.
+
+When ranging over a slice, two values are returned for each iteration. The first is the index, and the second is a copy of the element at that index.
+
+```go
+package main
+
+import "fmt"
+
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for i, v := range pow {
+		fmt.Printf("2**%d = %d\n", i, v)
+	}
+}
+```
+
+### Range continued
+
+You can skip the index or value by assigning to `_`.
+
+```go
+for i, _ := range pow
+for _, value := range pow
+```
+
+If you only want the index, you can omit the second variable.
+
+```go
+for i := range pow
+```
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	pow := make([]int, 10)
+	for i := range pow {
+		pow[i] = 1 << uint(i) // == 2**i
+	}
+	for _, value := range pow {
+		fmt.Printf("%d\n", value)
+	}
+}
+```
+
+### Exercise: Slices
+
+Implement `Pic`. It should return a slice of length `dy`, each element of which is a slice of `dx` 8-bit unsigned integers. When you run the program, it will display your picture, interpreting the integers as grayscale (well, bluescale) values.
+
+The choice of image is up to you. Interesting functions include `(x+y)/2`, `x*y`, and `x^y`.
+
+(You need to use a loop to allocate each `[]uint8` inside the `[][]uint8`.)
+
+(Use `uint8(intValue)` to convert between types.)
+
+<div>
+<table>
+  <tr>
+    <th style="text-align:left">Original Code</th>
+    <th style="text-align:left">Complete Code</th>
+  </tr>
+  <tr>
+    <td>
+
+```go
+package main
+
+import "golang.org/x/tour/pic"
+
+func Pic(dx, dy int) [][]uint8 {
+}
+
+func main() {
+	pic.Show(Pic)
+}
+
+```
+
+```text
+./prog.go:9:19: undefined: math.pi
+```
+
+</td>
+<td>
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func main() {
+	fmt.Println(math.Pi)
+}
+```
+
+```text
+3.141592653589793
+```
+
+</td>
+
+</tr>
+</table>
+</div>
