@@ -22,27 +22,51 @@ go install golang.org/x/website/tour@latest
 
 这将在你的 GOPATH 的 bin 目录中放置一个`tour`二进制文件。当你运行`tour`程序时，它将打开一个网页浏览器，显示本地版本的 A Tour of Go 课程。
 
+课程中间穿插了一些小练习帮助你巩固所学的知识。我在我的笔记中记录自己的答案以供参考。
+
+好的，我来帮您把官方教程的说明整合到您的笔记结构中。以下是整合后的版本：
+
+# Go 语言学习之旅
+
+欢迎来到 Go 编程语言学习之旅。本教程涵盖了该语言最重要的特性。
+
 ### 课程结构
 
 #### Basics
 
-1. Packages, variables and functions
-2. Flow control statements: `for`, `if`, `else`, `switch` and `defer`
-3. More types: `structs`, `slices`, and `maps`
+Go 语言的基础起点，在这里您将学习语言的所有基础知识。在进入后续课程之前，您需要了解的变量声明、函数调用等所有基础内容。
+
+1. Packages, variables and functions: [[Basics-PackagesVariablesFunctions|笔记]]
+
+   - 学习任何 Go 程序的基本组成部分
+
+2. Flow control statements: `for`, `if`, `else`, `switch` and `defer`: [[Basics-FlowControl|笔记]]
+
+   - 学习如何使用条件语句、循环、分支和延迟执行来控制代码流程
+
+3. More types: `structs`, `slices`, and `maps`: [[Basics-MoreTypes|笔记]]
+   - 学习如何基于现有类型定义新的类型：本课程涵盖结构体、数组、切片和映射
 
 #### Methods and interfaces
 
-1. Methods and interfaces
+学习如何在类型上定义方法，如何声明接口，以及如何将所有内容组合在一起。
+
+1. Methods and interfaces: [[MethodsAndInterfaces|笔记]]
+   - 本课程涵盖方法和接口，这些是定义对象及其行为的构造
 
 #### Generics
 
-1. Generics
+学习如何在 Go 函数和结构体中使用类型参数。
+
+1. Generics: [[Generics|笔记]]
+   - Go 支持使用类型参数进行泛型编程。本课程展示了在代码中使用泛型的一些示例
 
 #### Concurrency
 
-1. Concurrency
+Go 在核心语言中提供了并发特性。本模块介绍 goroutines 和 channels，以及如何使用它们实现不同的并发模式。
 
----
+1. Concurrency: [[Concurrency|笔记]]
+   - Go 在核心语言中提供并发构造。本课程介绍这些特性并提供一些使用示例
 
 ## Go by Example
 

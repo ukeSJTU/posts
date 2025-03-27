@@ -585,8 +585,203 @@ func main() {
 
 ```
 
-```text
-./prog.go:9:19: undefined: math.pi
+</td>
+<td>
+
+```go
+package main
+
+import "golang.org/x/tour/pic"
+
+func Pic(dx, dy int) [][]uint8 {
+	pic := make([][]uint8, dy)
+	for i:=0; i<dy; i++ {
+		pic[i] = make([]uint8, dx)
+		for j:=0;j<dx;j++ {
+			pic[i][j] = uint8((i+j) / 2)
+		}
+	}
+	return pic
+}
+
+func main() {
+	pic.Show(Pic)
+}
+
+```
+
+</td>
+
+</tr>
+</table>
+</div>
+
+### Maps
+
+A map maps keys to values.
+
+The zero value of a map is `nil`. A `nil` map has no keys, nor can keys be added.
+
+The `make` function returns a map of the given type, initialized and ready for use.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m map[string]Vertex
+
+func main() {
+	m = make(map[string]Vertex)
+	m["Bell Labs"] = Vertex{
+		40.68433, -74.39967,
+	}
+	fmt.Println(m["Bell Labs"])
+}
+```
+
+### Map literals
+
+Map literals are like struct literals, but the keys are required.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m = map[string]Vertex{
+	"Bell Labs": Vertex{
+		40.68433, -74.39967,
+	},
+	"Google": Vertex{
+		37.42202, -122.08408,
+	},
+}
+
+func main() {
+	fmt.Println(m)
+}
+```
+
+### Map literals continued
+
+If the top-level type is just a type name, you can omit it from the elements of the literal.
+
+```go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m = map[string]Vertex{
+	"Bell Labs": {40.68433, -74.39967},
+	"Google":    {37.42202, -122.08408},
+}
+
+func main() {
+	fmt.Println(m)
+}
+```
+
+### Mutating Maps
+
+Insert or update an element in map `m`:
+
+```go
+m[key] = elem
+```
+
+Retrieve an element:
+
+```go
+elem = m[key]
+```
+
+Delete an element:
+
+```go
+delete(m, key)
+```
+
+Test that a key is present with a two-value assignment:
+
+```go
+elem, ok = m[key]
+```
+
+If `key` is in `m`, `ok` is `true`. If not, `ok` is `false`.
+
+If `key` is not in the map, then `elem` is the zero value for the map's element type.
+
+> **Note:** If `elem` or `ok` have not yet been declared you could use a short declaration form:
+>
+> ```go
+> elem, ok := m[key]
+> ```
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	m := make(map[string]int)
+
+	m["Answer"] = 42
+	fmt.Println("The value:", m["Answer"])
+
+	m["Answer"] = 48
+	fmt.Println("The value:", m["Answer"])
+
+	delete(m, "Answer")
+	fmt.Println("The value:", m["Answer"])
+
+	v, ok := m["Answer"]
+	fmt.Println("The value:", v, "Present?", ok)
+}
+```
+
+### Exercise: Maps
+
+Implement `WordCount`. It should return a map of the counts of each “word” in the string `s`. The `wc.Test` function runs a test suite against the provided function and prints success or failure.
+
+You might find [strings.Fields](https://go.dev/pkg/strings/#Fields) helpful.
+
+<div>
+<table>
+  <tr>
+    <th style="text-align:left">Original Code</th>
+    <th style="text-align:left">Complete Code</th>
+  </tr>
+  <tr>
+    <td>
+
+```go
+package main
+
+import (
+	"golang.org/x/tour/wc"
+)
+
+func WordCount(s string) map[string]int {
+	return map[string]int{"x": 1}
+}
+
+func main() {
+	wc.Test(WordCount)
+}
+
 ```
 
 </td>
@@ -596,21 +791,150 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"math"
+	"golang.org/x/tour/wc"
+	"strings"
 )
 
-func main() {
-	fmt.Println(math.Pi)
+func WordCount(s string) map[string]int {
+	var m = make(map[string]int)
+	for _, w := range strings.Fields(s) {
+		m[w]+=1
+	}
+	return m
 }
-```
 
-```text
-3.141592653589793
+func main() {
+	wc.Test(WordCount)
+}
+
 ```
 
 </td>
 
+</tr>
+</table>
+</div>
+
+### Function values
+
+Functions are values too. They can be passed around just like other values.
+
+Function values may be used as function arguments and return values.
+
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
+
+func main() {
+	hypot := func(x, y float64) float64 {
+		return math.Sqrt(x*x + y*y)
+	}
+	fmt.Println(hypot(5, 12))
+
+	fmt.Println(compute(hypot))
+	fmt.Println(compute(math.Pow))
+}
+```
+
+### Function closures
+
+Go functions may be closures. A closure is a function value that references variables from outside its body. The function may access and assign to the referenced variables; in this sense the function is "bound" to the variables.
+
+For example, the `adder` function returns a closure. Each closure is bound to its own `sum` variable.
+
+```go
+package main
+
+import "fmt"
+
+func add() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+
+func main() {
+	pos, neg := adder(), adder()
+	for i := 0; i < 10; i++ {
+		fmt.Println(
+			pos(i), neg(-2*i),
+		)
+	}
+}
+```
+
+### Exercise: Fibonacci closure
+
+Let's have some fun with functions.
+
+Implement a `fibonacci` function that returns a function (a closure) that returns successive [fibonacci numbers](https://en.wikipedia.org/wiki/Fibonacci_number) (0, 1, 1, 2, 3, 5, ...).
+
+<div>
+
+<table>
+  <tr>
+	<th style="text-align:left">Original Code</th>
+	<th style="text-align:left">Complete Code</th>
+  </tr>
+  <tr>
+	<td>
+
+```go
+package main
+
+import "fmt"
+
+// fibonacci is a function that returns
+// a function that returns an int.
+func fibonacci() func() int {
+}
+
+func main() {
+	f := fibonacci()
+	for i := 0; i < 10; i++ {
+		fmt.Println(f())
+	}
+}
+```
+
+</td>
+<td>
+
+```go
+package main
+
+import "fmt"
+
+// fibonacci is a function that returns
+// a function that returns an int.
+func fibonacci() func() int {
+	a, b := 0, 1
+	return func() int {
+		result := a
+		a, b = b, a + b
+		return result
+	}
+}
+
+func main() {
+	f := fibonacci()
+	for i := 0; i < 10; i++ {
+		fmt.Println(f())
+	}
+}
+```
+
+</td>
 </tr>
 </table>
 </div>
