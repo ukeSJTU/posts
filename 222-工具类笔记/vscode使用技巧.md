@@ -1,4 +1,4 @@
-本篇文章主要记录在实际使用过程中对vscode的设置，插件，以及一些使用技巧。
+本篇文章主要记录在实际使用过程中对 vscode 的设置，插件，以及一些使用技巧。
 
 # 新建嵌套文件（夹）
 
@@ -10,16 +10,16 @@
     └── bar.cpp
 ```
 
-# 打开terminal
+# 打开 terminal
 
 快捷键：`ctrl+j`或者`command+j`
 
 # vscode welcome page
 
-我本来想要自定义welcome page但是好像截止1.96.0还没有这种功能，但是找到个更有用的设置：
-"workbench.startupEditor": "readme" 这样每次打开一个项目文件就会直接看到README的预览，很类似github。
+我本来想要自定义 welcome page 但是好像截止 1.96.0 还没有这种功能，但是找到个更有用的设置：
+"workbench.startupEditor": "readme" 这样每次打开一个项目文件就会直接看到 README 的预览，很类似 github。
 
-参考链接：[stackoverflow答案](https://stackoverflow.com/questions/66741296/customize-visual-studio-code-landing-page)
+参考链接：[stackoverflow 答案](https://stackoverflow.com/questions/66741296/customize-visual-studio-code-landing-page)
 
 # vscode 自动切换深色/浅色主题
 
@@ -35,12 +35,21 @@
 "workbench.preferredDarkColorTheme": "Monokai Pro""workbench.preferredLightColorTheme": "Monokai Pro Light (Filter Sun)"
 ```
 
-# 复制相对路径保持linux风格
+# 复制相对路径保持 linux 风格
 
-也就是在windows平台上当我们从file explorer中复制文件相对路径的时候，我们希望分隔符默认和linux/macOS一样是`/`而不是`\`
+也就是在 windows 平台上当我们从 file explorer 中复制文件相对路径的时候，我们希望分隔符默认和 linux/macOS 一样是`/`而不是`\`
 
 ```json
 "explorer.copyRelativePathSeparator": "/"
 ```
 
-# ?
+# svg 文件打开直接预览
+
+Go to Settings
+Search for: workbench.editorAssociations
+Click Add Item:
+
+Key: `*.svg`
+Value: `default`
+
+参考[reddit 讨论](https://www.reddit.com/r/vscode/comments/1ibntfy/svg_files_open_as_previews_i_want_them_to_open_as/)
