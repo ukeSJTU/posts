@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 Our exercises use an implementation that only support adding new columns, so give that a try below.
+
+我们的练习使用一种只支持添加新列的实现方式，请在下面尝试一下。
 
 Table: movies
 
@@ -25,14 +27,15 @@ Table: movies
 SELECT * FROM movies;
 ```
 
-Exercise 17 — Tasks
+Exercise 17 — Tasks / 练习 17 — 任务
 
 1.  Add a column named **Aspect_ratio** with a **FLOAT** data type to store the aspect-ratio each movie was released in.
-2.  Add another column named **Language** with a **TEXT** data type to store the language that the movie was released in. Ensure that the default for this language is **English**.
+    1. 添加一个名为 **Aspect_ratio** 的列，数据类型为 **FLOAT**，用于存储每部电影发行的宽高比。
+2.  Add another column named **Language** with a **TEXT** data type to store the language that the movie was released in. Ensure that the default for this language is **English**. 2. 添加另一个名为 **Language** 的列，数据类型为 **TEXT**，用于存储电影发行的语言。确保该语言的默认值为 **English**。
 
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 ALTER TABLE movies ADD Aspect_ratio FLOAT;

@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 You are going to have to use expressions to transform the **BoxOffice** data into something easier to understand for the tasks below.
+
+你将需要使用表达式将 **BoxOffice** 数据转换为更容易理解的内容，以完成下面的任务。
 
 Table: movies (Read-only)
 
@@ -44,15 +46,19 @@ Table: boxoffice (Read-only)
 SELECT * FROM movies;
 ```
 
-Exercise 9 — Tasks
+Exercise 9 — Tasks / 练习 9 — 任务
 
 1.  List all movies and their combined sales in **millions** of dollars
 2.  List all movies and their ratings **in percent**
 3.  List all movies that were released on even number years
 
+4.  列出所有电影及其总销售收入（以 **百万** 美元为单位）
+5.  列出所有电影及其评分（以 **百分比** 为单位）
+6.  列出所有在偶数年份上映的电影
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT title, (domestic_sales + international_sales) / 1000000 AS sales FROM movies INNER JOIN boxoffice ON id=movie_id;

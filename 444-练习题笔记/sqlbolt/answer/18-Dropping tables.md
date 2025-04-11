@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 We've reached the end of our exercises, so lets clean up by removing all the tables we've worked with.
+
+我们已经完成了所有的练习，现在通过删除我们使用过的所有表来清理一下。
 
 Table: movies (Read-only)
 
@@ -40,14 +42,15 @@ Table: boxoffice (Read-only)
 | 2        | 7.2    | 162798565      | 200600000           |
 | 13       | 7.2    | 237283207      | 301700000           |
 
-Exercise 18 — Tasks
+Exercise 18 — Tasks / 练习 18 — 任务
 
 1.  We've sadly reached the end of our lessons, lets clean up by removing the **Movies** table
-2.  And drop the **BoxOffice** table as well
+    1. 我们遗憾地结束了课程，让我们通过删除 **Movies** 表来清理一下
+2.  And drop the **BoxOffice** table as well 2. 同时也删除 **BoxOffice** 表
 
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 DROP TABLE IF EXISTS movies;

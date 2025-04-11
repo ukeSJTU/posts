@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 Here ends our lessons on `SELECT` queries, congrats of making it this far! This exercise will try and test your understanding of queries, so don't be discouraged if you find them challenging. Just try your best.
+
+我们的 `SELECT` 查询课程到此结束，恭喜你走到这一步！本练习将尝试测试你对查询的理解，所以如果你觉得它们具有挑战性，不要气馁。尽你所能就好。
 
 Table: movies (Read-only)
 
@@ -44,14 +46,17 @@ Table: boxoffice (Read-only)
 SELECT * FROM movies;
 ```
 
-Exercise 12 — Tasks
+Exercise 12 — Tasks / 练习 12 — 任务
 
 1.  Find the number of movies each director has directed
 2.  Find the total domestic and international sales that can be attributed to each director
 
+3.  找到每个导演执导的电影数量
+4.  找到每个导演的国内和国际总销售收入
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT COUNT(title), director AS cnt FROM movies GROUP BY director;

@@ -1,8 +1,12 @@
-# Exercise
+# Exercise / 练习
 
 Here's the definition of a query with a `WHERE` clause again, go ahead and try and write some queries with the operators above to limit the results to the information we need in the tasks below.
 
+这里再次给出带有 `WHERE` 子句的查询定义，请尝试使用上面的运算符编写一些查询，以将结果限制在下面任务中我们所需的信息上。
+
 Select query with constraints
+
+带有约束的 SELECT 查询
 
 ```sql
 SELECT column, another_column, …
@@ -36,16 +40,21 @@ Table: movies
 SELECT * FROM movies;
 ```
 
-Exercise 3 — Tasks
+Exercise 3 — Tasks / 练习 3 — 任务
 
 1.  Find all the Toy Story movies
 2.  Find all the movies directed by John Lasseter
 3.  Find all the movies (and director) not directed by John Lasseter
 4.  Find all the WALL-\* movies
 
+5.  找到所有 Toy Story 电影
+6.  找到所有由 John Lasseter 导演的电影
+7.  找到所有不是由 John Lasseter 导演的电影（及其导演）
+8.  找到所有 WALL-\* 电影
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT * FROM movies WHERE title LIKE 'Toy Story%';

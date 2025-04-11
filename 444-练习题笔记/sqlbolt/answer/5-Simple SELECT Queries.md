@@ -1,13 +1,21 @@
-# Exercise
+# Exercise / 练习
 
 In the exercise below, you will be working with a different table. This table instead contains information about a few of the most populous cities of North America[\[1\]](http://en.wikipedia.org/wiki/List_of_North_American_cities_by_population "Wikipedia: North American 
 cities by population") including their population and geo-spatial location in the world.
 
+在下面的练习中，你将使用一个不同的表。这个表包含了北美一些人口最多的城市的信息[\[1\]](http://en.wikipedia.org/wiki/List_of_North_American_cities_by_population "Wikipedia: North American cities by population")，包括它们的人口和世界上的地理空间位置。
+
 > Did you know?
 >
 > Positive latitudes correspond to the northern hemisphere, and positive longitudes correspond to the eastern hemisphere. Since North America is north of the equator and west of the prime meridian, all of the cities in the list have positive latitudes and negative longitudes.
+>
+> 你知道吗？
+>
+> 正纬度对应北半球，正经度对应东半球。由于北美位于赤道以北、本初子午线以西，列表中的所有城市都具有正纬度和负经度。
 
 Try and write some queries to find the information requested in the tasks below. You may have to use a different combination of clauses in your query for each task. Once you're done, continue onto the next lesson to learn about queries that span multiple tables.
+
+尝试编写一些查询来找到下面任务中请求的信息。你可能需要在每个任务的查询中使用不同的子句组合。完成后，继续下一课学习跨多个表的查询。
 
 Table: north_american_cities
 
@@ -30,7 +38,7 @@ Table: north_american_cities
 SELECT * FROM north_american_cities;
 ```
 
-Review 1 — Tasks
+Review 1 — Tasks / 复习 1 — 任务
 
 1.  List all the Canadian cities and their populations
 2.  Order all the cities in the United States by their latitude from north to south
@@ -38,9 +46,15 @@ Review 1 — Tasks
 4.  List the two largest cities in Mexico (by population)
 5.  List the third and fourth largest cities (by population) in the United States and their population
 
+6.  列出所有加拿大城市及其人口
+7.  按纬度从北到南排列美国的所有城市
+8.  列出芝加哥以西的所有城市，按从西到东的顺序排列
+9.  列出墨西哥人口最多的两个城市（按人口）
+10. 列出美国人口第三和第四大的城市（按人口）及其人口
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT city, population FROM north_american_cities WHERE country="Canada";

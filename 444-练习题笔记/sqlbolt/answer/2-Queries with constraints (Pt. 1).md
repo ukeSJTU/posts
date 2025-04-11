@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 Using the right constraints, find the information we need from the **Movies** table for each task below.
+
+使用正确的约束条件，从 **Movies** 表中找到我们为以下每个任务所需的信息。
 
 Table: movies
 
@@ -25,16 +27,21 @@ Table: movies
 SELECT * FROM movies;
 ```
 
-Exercise 2 — Tasks
+Exercise 2 — Tasks / 练习 2 — 任务
 
 1.  Find the movie with a row `id` of 6
 2.  Find the movies released in the `year`s between 2000 and 2010
 3.  Find the movies **not** released in the `year`s between 2000 and 2010
 4.  Find the first 5 Pixar movies and their release `year`
 
+5.  找到行 `id` 为 6 的电影
+6.  找到在 2000 年至 2010 年之间上映的电影
+7.  找到 **未** 在 2000 年至 2010 年之间上映的电影
+8.  找到前 5 部 Pixar 电影及其上映 `year`
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT * FROM movies WHERE id = 6;

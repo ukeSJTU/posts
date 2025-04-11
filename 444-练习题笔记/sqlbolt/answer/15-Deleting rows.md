@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 The database needs to be cleaned up a little bit, so try and delete a few rows in the tasks below.
+
+数据库需要稍微清理一下，请在下面的任务中尝试删除几行数据。
 
 Table: movies
 
@@ -25,14 +27,15 @@ Table: movies
 SELECT * FROM movies;
 ```
 
-Exercise 15 — Tasks
+Exercise 15 — Tasks / 练习 15 — 任务
 
 1.  This database is getting too big, lets remove all movies that were released **before** 2005.
-2.  Andrew Stanton has also left the studio, so please remove all movies directed by him.
+    1. 这个数据库变得太大了，让我们删除所有在 **2005 年之前** 发行的电影。
+2.  Andrew Stanton has also left the studio, so please remove all movies directed by him. 2. Andrew Stanton 也离开了工作室，请删除所有由他导演的电影。
 
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 DELETE FROM movies WHERE year<2005;

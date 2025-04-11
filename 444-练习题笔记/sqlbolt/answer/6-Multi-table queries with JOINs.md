@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 We've added a new table to the Pixar database so that you can try practicing some joins. The **BoxOffice** table stores information about the ratings and sales of each particular Pixar movie, and the _Movie_id_ column in that table corresponds with the _Id_ column in the **Movies** table 1-to-1. Try and solve the tasks below using the `INNER JOIN` introduced above.
+
+我们已经在 Pixar 数据库中添加了一个新表，以便你可以尝试练习一些连接操作。**BoxOffice** 表存储了每部 Pixar 电影的评分和销售信息，该表中的 _Movie_id_ 列与 **Movies** 表中的 _Id_ 列一一对应。尝试使用上面介绍的 `INNER JOIN` 解决下面的任务。
 
 Table: movies (Read-only)
 
@@ -44,15 +46,19 @@ Table: boxoffice (Read-only)
 SELECT * FROM movies;
 ```
 
-Exercise 6 — Tasks
+Exercise 6 — Tasks / 练习 6 — 任务
 
 1.  Find the domestic and international sales for each movie
 2.  Show the sales numbers for each movie that did better internationally rather than domestically
 3.  List all the movies by their ratings in descending order
 
+4.  找到每部电影的国内和国际销售数据
+5.  显示每部电影在国际市场上表现优于国内市场的销售数据
+6.  按评分降序排列所有电影
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT title, domestic_sales, international_sales FROM movies JOIN boxoffice ON movies.id=boxoffice.movie_id;

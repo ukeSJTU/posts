@@ -1,6 +1,8 @@
-# Exercise
+# Exercise / 练习
 
 For this exercise, you are going to dive deeper into **Employee** data at the film studio. Think about the different clauses you want to apply for each task.
+
+在本练习中，你将深入探讨电影工作室的 **Employee** 数据。考虑你想为每个任务应用的不同子句。
 
 Table: employees
 
@@ -24,15 +26,19 @@ Table: employees
 SELECT * FROM employees;
 ```
 
-Exercise 11 — Tasks
+Exercise 11 — Tasks / 练习 11 — 任务
 
 1.  Find the number of Artists in the studio (without a **HAVING** clause)
 2.  Find the number of Employees of each role in the studio
 3.  Find the total number of years employed by all Engineers
 
+4.  找到工作室中 Artists 的数量（不使用 **HAVING** 子句）
+5.  找到工作室中每个角色的 Employees 数量
+6.  找到所有 Engineers 的总工作年数
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT COUNT(name) AS cnt FROM employees WHERE role="Artist";

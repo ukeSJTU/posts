@@ -1,8 +1,12 @@
-# Exercise
+# Exercise / 练习
 
 In this exercise, you are going to be working with a new table which stores fictional data about **Employees** in the film studio and their assigned office **Buildings**. Some of the buildings are new, so they don't have any employees in them yet, but we need to find some information about them regardless.
 
+在本练习中，你将使用一个新表，该表存储了关于电影工作室的 **Employees** 及其分配的办公 **Buildings** 的虚构数据。有些建筑物是新的，所以还没有员工在其中，但我们仍然需要找到关于它们的一些信息。
+
 Since our browser SQL database is somewhat limited, only the `LEFT JOIN` is supported in the exercise below.
+
+由于我们的浏览器 SQL 数据库有些限制，在下面的练习中仅支持 `LEFT JOIN`。
 
 Table: buildings (Read-only)
 
@@ -35,15 +39,19 @@ Table: employees (Read-only)
 SELECT * FROM employees;
 ```
 
-Exercise 7 — Tasks
+Exercise 7 — Tasks / 练习 7 — 任务
 
 1.  Find the list of all buildings that have employees
 2.  Find the list of all buildings and their capacity
 3.  List all buildings and the distinct employee roles in each building (including empty buildings)
 
+4.  找到有员工的所有建筑物列表
+5.  找到所有建筑物及其容量的列表
+6.  列出所有建筑物及其每个建筑物中的不同员工角色（包括空建筑物）
+
 ---
 
-# Answer
+# Answer / 答案
 
 ```sql
 SELECT DISTINCT building FROM employees;
