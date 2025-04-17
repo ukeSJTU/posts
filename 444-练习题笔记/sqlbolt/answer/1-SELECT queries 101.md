@@ -4,16 +4,6 @@ We will be using a database with data about some of Pixar's classic movies for m
 
 我们将在大多数练习中使用一个包含 Pixar 经典电影数据的数据库。本次第一个练习将仅涉及 **Movies** 表，下面的默认查询目前显示每部电影的所有属性。要继续下一课，请修改查询以找到每个任务所需的确切信息。
 
-Sorry but the SQLBolt exercises require a more recent browser to run.  
-Please upgrade to the latest version of [Internet Explorer](http://windows.microsoft.com/en-us/internet-explorer/download-ie "Download Internet Explorer"), [Chrome](https://www.google.com/chrome/browser/desktop/index.html "Download Chrome"), or [Firefox](https://www.mozilla.org/en-US/firefox/new/ "Download Firefox")!
-
-抱歉，SQLBolt 练习需要更新的浏览器才能运行。  
-请升级到最新版本的 [Internet Explorer](http://windows.microsoft.com/en-us/internet-explorer/download-ie "Download Internet Explorer")、[Chrome](https://www.google.com/chrome/browser/desktop/index.html "Download Chrome") 或 [Firefox](https://www.mozilla.org/en-US/firefox/new/ "Download Firefox")！
-
-Otherwise, continue to the next lesson: [SQL Lesson 2: Queries with constraints (Pt. 1)](/lesson/select_queries_with_constraints)
-
-否则，请继续下一课：[SQL 课程 2：带约束的查询（第 1 部分）](/lesson/select_queries_with_constraints)
-
 Table: movies
 
 | id  | title               | director       | year | length_minutes |

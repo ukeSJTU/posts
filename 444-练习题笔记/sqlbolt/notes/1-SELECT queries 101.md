@@ -14,6 +14,8 @@ As we mentioned in the introduction, you can think of a table in SQL as a type o
 
 And given a table of data, the most basic query we could write would be one that selects for a couple columns (properties) of the table with all the rows (instances).
 
+给定一张数据表，我们可以编写的最基本的查询是选择该表的几列（属性）以及所有行（实例）。
+
 Select query for a specific columns
 
 特定列的 SELECT 查询
