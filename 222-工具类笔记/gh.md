@@ -2,6 +2,10 @@ gh 是 GitHub 官方开发的一个能够在 cli 中使用的命令行工具，�
 
 https://docs.github.com/zh/github-cli/github-cli
 
+https://docs.github.com/en/github-cli/github-cli/github-cli-reference
+
+https://cli.github.com/manual/gh
+
 ## Repo
 
 gh repo ls
