@@ -1,3 +1,120 @@
+# Divide and Conquer
+
+## Toc
+
+1. slides02 - Karatsuba 乘法 & BigO
+2. slides03 - Merge Sort
+3. slides04 - Selection
+4. SLides05 - Closest Pair
+5. slides06 - FFT
+
+TODO: 上面的这点内容需要调整格式
+
+## 第二课 Karatsuba & BigO
+
+### 一、 课程主题与目标 [cite: 2, 81]
+
+- **核心主题:**
+  - 分治算法 (Divide and Conquer) [cite: 2, 11]
+  - Karatsuba 整数乘法 [cite: 2, 27]
+  - Strassen 矩阵乘法 [cite: 50]
+  - 算法时间复杂度分析 (渐进分析) [cite: 2, 52]
+- **学习目标:**
+  - 理解分治算法的基本思想和应用 [cite: 81]
+  - 掌握 Karatsuba 和 Strassen 算法的原理和复杂度分析 [cite: 81]
+  - 掌握 Big O 等渐进符号的定义和使用，用于分析算法效率 [cite: 81]
+
+### 二、 整数乘法 (Integer Multiplication)
+
+#### 1. 基础方法 (小学乘法 / Grade School Multiplication)
+
+- **过程:** 模拟手算过程 [cite: 4]。
+- **复杂度分析:**
+  - 大约需要 $n^2$ 次个位数乘法 [cite: 5]。
+  - 总共大约 $O(n^2)$ 次个位数操作 (包括加法) [cite: 6, 7]。
+
+#### 2. 分治法的初步尝试
+
+- **思路:** 将 n 位数 x 和 y 分别拆成两半：$x = a \cdot 10^{n/2} + b$, $y = c \cdot 10^{n/2} + d$ [cite: 15]。
+- **计算:** $xy = ac \cdot 10^n + (ad+bc) \cdot 10^{n/2} + bd$ [cite: 15]。需要计算 $ac, ad, bc, bd$ 四个 $n/2$ 位数的乘积 [cite: 26]。
+- **复杂度分析:**
+  - 递归关系: $T(n) = 4T(n/2) + O(n)$ (加法和移位操作为 $O(n)$)。
+  - 结果: $O(n^2)$ [cite: 21, 22]，与基础方法相同，没有改进 [cite: 25]。
+  - 分析方法: 递归树，叶子节点总数为 $4^{\log_2 n} = n^2$ [cite: 20, 21, 22]。
+
+#### 3. Karatsuba 算法 [cite: 27]
+
+- **核心思想:** 减少乘法次数。计算 $ac$, $bd$, 以及 $z = (a+b)(c+d)$ [cite: 29]。
+- **关键:** $ad+bc = z - ac - bd$ [cite: 29]。这样只需要三次 $n/2$ 位数的乘法 [cite: 30]。
+- **计算:** $xy = ac \cdot 10^n + (z - ac - bd) \cdot 10^{n/2} + bd$ [cite: 29]。
+- **复杂度分析:**
+  - 递归关系: $T(n) = 3T(n/2) + O(n)$ [cite: 80] (加减法和移位仍为 $O(n)$ [cite: 79])。
+  - 结果: $O(n^{\log_2 3}) \approx O(n^{1.58})$ [cite: 32, 33, 80]。
+  - **结论:** Karatsuba 算法优于基础乘法和朴素分治法 [cite: 8, 9]。
+
+#### 4. 更优算法简介 (可选) [cite: 39, 41]
+
+- Toom-Cook: 分成更多块，如 $n/3$，复杂度 $O(n^{\log_3 5}) \approx O(n^{1.465})$ [cite: 39, 40]。
+- Schonhage-Strassen (基于 FFT): $O(n \log n \log \log n)$ [cite: 41]。
+- Furer (2007): $O(n \log n \log^* n)$ [cite: 41]。
+- Harvey and van der Hoeven (2019): $O(n \log n)$ [cite: 41]。
+
+### 三、 矩阵乘法 (Matrix Multiplication)
+
+#### 1. 基础方法
+
+- **过程:** 根据定义 $Z_{ik} = \sum_{j=1}^n X_{ij} Y_{jk}$ [cite: 43]。
+- **复杂度分析:** 需要计算 $n^2$ 个元素，每个元素需要 n 次乘法，总共 $O(n^3)$ 次乘法 [cite: 44]。
+
+#### 2. 分治法的初步尝试
+
+- **思路:** 将 n x n 矩阵拆分为 4 个 n/2 x n/2 的子矩阵 [cite: 46]。
+- **计算:** $[\begin{smallmatrix} A & B \\ C & D \end{smallmatrix}] [\begin{smallmatrix} E & F \\ G & H \end{smallmatrix}] = [\begin{smallmatrix} AE+BG & AF+BH \\ CE+DG & CF+DH \end{smallmatrix}]$ [cite: 46]。需要 8 次 n/2 规模的矩阵乘法 [cite: 47]。
+- **复杂度分析:**
+  - 递归关系: $T(n) = 8T(n/2) + O(n^2)$ (矩阵加法为 $O(n^2)$)。
+  - 结果: $O(n^3)$ [cite: 48]，没有改进。
+
+#### 3. Strassen 算法 [cite: 50]
+
+- **核心思想:** 通过巧妙的加减法构造 7 个中间矩阵 ($P_1$ 到 $P_7$)，使得最终结果可以用这 7 个矩阵的线性组合表示，从而将乘法次数降为 7 次 [cite: 50]。
+- **复杂度分析:**
+  - 递归关系: $T(n) = 7T(n/2) + O(n^2)$。
+  - 结果: $O(n^{\log_2 7}) \approx O(n^{2.81})$ [cite: 51]。
+  - **结论:** Strassen 算法优于基础矩阵乘法和朴素分治法。
+
+### 四、 算法分析基础
+
+#### 1. 计算模型 (Computation Model) [cite: 53]
+
+- **Word RAM 模型:** [cite: 56]
+  - 模拟 C 等语言，内存随机访问 (RAM) [cite: 56, 58]。
+  - 基本操作 (算术运算、逻辑运算、内存访问) 视为单位时间 $O(1)$ [cite: 56]。
+  - 字长 (Word Size) w: 假设 $w = O(\max\{\log n, \log a_i\})$，即字长足够存储地址和输入数据的大小 [cite: 60, 61]。
+
+#### 2. 时间复杂度 (Time Complexity)
+
+- **定义:** $T(n)$ = 算法处理规模为 n 的输入所需的最大（最坏情况 Worst-case）单位操作次数 [cite: 66, 67]。
+
+#### 3. 渐进分析符号 (Asymptotic Notations)
+
+- **Big O (O) - 上界:** $T(n) = O(g(n))$ 表示 $\exists C>0, n_0$, 使得 $\forall n > n_0, T(n) \le C \cdot g(n)$ [cite: 72, 73]。关注增长趋势，忽略常数因子和低阶项 [cite: 71]。
+- **Big Omega (Ω) - 下界:** $T(n) = \Omega(g(n))$ 表示 $\exists C>0, n_0$, 使得 $\forall n > n_0, T(n) \ge C \cdot g(n)$ [cite: 73, 74]。
+- **Big Theta (Θ) - 紧界:** $T(n) = \Theta(g(n))$ 表示 $T(n) = O(g(n))$ 且 $T(n) = \Omega(g(n))$ [cite: 74]。
+- **Little o (o) - 严格上界:** $T(n) = o(g(n))$ 表示 $\forall C>0, \exists n_0$, 使得 $\forall n > n_0, T(n) < C \cdot g(n)$ (即 $T(n)$ 的增长比 $g(n)$ 慢) [cite: 77]。
+- **Little omega (ω) - 严格下界:** $T(n) = \omega(g(n))$ 表示 $\forall C>0, \exists n_0$, 使得 $\forall n > n_0, T(n) > C \cdot g(n)$ (即 $T(n)$ 的增长比 $g(n)$ 快) [cite: 77]。
+- **示例:** $103n^2+5n+101 = \Theta(n^2)$[cite: 68, 75], $n^2 = \omega(n)$, $\log_2 n = \Theta(\ln n)$ [cite: 75]。
+
+### 五、 总结与思考
+
+- **分治法:** 重要的算法设计策略，将大问题分解为小问题解决 [cite: 12]。
+- **复杂度优化:** Karatsuba 和 Strassen 通过减少递归中的乘法次数来降低整体复杂度。
+- **渐进分析:** Big O 等符号是衡量和比较算法效率的关键工具。
+- **课堂思考题:** (记录 PPT 中提出的问题，例如 $n^2$ is not $O(n)$, $3^n \ne O(2^n)$ 的证明[cite: 75], 函数 f, g 使得 $f(n) \ne O(g(n))$ 且 $f(n) \ne \Omega(g(n))$ 是否存在？[cite: 76] 等)
+
+---
+
+TODO: 下面全都是临时笔记，
+
 引例：整数相乘
 
 两个 n 位数的整数相乘：
@@ -166,6 +283,7 @@ A: n² B: n³ C: n D: nlogn
 第 1 层：4 个问题，每个规模为(n/2)×(n/2)
 第 2 层：16 个问题，每个规模为(n/4)×(n/4)
 ...
+
 第 k 层：4^k 个问题，每个规模为(n/2^k)×(n/2^k)
 ...
 第 log₂n 层：4^(log₂n)个问题，每个规模为 1×1

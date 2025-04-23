@@ -3,3 +3,5 @@
 ## Dynamic Badges
 
 ## Static Badges
+
+## Usecases
