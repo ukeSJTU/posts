@@ -1,5 +1,11 @@
 ## 论文阅读索引
 
+### TRACE: Temporal Grounding Video LLM via Causal Event Modeling
+
+### TODO
+
+---
+
 | 编号                      | 论文题目                                                                                                       | 标签 | 链接                  |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------- | ---- | --------------------- |
 | arXiv:2309.01327          | Can I Trust Your Answer? Visually Grounded Video Question Answering                                            |      | [[2309.01327-review]] |
