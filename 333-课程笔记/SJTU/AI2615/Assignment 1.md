@@ -53,7 +53,7 @@ $$\sum_{i=0}^{\log_b n-1} \left(\frac{a}{b^d}\right)^i < \sum_{i=0}^{\infty} \le
 Therefore:
 $$T(n) = n^{\log_b a} + O(n^d\log^w n)$$
 
-Since $a < b^d$ implies $\log_b a < d$, $n^{\log_b a} = o(n^d)$, making the second term dominant:
+Since $a < b^d$ implies $\log_b a < d$, $n^{\log_b a} = O(n^d)$, making the second term dominant:
 $$T(n) = O(n^d\log^w n)$$
 
 ### Case 2: $a > b^d$
