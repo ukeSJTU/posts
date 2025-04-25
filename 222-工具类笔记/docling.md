@@ -4,6 +4,10 @@
 
 [doc 地址](https://docling-project.github.io/docling)
 
+[在线体验](https://www.collincaram.com/docling)
+
+[MinerU 在线体验](https://mineru.net/OpenSourceTools/Extractor)
+
 TODO：功能描述
 
 ## 使用
