@@ -1,6 +1,6 @@
 # Sli.dev 学习笔记
 
-TODO：给下面的每一个板块补充指向原本官网的链接
+所有的标题都可以通过点击跳转到官方文档相应的位置
 
 Slidev 是一个为开发者设计的、基于 Web 的幻灯片制作和演示工具。它允许用户使用 Markdown 语法专注于内容创作，同时利用 Vue、Vite 和 UnoCSS 等 Web 技术，实现像素级完美的设计、丰富的交互性和高度的可定制性，旨在提供比传统 WYSIWYG 工具更灵活、更具表现力的演示文稿创建体验 。本笔记根据 Sli.dev 官方文档整理，旨在提供一份快速参考指南。
 
@@ -110,6 +110,7 @@ Slidev 提供了一套命令行界面（CLI）工具来管理演示文稿的开�
 
 ### 项目文件结构
 
+```
 Slidev 项目遵循一定的目录结构约定，以简化配置并使扩展更直观。以下是推荐的结构 ：
 your-slidev/
 ├── components/ \# (可选) 自定义 Vue 组件 (_.{vue,js,ts,jsx,tsx,md})
@@ -124,8 +125,7 @@ your-slidev/
 ├── slides.md \# (必需) 幻灯片主文件
 ├── vite.config.ts \# (可选) 扩展 Vite 配置
 └── package.json \# 项目依赖和脚本配置
-
-````
+```
 
 除了 `slides.md`，其他目录和文件都是可选的。这种结构使得项目组织清晰，易于管理自定义内容和配置 。
 
@@ -135,60 +135,69 @@ your-slidev/
 
 **推荐的 VS Code 扩展:**
 
-*   **Slidev (by Anthony Fu - `antfu.slidev`)**: 这是官方推荐的扩展，提供了最全面的集成 。
-    *   **功能:**
-        *   **侧边栏预览:** 在 VS Code 侧边栏实时预览幻灯片 。
-        *   **幻灯片树视图:** 显示项目中所有幻灯片的结构，方便导航 。
-        *   **幻灯片排序:** 通过在树视图中拖放来重新排列幻灯片顺序 。
-        *   **幻灯片块折叠:** 支持在 Markdown 文件中折叠幻灯片分隔符之间的内容 。
-        *   **多项目支持:** 管理工作区中的多个 Slidev 项目 。
-        *   **一键启动服务:** 快速启动开发服务器 。
-        *   **预览同步:** 可选择将预览导航与编辑器光标位置同步 。
-    *   **使用:** 安装后，点击活动栏的 Slidev 图标打开面板。面板包含项目树、幻灯片树和预览视图。可以通过图标或命令面板 (`Slidev`) 执行操作 。
-    *   **配置:**
-        *   `slidev.include`: 配置哪些文件被识别为 Slidev 入口 (默认 `["**/*.md"]`) 。
-        *   `slidev.dev-command`: 自定义启动开发服务器的命令 (默认 `npm exec -c 'slidev ${args}'`) 。
+- **Slidev (by Anthony Fu - `antfu.slidev`)**: 这是官方推荐的扩展，提供了最全面的集成 。
 
-*   **其他相关扩展 (可能有用):**
-    *   **Slidev Copilot (`robothy.slidev-copilot`):** 利用 GitHub Copilot Chat 从聊天上下文生成 Slidev 演示文稿 。
-    *   **VS Code Slides (`nicoespeon.slides`):** 一个通用的将 VS Code 用作演示工具的扩展，可以按文件顺序切换标签作为“幻灯片”，并优化设置 。
-    *   **Demo Time (`eliostruyf.demo-time`):** 用于编写和执行演示脚本，可以与 Slidev (通过 Simple Browser 显示网页) 结合使用，实现幻灯片和代码演示的流畅切换 。
+  - **功能:**
+    - **侧边栏预览:** 在 VS Code 侧边栏实时预览幻灯片 。
+    - **幻灯片树视图:** 显示项目中所有幻灯片的结构，方便导航 。
+    - **幻灯片排序:** 通过在树视图中拖放来重新排列幻灯片顺序 。
+    - **幻灯片块折叠:** 支持在 Markdown 文件中折叠幻灯片分隔符之间的内容 。
+    - **多项目支持:** 管理工作区中的多个 Slidev 项目 。
+    - **一键启动服务:** 快速启动开发服务器 。
+    - **预览同步:** 可选择将预览导航与编辑器光标位置同步 。
+  - **使用:** 安装后，点击活动栏的 Slidev 图标打开面板。面板包含项目树、幻灯片树和预览视图。可以通过图标或命令面板 (`Slidev`) 执行操作 。
+  - **配置:**
+    - `slidev.include`: 配置哪些文件被识别为 Slidev 入口 (默认 `["**/*.md"]`) 。
+    - `slidev.dev-command`: 自定义启动开发服务器的命令 (默认 `npm exec -c 'slidev ${args}'`) 。
+
+- **其他相关扩展 (可能有用):**
+  - **Slidev Copilot (`robothy.slidev-copilot`):** 利用 GitHub Copilot Chat 从聊天上下文生成 Slidev 演示文稿 。
+  - **VS Code Slides (`nicoespeon.slides`):** 一个通用的将 VS Code 用作演示工具的扩展，可以按文件顺序切换标签作为“幻灯片”，并优化设置 。
+  - **Demo Time (`eliostruyf.demo-time`):** 用于编写和执行演示脚本，可以与 Slidev (通过 Simple Browser 显示网页) 结合使用，实现幻灯片和代码演示的流畅切换 。
 
 **其他工具:**
 
-*   **集成编辑器:** Slidev 自身提供了一个可以在浏览器中与预览并排编辑 `slides.md` 源文件的集成编辑器 。
-*   **Prettier 插件:** 提供了 Prettier 插件 (`prettier-plugin-slidev`) 来格式化 `slides.md` 文件，保持代码风格一致 。
+- **集成编辑器:** Slidev 自身提供了一个可以在浏览器中与预览并排编辑 `slides.md` 源文件的集成编辑器 。
+- **Prettier 插件:** 提供了 Prettier 插件 (`prettier-plugin-slidev`) 来格式化 `slides.md` 文件，保持代码风格一致 。
 
 通过配置 VS Code 并安装官方 Slidev 扩展，可以显著提高创建和管理 Slidev 演示文稿的效率。
 
-## 语法指南 (Syntax Guide)
+## [语法指南 (Syntax Guide)](https://sli.dev/guide/syntax)
 
-Slidev 使用扩展的 Markdown 语法（称为 Slidev Markdown）来编写幻灯片内容。除了标准的 Markdown 功能外，Slidev 还引入了许多特定语法来支持演示文稿的各种特性 。
+Slidev 使用扩展的 Markdown 语法（称为 **Slidev Markdown**）来编写幻灯片内容。除了标准的 Markdown 功能外，Slidev 还引入了许多特定语法来支持演示文稿的各种特性。
 
-### 幻灯片分隔符
+### [幻灯片分隔符](https://sli.dev/guide/syntax#slide-separators)
 
 使用三个或更多连续的连字符 `---` 并用空行包围，来分隔不同的幻灯片 。
 
 ```md
 # 第一张幻灯片
+
 这是内容。
 
 ---
 
 # 第二张幻灯片
+
 更多内容...
-````
 
-### Frontmatter & Headmatter
+---
 
-Slidev 使用 YAML Frontmatter 来配置幻灯片元数据和行为。
+# 第三章幻灯片
+
+第三章幻灯片内容...
+```
+
+### [Frontmatter & Headmatter](https://sli.dev/guide/syntax#frontmatter)
+
+Slidev 使用 [YAML Frontmatter](https://jekyllrb.com/docs/front-matter/) 来配置幻灯片。
 
 - **Headmatter (全局配置):** 位于 `slides.md` 文件**最顶部**的第一个 Frontmatter 块。它用于设置整个演示文稿的全局配置，如主题、标题、作者信息、导出选项、字体、默认布局等 。
 - **Frontmatter (单页配置):** 位于每个 `---` 分隔符**之后**、幻灯片内容**之前**的 YAML 块。它用于配置当前这张幻灯片的特定属性，如布局、背景、过渡效果、点击次数、是否隐藏等。这些配置会覆盖 Headmatter 中的 `defaults` 设置 。
 
 **示例:**
 
-```yaml
+```md
 ---
 # Headmatter (全局配置)
 theme: seriph
@@ -199,26 +208,34 @@ defaults:
   transition: slide-left
 #... 其他全局配置
 ---
+
 # 幻灯片 1 (使用默认配置)
-内容...
----
+
+## 内容...
+
 # Frontmatter (幻灯片 2 的配置)
+
 layout: cover # 覆盖默认布局
 background: /images/bg2.png
 transition: fade # 覆盖默认过渡
 clicks: 5 # 自定义点击次数
----
-# 幻灯片 2
-内容...
----
-# Frontmatter (幻灯片 3 的配置)
-src:./pages/external-slide.md # 导入外部 Markdown 文件作为此幻灯片
----
 
 ---
-# Frontmatter (幻灯片 4 的配置)
-hide: true # 隐藏此幻灯片
+
+# 幻灯片 2
+
+## 内容...
+
+# Frontmatter (幻灯片 3 的配置)
+
+## src:./pages/external-slide.md # 导入外部 Markdown 文件作为此幻灯片
+
 ---
+
+# Frontmatter (幻灯片 4 的配置)
+
+## hide: true # 隐藏此幻灯片
+
 # 幻灯片 4 (不会显示)
 ```
 
