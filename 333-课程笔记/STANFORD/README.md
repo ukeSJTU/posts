@@ -1,3 +1,7 @@
+Die Luft der Freiheit weht.
+
+The wind of freedom blows
+
 ## CS231n
 
 - 课程主页：[Stanford CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.stanford.edu/)
