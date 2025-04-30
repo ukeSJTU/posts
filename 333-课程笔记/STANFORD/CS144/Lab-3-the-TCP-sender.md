@@ -1,10 +1,4 @@
-# English
-
-## Lab Checkpoint 3: the TCP sender
-
-Due: Sunday, Feb. 9, 11:59 p.m. (late deadline: Feb. 12, 7 p.m.)
-
-**Collaboration Policy**: Same as checkpoint 0. Please do not look at other students' code or solutions to past versions of these assignments. Please fully disclose any collaborators or any gray areas in your writeup—disclosure is the best policy.
+# Lab Checkpoint 3: the TCP sender
 
 ## 0 Overview
 

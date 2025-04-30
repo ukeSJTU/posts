@@ -1,4 +1,4 @@
-# English
+# Lab Checkpoint 2: the TCP receiver
 
 ## 0 Overview
 

@@ -1,12 +1,4 @@
-# English
-
-# CS144: Introduction to Computer Networking Winter 2025
-
-## Lab Checkpoint 5: down the stack (the network interface)
-
-Due: Sunday, Feb. 23, 11:59 p.m.
-
-**Collaboration Policy**: Same as checkpoint 0. Please do not look at other students' code or solutions to past versions of these assignments. Please fully disclose any collaborators or any gray areas in your writeup—disclosure is the best policy.
+# Lab Checkpoint 5: down the stack (the network interface)
 
 ## 0 Overview
 

@@ -1,10 +1,4 @@
-# English
-
-# CS144: Introduction to Computer Networking Winter 2025
-
-## Checkpoint 7: putting it all together
-
-**Due: end of class (March 14, 11:59 p.m.)**
+# Checkpoint 7: putting it all together
 
 ## 0 Collaboration Policy
 

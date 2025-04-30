@@ -1,4 +1,4 @@
-# English
+# Lab Checkpoint 1: stitching substrings into a byte stream
 
 ## 0 Overview
 
@@ -163,15 +163,15 @@ You may find this picture useful as you implement the `Reassembler` and work thr
 
 ## 0 Overview
 
-所谓的hands-on component这一部分是今年(2025)新加入的，所以可能有很多无法操作的地方。
+所谓的 hands-on component 这一部分是今年(2025)新加入的，所以可能有很多无法操作的地方。
 
 ## 1 Getting Started
 
-这里按照lab的要求操作就可以了，如果没有冲突的话应该正常merge就行。
+这里按照 lab 的要求操作就可以了，如果没有冲突的话应该正常 merge 就行。
 
 ## 2 Hand-on component: a private network for the class
 
-因为我不是斯坦福的学生，所以没有办法加入到cs144课程官方的wireguard网络中去，我决定利用一个云服务器组建一个开放的wireguard网络，这样其他人都可以加入进来。
+因为我不是斯坦福的学生，所以没有办法加入到 cs144 课程官方的 wireguard 网络中去，我决定利用一个云服务器组建一个开放的 wireguard 网络，这样其他人都可以加入进来。
 
 ### 2.1 Ping a friend and look at the datagrams
 
@@ -183,7 +183,7 @@ TODO：等待上面的配置完成
 
 ## 3 Implementation: putting substrings in sequence
 
-这节课负责在TCP接收端重新按照顺序组装接收到的数据。
+这节课负责在 TCP 接收端重新按照顺序组装接收到的数据。
 
 ### 3.1 What should the Reassembler store internally?
 
@@ -196,7 +196,7 @@ $ ./scripts/lines-of-code
 bash: ./scripts/lines-of-code: cannot execute: required file not found
 ```
 
-这个报错是因为shebang行用到的`/usr/bin/python`不存在，我的ubuntu里面有`/usr/bin/python3`。两种办法：
+这个报错是因为 shebang 行用到的`/usr/bin/python`不存在，我的 ubuntu 里面有`/usr/bin/python3`。两种办法：
 
 **1. 创建符号链接：**
 
@@ -206,13 +206,13 @@ sudo ln -s /usr/bin/python3 /usr/bin/python
 
 这会在`/usr/bin/`目录下创建一个名为`python`的符号链接，指向`python3`。这样当脚本调用`/usr/bin/python`时，实际上会使用`python3`。
 
-**2. 直接用python3解释器运行脚本：**
+**2. 直接用 python3 解释器运行脚本：**
 
 ```bash
 python3 ./scripts/lines-of-code
 ```
 
-这种方式会忽略脚本中的shebang行，直接使用指定的解释器。
+这种方式会忽略脚本中的 shebang 行，直接使用指定的解释器。
 
 如果运行脚本还是报错：
 

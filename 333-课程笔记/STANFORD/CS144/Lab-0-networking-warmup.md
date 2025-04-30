@@ -1,6 +1,4 @@
-原本lab0要求文档在这里：[lab-check0](https://cs144.github.io/assignments/check0.pdf),先摘录调整为markdown格式如下，同时提供中文版本翻译，最后是我的实现部分。
-
-# English
+# Lab Checkpoint 0: Networking Warmup
 
 Welcome to CS144: Introduction to Computer Networking. In this warmup, you will set up an installation of GNU/Linux on your computer, learn how to perform some tasks over the Internet by hand, write a small program in C++ that fetches a Web page over the Internet, and implement (in memory) one of the key abstractions of networking: a reliable stream of bytes between a writer and a reader. We expect this warmup to take you between 2 and 6 hours to complete (future labs will take more of your time). Three quick points about the lab assignment:
 
@@ -275,7 +273,7 @@ _What’s next?_ Over the next four weeks, you’ll implement a system to provid
 
 ## 1 Set up
 
-我用的是arm64版本的macOS，提前安装了orbstack所以我决定利用orbstack创建一个ubuntu24.04的容器。（我感觉这个类似windows上的wsl的操作）
+我用的是 arm64 版本的 macOS，提前安装了 orbstack 所以我决定利用 orbstack 创建一个 ubuntu24.04 的容器。（我感觉这个类似 windows 上的 wsl 的操作）
 
 ```bash
 orb create ubuntu:24.04
@@ -298,18 +296,18 @@ sudo apt update && sudo apt install git cmake gdb build-essential clang \
 	   clang-tidy clang-format gcc-doc pkg-config glibc-doc tcpdump tshark
 ```
 
-具体的orb操作可以参考这个链接：https://docs.orbstack.dev/machines/ssh
+具体的 orb 操作可以参考这个链接：https://docs.orbstack.dev/machines/ssh
 
-总之我们还可以用vscode的ssh-remote插件连接进去进行开发。
+总之我们还可以用 vscode 的 ssh-remote 插件连接进去进行开发。
 
-这里补充一个内容：我配置完orbstack的VM以后出现了没有办法执行git push的情况。哪怕我已经按照github的教程创建了公私钥，还是出现报错如下：
+这里补充一个内容：我配置完 orbstack 的 VM 以后出现了没有办法执行 git push 的情况。哪怕我已经按照 github 的教程创建了公私钥，还是出现报错如下：
 
 ```plaintext
 kex_exchange_identification: Connection closed by remote host
 Connection closed by 20.205.243.166 port 22
 ```
 
-我不确定这个和Orbstack在创建ubuntu的时候自动配置了ssh相关设置的原因，我暂时通过下面这个办法解决了，参考的[StackExchange](https://unix.stackexchange.com/questions/717583/connection-to-github-com-closed-by-remote-host)
+我不确定这个和 Orbstack 在创建 ubuntu 的时候自动配置了 ssh 相关设置的原因，我暂时通过下面这个办法解决了，参考的[StackExchange](https://unix.stackexchange.com/questions/717583/connection-to-github-com-closed-by-remote-host)
 
 大概操作就是在`~/.ssh/config`中添加：
 
@@ -326,7 +324,7 @@ User git
 
 访问页面：http://cs144.keithw.org/hello，看到内容是`Hello, CS144!`
 
-在macOS宿主机或者ubuntu虚拟机都可以，我这里在macOS上运行是因为ubuntu没有telnet。
+在 macOS 宿主机或者 ubuntu 虚拟机都可以，我这里在 macOS 上运行是因为 ubuntu 没有 telnet。
 
 ```bash
 telnet cs144.keithw.org http
@@ -345,7 +343,7 @@ Connection: close
 
 ![](https://pub-cc2ebc8a43754210aa734d07c4898ad1.r2.dev/2025/03/telnet-example.png)
 
-Q: 我这里有个问题：telnet命令已经指定了`cs144.keithw.org`为什么后面发送请求的时候仍然要输入：`Host: cs144.keithw.org`呢？
+Q: 我这里有个问题：telnet 命令已经指定了`cs144.keithw.org`为什么后面发送请求的时候仍然要输入：`Host: cs144.keithw.org`呢？
 A: 这是因为 telnet 命令和 HTTP 请求工作在不同的网络层次：
 
 telnet 命令中的域名：
@@ -370,7 +368,7 @@ courses.keithw.org
 telnet 命令解决的是"连接到哪台服务器"的问题
 HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 
-然后这里有个小Assignment：
+然后这里有个小 Assignment：
 
 ![telnet-sunetid.png](https://pub-cc2ebc8a43754210aa734d07c4898ad1.r2.dev/2025/03/telnet-sunetid.png)
 
@@ -378,13 +376,13 @@ HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 
 ### 2.2 Send yourself an email
 
-我没有sunetid，所以没有办法完全按照上面的要求进行实验，但是可以自己搭建一个smtp服务器，然后来测试。我们选择postfix。
+我没有 sunetid，所以没有办法完全按照上面的要求进行实验，但是可以自己搭建一个 smtp 服务器，然后来测试。我们选择 postfix。
 
-#### 设置postfix
+#### 设置 postfix
 
-#### mail命令快速测试
+#### mail 命令快速测试
 
-#### telnet使用
+#### telnet 使用
 
 ### 2.3 Listening and connecting
 
@@ -392,15 +390,15 @@ HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 
 ### 3.1 Let's get started
 
-这里教程也是有问题的：`git remote add github`后面应该添加一个ssh协议的链接而不是https
+这里教程也是有问题的：`git remote add github`后面应该添加一个 ssh 协议的链接而不是 https
 
 ### 3.2 Compiling the started code
 
 ### 3.3 Modern C++
 
-TODO: 这里应该研究一下这个cmake到底是怎么写的，提供什么功能。
+TODO: 这里应该研究一下这个 cmake 到底是怎么写的，提供什么功能。
 
-关于Git的一些使用技巧可以参考这个笔记：[[git]]。作业要求提到完成的过程中可以多次小型提交（frequent small commits），并且用提交信息（commit message）来解释修改了什么以及为什么。这个可以参考[[git#Conventional Commits]]
+关于 Git 的一些使用技巧可以参考这个笔记：[[git]]。作业要求提到完成的过程中可以多次小型提交（frequent small commits），并且用提交信息（commit message）来解释修改了什么以及为什么。这个可以参考[[git#Conventional Commits]]
 
 ### 3.4 Reading the Minnow support code
 
@@ -570,9 +568,9 @@ I
 2. 然后是一个 CRLF (回车换行)
 3. 接着是实际的数据块
 4. 再一个 CRLF
-5. 最后以一个长度为0的块结束传输
+5. 最后以一个长度为 0 的块结束传输
 
-虽然也可以再对接收到的buffer进行额外处理，只输出数据的部分，但是代码长度就会超出题目所谓的10行左右了。
+虽然也可以再对接收到的 buffer 进行额外处理，只输出数据的部分，但是代码长度就会超出题目所谓的 10 行左右了。
 
 2025-3-12: 我暂时先通过`cout << "7SmXqWkrLKzVBCEalbSPqBcvs11Pw263K7x4Wv3JckI" << endl;`通过测试案例。
 

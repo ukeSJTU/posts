@@ -1,16 +1,10 @@
-# English
+# Lab Checkpoint 6: building an IP router
 
-# CS144: Introduction to Computer Networking Winter 2025
-
-## Lab Checkpoint 6: building an IP router
-
-**Due: Sunday, March 2, 11:59 p.m.**
-
-### 0 Collaboration Policy
+## 0 Collaboration Policy
 
 Collaboration Policy: Same as checkpoint 0. Please do not look at other students' code or solutions to past versions of these assignments. Please fully disclose any collaborators or any gray areas in your writeup—disclosure is the best policy.
 
-### 1 Overview
+## 1 Overview
 
 In this week's lab checkpoint, you'll implement an IP router on top of your existing NetworkInterface. A router has several network interfaces, and can receive Internet datagrams on any of them. The router's job is to forward the datagrams it gets according to the routing table: a list of rules that tells the router, for any given datagram,
 
@@ -21,7 +15,7 @@ Your job is to implement a router that can figure out these two things for any g
 
 Your implementation of the router will use the Minnow library with a new Router class, and tests that will check your router's functionality in a simulated network. Checkpoint 6 builds on your implementation of NetworkInterface from Checkpoint 5, but does not use the TCP stack you implemented previously. IP routers don't have to know anything about TCP, ARP, or Ethernet (only IP). We expect your implementation will require about 30–60 lines of code. (The scripts/lines-of-code tool prints "Router: 38 lines of code" from the starter code, and "89 lines of code" for our example solutions.)
 
-### 2 Getting started
+## 2 Getting started
 
 1. Make sure you have committed all your solutions to Checkpoint 5. Please don't modify any files outside the top level of the src directory, or webget.cc. You may have trouble merging the Checkpoint 6 starter code otherwise.
 2. While inside the repository for the lab assignments, run `git fetch --all` to retrieve the most recent version of the lab assignment.
@@ -32,7 +26,7 @@ Your implementation of the router will use the Minnow library with a new Router 
 6. Open and start editing the writeups/check6.md file. This is the template for your lab writeup and will be included in your submission.
 7. Reminder: please make frequent small commits in your local Git repository as you work. If you need help to make sure you're doing this right, please ask a classmate or the teaching staff for help. You can use the `git log` command to see your Git history.
 
-### 3 Implementing the Router
+## 3 Implementing the Router
 
 In this lab, you will implement a Router class that can:
 
@@ -76,11 +70,11 @@ Here's where the rubber meets the road. This method needs to route each incoming
 
 There's a beauty (or at least a successful abstraction) in the Internet's design here: the router never thinks about TCP, about ARP, or about Ethernet frames. The router doesn't even know what the link layer looks like. The router only thinks about Internet datagrams, and only interacts with the link layer through the NetworkInterface abstraction. When it comes to questions like, "How are link-layer addresses resolved?" or "Does the link layer even have its own addressing scheme distinct from IP?" or "What's the format of the link-layer frames?" or "What's the meaning of the datagram's payload?", the router just doesn't care.
 
-### 4 Testing
+## 4 Testing
 
 You can test your implementation by running `cmake --build build --target check5`. This will test your router in a particular simulated network, shown in Figure 2.
 
-### 5 Q & A
+## 5 Q & A
 
 - **What data structure should I use to record the routing table?**
   Up to you! But please don't get crazy. It's perfectly acceptable for each datagram to require O(N) work, where N is the number of entries in the routing table. If you'd like to do something more efficient, we'd encourage you to get a working implementation first before optimizing, and carefully document and comment whatever you choose to implement.
@@ -102,7 +96,7 @@ You can test your implementation by running `cmake --build build --target check5
 - **Where can I read if there are more FAQs after this PDF comes out?**
   Please check the website (https://cs144.github.io/lab_faq.html) and EdStem regularly.
 
-### 6 Submit
+## 6 Submit
 
 1. In your submission, please only make changes to the .hh and .cc files in the src directory. Within these files, please feel free to add private members as necessary, but please don't change the public interface of any of the classes.
 

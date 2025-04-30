@@ -1,16 +1,6 @@
-# English
+# Checkpoint 4: measuring the real world
 
-## CS144: Introduction to Computer Networking Winter 2025
-
-### Checkpoint 4: measuring the real world
-
-**Due: Sunday, February 16, 11:59 p.m. (late deadline: Feb. 19, 7 p.m.)**
-
-### 0 Collaboration Policy
-
-Collaboration Policy: Same as checkpoint 0. Please fully disclose any collaborators or any gray areas in your writeup—disclosure is the best policy.
-
-### 1 Overview
+## 1 Overview
 
 By this point in the class, you've implemented the Transmission Control Protocol in an almost fully standards-compliant manner. TCP implementations are arguably the world's single most popular computer program, found in billions of devices. Most implementations use a different strategy from yours, but because all TCP implementations share a common language, they are all interoperable—every TCP implementation can be a peer with any other, across the whole Internet. This checkpoint won't use your TCP implementation: it's about measuring the long-term statistics of some real-world Internet paths.
 
@@ -18,7 +8,7 @@ To complete this checkpoint, we want you to choose and characterize at least thr
 
 For each path, please measure at least the below statistics:
 
-### 2 Collecting data
+## 2 Collecting data
 
 1. Choose a remote host on the Internet to ping (measured by ping from your computer or VM). Some possibilities of faraway paths to get there:
 
@@ -35,7 +25,7 @@ For each path, please measure at least the below statistics:
 
 4. Note: A default-sized ping every 0.2 seconds is fine, but please do not flood anybody with traffic faster than this for more than a few seconds.
 
-### 3 Analyzing data
+## 3 Analyzing data
 
 If you sent five pings per second for an hour, you will have sent approximately 3,600 echo requests (= 5 × 3600), of which we expect the vast majority to have received a reply in the ping output. Using the programming language and graphing tools of your choice, please compute and graph at least the following information:
 
