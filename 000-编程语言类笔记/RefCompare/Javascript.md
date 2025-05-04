@@ -1,91 +1,263 @@
+# JavaScript Language Reference Comparison
+
 ```javascript
 console.log("Hello JavaScript");
 ```
 
-## 1. 基础语法结构
+## Introduction to JavaScript
 
-### 1.1 程序入口
+### What is JavaScript
 
-### 1.2 代码组织
+### History of JavaScript
 
-## 2. 变量与类型系统
+### JavaScript Versions
 
-### 2.1 变量声明
+### How to run JavaScript
 
-### 2.2 基本数据类型
+## All about Variables
 
-### 2.3 复合类型
+### Variable Declarations
 
-### 2.4 类型系统
+#### var
 
-## 3. 控制流程
+#### let
 
-### 3.1 条件分支
+#### const
 
-### 3.2 循环结构
+### Hoisting
 
-### 3.3 流程控制
+### Variable Naming Rules
 
-## 4. 函数与闭包
+### Variable Scopes
 
-### 4.1 函数定义
+#### Block
 
-### 4.2 闭包特性
+#### Function
 
-## 5. 面向对象
+#### Global
 
-### 5.1 类与对象
+## Data Types
 
-### 5.2 访问控制
+### Primitive Types
 
-## 6. 错误处理
+#### Symbol
 
-### 6.1 处理机制
+#### number
 
-### 6.2 错误传播
+#### boolean
 
-## 7. 并发模型
+#### string
 
-### 7.1 线程与协程
+#### undefined
 
-### 7.2 同步机制
+#### bigint
 
-## 8. 元编程
+#### null
 
-### 8.1 反射与内省
+### Object
 
-### 8.2 宏系统
+#### Built-in Objects
 
-## 9. 内存管理
+#### Prototypal Inheritance
 
-### 9.1 管理策略
+#### Object Prototype
 
-### 9.2 优化技术
+### `typeof` operator
 
-## 10. 生态系统
+## Type Casting
 
-### 10.1 包管理
+### Type Conversion vs Coercion
 
-### 10.2 构建系统
+### Implicit Type Casting
 
-## 11. 模块系统
+### Explicit Type Casting
 
-### 11.1 模块化支持
+## Data Structures
 
-## 12. 标准库能力
+### Structured Data
 
-### 12.1 核心功能覆盖
+#### JSON
 
-## 13. 开发工具链
+### Keyed Collections
 
-### 13.1 调试与诊断
+#### Map
 
-## 14. 跨语言互操作
+#### Weak Map
 
-### 14.1 外部接口
+#### Set
 
-## 15. 安全机制
+#### Weak Set
 
-### 15.1 安全特性
+### Indexed Collections
 
-## 16. 社区与趋势
+#### Typed Arrays
+
+#### Arrays
+
+## Equality Comparisons
+
+### Value Comparison Operators
+
+#### `==`
+
+#### `===`
+
+#### `Object.is`
+
+### Equality Algorithms
+
+#### isLooselyEqual
+
+#### isStrictlyEqual
+
+#### SameValueZero
+
+#### SameValue
+
+## Loops and Iterations
+
+### `for`
+
+### `do...while`
+
+### `while`
+
+### `break/continue`
+
+### `for...of loop`
+
+### `for...in loop`
+
+## Control Flow
+
+### Conditional Statements
+
+#### `if...else`
+
+#### `Switch`
+
+### Exceptional Handling
+
+#### `throw` statement
+
+#### `try/catch/finally`
+
+#### Error Objects
+
+## Expressions & Operators
+
+### Conditional Operators
+
+### Comma Operators
+
+### Unary Operators
+
+### Assignment Operators
+
+### Comparison Operators
+
+### Arithmetic Operators
+
+### Bitwise Operators
+
+### Logical Operators
+
+### BigInt Operators
+
+### String Operators
+
+## Functions
+
+### Function Parameters
+
+#### Default Params
+
+#### Rest
+
+### Arrow Functions
+
+### IIFEs
+
+### arguments object
+
+### Scope & Function Stack
+
+#### Recursion
+
+#### Lexical Scoping
+
+#### Closures
+
+### Built-in Functions
+
+## DOM APIs
+
+## Strict Mode
+
+## Using (this) keyword
+
+### in a method
+
+### in a function
+
+### using it alone
+
+### in event handlers
+
+### in arrow functions
+
+### Function Borrowing
+
+### Explicit Binding
+
+#### call
+
+#### apply
+
+#### bind
+
+## Asychronous JavaScript
+
+### Event Loop
+
+### `setTimeout`
+
+### `setInterval`
+
+### Callbacks
+
+#### Callback Hell
+
+### Promises
+
+#### `async/await`
+
+## Working with APIs
+
+### XMLHTTPRequest
+
+### fetch
+
+## Classes
+
+## Iterators and Generators
+
+## Modules in JavaScript
+
+### CommonJS
+
+### ESM
+
+## Memory Management
+
+### Memory Lifecycle
+
+### Garbage Collection
+
+## Using Browser DevTools
+
+### Debugging Issues
+
+### Debugging MemoryLeaks
+
+### Debugging Performance
