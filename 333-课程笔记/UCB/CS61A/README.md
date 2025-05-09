@@ -29,3 +29,33 @@ What is This Course About?
 教材网站：https://www.composingprograms.com/
 
 中文版教材：https://composingprograms.netlify.app/
+
+---
+
+完成了homework01，我感觉难度不大，但是文件里面也有类似下面这样的代码来保证学生实现代码不会破坏整体框架：
+
+```python
+def a_plus_abs_b_syntax_check():
+    """Check that you didn't change the return statement of a_plus_abs_b.
+
+    >>> # You aren't expected to understand the code of this test.
+    >>> import inspect, re
+    >>> re.findall(r'^\s*(return .*)', inspect.getsource(a_plus_abs_b), re.M)
+    ['return f(a, b)']
+    """
+    # You don't need to edit this function. It's just here to check your work.
+```
+
+还有`ast`来检查的，值得学习：
+
+```python
+def two_of_three_syntax_check():
+    """Check that your two_of_three code consists of nothing but a return statement.
+
+    >>> # You aren't expected to understand the code of this test.
+    >>> import inspect, ast
+    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(two_of_three)).body[0].body]
+    ['Expr', 'Return']
+    """
+    # You don't need to edit this function. It's just here to check your work.
+```

@@ -32,3 +32,43 @@ sequenceDiagram
   Note over C,S: x: 客户端初始序列号<br/>y: 服务器初始序列号<br/>SYN=1: 同步标志位<br/>ACK=1: 确认标志位<br/>seq: 序列号<br/>ack: 确认号
   end
 ```
+
+# 计算机网络
+
+## TCP
+
+```mermaid
+---
+title: "TCP Packet"
+---
+packet-beta
+0-15: "Source Port"
+16-31: "Destination Port"
+32-63: "Sequence Number"
+64-95: "Acknowledgment Number"
+96-99: "Data Offset"
+100-105: "Reserved"
+106: "URG"
+107: "ACK"
+108: "PSH"
+109: "RST"
+110: "SYN"
+111: "FIN"
+112-127: "Window"
+128-143: "Checksum"
+144-159: "Urgent Pointer"
+160-191: "(Options and Padding)"
+192-255: "Data (variable length)"
+```
+
+## UDP
+
+```mermaid
+packet-beta
+title UDP Packet
+0-15: "Source Port"
+16-31: "Destination Port"
+32-47: "Length"
+48-63: "Checksum"
+64-95: "Data (variable length)"
+```

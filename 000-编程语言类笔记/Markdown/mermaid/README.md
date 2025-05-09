@@ -36,3 +36,51 @@ all Diagrams definitions begin with a declaration of the diagram type, followed 
 下面就是各种图表了：
 
 - [[flowchart]]: 流程图
+
+## 2 Configuration
+
+https://mermaid.js.org/intro/syntax-reference.html#configuration
+
+```mermaid
+---
+config:
+  look: handDrawn
+  layout: elk
+  elk:
+    mergeEdges: true
+    nodePlacementStrategy: LINEAR_SEGMENTS
+---
+flowchart LR
+  A[Start] --> B{Choose Path}
+  B -->|Option 1| C[Path 1]
+  B -->|Option 2| D[Path 2]
+```
+
+```mermaid
+---
+title: "TCP Packet"
+config:
+  theme: "forest"
+  packet:
+    showBits: false
+---
+packet-beta
+  0-15: "Source Port"
+  16-31: "Destination Port"
+  32-63: "Sequence Number"
+  64-95: "Acknowledgment Number"
+  96-99: "Data Offset"
+  100-105: "Reserved"
+  106: "URG"
+  107: "ACK"
+  108: "PSH"
+  109: "RST"
+  110: "SYN"
+  111: "FIN"
+  112-127: "Window"
+  128-143: "Checksum"
+  144-159: "Urgent Pointer"
+  160-191: "(Options and Padding)"
+  192-255: "Data (variable length)"
+
+```
