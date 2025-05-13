@@ -375,7 +375,7 @@ Optimal Indexing for A Dictionary: Consider a dictionary with $n$ different word
 We are given $n$ words, sorted alphabetically: $a_1 < a_2 < \dots < a_n$. Each word $a_i$ has a known number of searches (frequency) $w_i$. The words are stored in a binary search tree (BST) $T$. If word $a_i$ is stored at a node with level $\ell_i(T)$ (where the root is at level 1), searching for $a_i$ takes $\ell_i(T)$ comparisons.
 
 Our objective is to find a BST $T$ that minimizes the total number of comparisons:
-$$ \operatorname\*{minimize}_{T\text{ is a BST}} \sum_{i=1}^n w_i \ell_i(T)$$
+$$ \min*{T\text{ is a BST}} \sum*{i=1}^n w_i \ell_i(T)$$
 
 ### 1 Dynamic-programming formulation
 
