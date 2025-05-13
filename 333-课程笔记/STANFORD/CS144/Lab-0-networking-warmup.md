@@ -538,6 +538,66 @@ _接下来是什么？_ 在接下来的四周中，您将实现一个系统，�
 
 ## 1 Set up
 
+```bash
+orb version
+```
+
+```plaintext
+Version: 1.9.2 (1090200)
+Commit: f56c5adaa796a0902c648f038307ed8d434b0522 (v1.9.2)
+
+# 创建Linux前
+❯ orb list
+NAME  STATE  DISTRO  VERSION  ARCH
+----  -----  ------  -------  ----
+# 创建Linux(可以设置其他参数)
+❯ orb create ubuntu:noble
+
+# 创建Linux后应该可以看到
+❯ orb list
+NAME    STATE    DISTRO  VERSION  ARCH
+----    -----    ------  -------  ----
+ubuntu  running  ubuntu  noble    arm64
+
+```
+
+这里ubuntu:noble中的noble是24.04的代号，也可以用ubuntu:24.04，效果是一样的。
+
+orb create 的其他参数可以:
+
+```bash
+❯ orb create --help
+Create a new machine with the specified distribution.
+
+Version is optional; the latest stable version will be used if not specified.
+To remove a machine, use "orb delete".
+
+By default, a Linux user will be created with the same name as your macOS user. Use "--user" to change the name, and "--set-password" to set a password for both this user and root.
+
+Supported distros: alma  alpine  arch  centos  debian  devuan  fedora  gentoo  kali  nixos  openeuler  opensuse  oracle  rocky  ubuntu  void
+Supported CPU architectures: arm64  amd64
+
+Usage:
+  orb create [flags] DISTRO[:VERSION] [MACHINE_NAME]
+
+Aliases:
+  create, add, new
+
+Examples:
+  orb create -a arm64 ubuntu:mantic
+  orb create -a amd64 fedora foo
+
+Flags:
+  -a, --arch string        Override the default architecture
+  -h, --help               help for create
+  -p, --set-password       Set a password for the default user
+  -u, --user string        Username for the default user
+  -c, --user-data string   Path to Cloud-init user data file (for automatic setup)
+
+```
+
+orb相关的命令使用技巧可以看：[[Orbstack#Linux Machines]] 具体的命令使用技巧可以用`--help`查看帮助文档。
+
 我用的是 arm64 版本的 macOS，提前安装了 orbstack 所以我决定利用 orbstack 创建一个 ubuntu24.04 的容器。（我感觉这个类似 windows 上的 wsl 的操作）
 
 ```bash
@@ -556,14 +616,52 @@ orb
 
 再按照要求进行安装。
 
+如果需要可以配置国内的镜像源提高速度，这里选择清华镜像源，我们是arm64，所以看的内容是https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu-ports/版本。我的orb上，apt仍然用的配置文件是`/etc/apt/sources.list`文件。
+
+```bash
+cd /etc/apt
+uke@ubuntu:/etc/apt$ sudo mv sources.list sources.list.bkp
+uke@ubuntu:/etc/apt$ sudo touch sources.list
+```
+
+然后用vim或者nano等等方式将清华站上的文件内容粘贴进去再保存就可以了。
+
 ```bash
 sudo apt update && sudo apt install git cmake gdb build-essential clang \
 	   clang-tidy clang-format gcc-doc pkg-config glibc-doc tcpdump tshark
 ```
 
+如果出现提示：
+
+![image.png](https://pub-cc2ebc8a43754210aa734d07c4898ad1.r2.dev/2025/05/20250512233125481.webp)
+
+- **如果是个人学习环境**:
+  - 可以选择"是"，这样你可以不用每次都使用 sudo 来运行 tshark
+  - 安装后系统会创建 wireshark 用户组，并将你添加到该组中
+- **如果是生产环境或共享系统**:
+  - 选择"否"更安全，这样只有 root 用户可以捕获数据包
+  - 每次使用时需要通过 sudo 运行 tshark
+
+考虑到这个是课程作业，这里选择`Yes`。
+
 具体的 orb 操作可以参考这个链接：https://docs.orbstack.dev/machines/ssh
 
 总之我们还可以用 vscode 的 ssh-remote 插件连接进去进行开发。
+
+按照要求创建了自己的一个repo，叫做`minnow`然后添加remote地址：
+
+```bash
+cd minnow
+git remote add github git@github.com:ukeSJTU/minnow.git
+```
+
+如果这里出现无法执行
+
+```bash
+git push github
+```
+
+的问题的话，可以：
 
 这里补充一个内容：我配置完 orbstack 的 VM 以后出现了没有办法执行 git push 的情况。哪怕我已经按照 github 的教程创建了公私钥，还是出现报错如下：
 
@@ -578,9 +676,9 @@ Connection closed by 20.205.243.166 port 22
 
 ```plaintext
 Host github.com
-Hostname ssh.github.com
-Port 443
-User git
+	Hostname ssh.github.com
+	Port 443
+	User git
 ```
 
 ## 2 Networking by hand
@@ -658,6 +756,47 @@ HTTP Host 头部解决的是"访问该服务器上的哪个网站"的问题
 这里教程也是有问题的：`git remote add github`后面应该添加一个 ssh 协议的链接而不是 https
 
 ### 3.2 Compiling the started code
+
+```bash
+uke@ubuntu:~/minnow$ cmake -S . -B build
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Setting build type to 'Debug'
+-- Building in 'Debug' mode.
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/uke/minnow/build
+uke@ubuntu:~/minnow$ cmake --build build
+[ 10%] Building CXX object util/CMakeFiles/util_debug.dir/address.cc.o
+[ 10%] Building CXX object src/CMakeFiles/minnow_debug.dir/byte_stream_helpers.cc.o
+[ 15%] Building CXX object util/CMakeFiles/util_debug.dir/eventloop.cc.o
+[ 21%] Building CXX object apps/CMakeFiles/stream_copy.dir/bidirectional_stream_copy.cc.o
+[ 26%] Building CXX object tests/CMakeFiles/minnow_testing_debug.dir/common.cc.o
+[ 31%] Building CXX object src/CMakeFiles/minnow_debug.dir/byte_stream.cc.o
+[ 36%] Building CXX object util/CMakeFiles/util_debug.dir/debug.cc.o
+[ 42%] Building CXX object util/CMakeFiles/util_debug.dir/file_descriptor.cc.o
+[ 47%] Building CXX object util/CMakeFiles/util_debug.dir/helpers.cc.o
+[ 52%] Linking CXX static library libminnow_debug.a
+[ 52%] Built target minnow_debug
+[ 57%] Building CXX object util/CMakeFiles/util_debug.dir/random.cc.o
+[ 63%] Building CXX object util/CMakeFiles/util_debug.dir/socket.cc.o
+[ 68%] Linking CXX static library libstream_copy.a
+[ 68%] Built target stream_copy
+[ 73%] Linking CXX static library libminnow_testing_debug.a
+[ 73%] Built target minnow_testing_debug
+[ 78%] Linking CXX static library libutil_debug.a
+[ 78%] Built target util_debug
+[ 89%] Building CXX object apps/CMakeFiles/tcp_native.dir/tcp_native.cc.o
+[ 89%] Building CXX object apps/CMakeFiles/webget.dir/webget.cc.o
+[ 94%] Linking CXX executable webget
+[100%] Linking CXX executable tcp_native
+[100%] Built target webget
+[100%] Built target tcp_native
+```
 
 ### 3.3 Modern C++
 
@@ -837,7 +976,15 @@ I
 
 虽然也可以再对接收到的 buffer 进行额外处理，只输出数据的部分，但是代码长度就会超出题目所谓的 10 行左右了。
 
-2025-3-12: 我暂时先通过`cout << "7SmXqWkrLKzVBCEalbSPqBcvs11Pw263K7x4Wv3JckI" << endl;`通过测试案例。
+~~2025-3-12: 我暂时先通过`cout << "7SmXqWkrLKzVBCEalbSPqBcvs11Pw263K7x4Wv3JckI" << endl;`通过测试案例。~~
+
+经过排查，我发现问题在于OrbStack在创建的时候自动设置了网络代理导致服务器的响应是分块传输的。在mac上对orb设置：
+
+```bash
+orb config set network_proxy none
+```
+
+https://docs.orbstack.dev/docker/network#proxies
 
 ## 4 An in-memory reliable byte stream
 
