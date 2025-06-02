@@ -32,7 +32,7 @@ Hence the problem is the classical **bipartite perfect-matching** problem.
 
 ```
 Build the bipartite graph G_A.
-Run Hopcroft–Karp (or any poly-time maximum-matching algo).
+Run Hopcroft–Karp.
 If the matching size = k
 	"YES, SDR exists".
 Else
