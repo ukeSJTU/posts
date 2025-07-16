@@ -93,7 +93,7 @@ stack的大小是动态变化，当调用函数的时候grows downward，从函�
 
 **所有的局部变量local variables**都是在stack上的
 
-stack底部有一个 stack pointer
+stack底部有一个 stack pointer， **一定要注意**，CS61C这门课认为sp指向的是bottom of the stack也是push元素的位置。可以看HW2.8.
 
 由此产生的常见C Bug：就是在一个函数内返回一个pointer指向函数内的local vars。但是反过来，上层的可以给调用的函数传递pointers（caller to callee is ok, but callee to caller not)
 
@@ -103,7 +103,7 @@ stack底部有一个 stack pointer
 
 在C里面，heap上内存是要manually allocated。同样要手动释放，没有 Garbage Collector
 
-Heap是Grows upward，所以理论上Heap和Stack的内存不会冲突。Heap有一个自己的Heap Pointer hp.
+Heap是Grows upward，Heap有一个自己的Heap Pointer hp.
 
 > 这里的Heap和数据结构没有任何关系
 

@@ -2,6 +2,17 @@
 print("Hello Lua")
 ```
 
+## Comments
+
+```lua
+-- Two dashes start a one-line comment.
+
+--[[
+     Adding two ['s and ]'s makes it a
+     multi-line comment.
+--]]
+```
+
 ## 1. 基础语法结构
 
 ### 1.1 程序入口

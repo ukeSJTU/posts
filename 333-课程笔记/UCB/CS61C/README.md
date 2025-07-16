@@ -14,3 +14,9 @@ Midterm 50 pts is July 17 7-9PM
 Final 75 pts is August 12 11:30AM-2:30PM
 
 HW: 36pts due on Wednesdays every week. On PraireLearn(?) https://us.prairielearn.com/pl/course_instance/185545/assessments
+
+https://cs61c.org/su25/pdfs/resources/reference-card.pdf
+
+Online RISC-V simulator: https://venus.cs61c.org/
+
+RISC-V full spec:https://lf-riscv.atlassian.net/wiki/spaces/HOME/pages/16154769/RISC-V+Technical+Specifications

@@ -4,7 +4,7 @@
 
 目前有以下内容：
 
-- [[C++]]
+- [[000-编程语言类笔记/RefCompare/C++]]
 - [[Python]]
 - [[Java]]
 - [[JavaScript]]
