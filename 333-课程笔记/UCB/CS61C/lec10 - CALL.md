@@ -1,3 +1,15 @@
+## Agenda
+
+- CALL: Compile, Assemble, Link, Load
+- Compiler
+- Assembler
+  - Machine Code
+  - Object File format
+- Linker
+  - Resolve References
+- Loader
+- Program Translation vs Interpretation
+
 ## 课程安排 (Agenda)
 
 - **CALL**: 介绍程序执行的四个核心阶段：**编译 (Compile)**, **汇编 (Assemble)**, **链接 (Link)**, **加载 (Load)** 。
@@ -13,37 +25,35 @@
 
 通常我们用`gcc foo.c`命令直接生成一个可执行文件`a.out`的过程，在口语中被称为“编译” (Compiling) 。实际上，这个过程包含了三个主要步骤，之后由加载器执行 。
 
-1.  **编译 (Compile)**: 编译器 (Compiler) 将高级语言代码（如 C 语言的 `foo.c`）翻译成汇编语言代码 (`foo.s`) 。
-2.  **汇编 (Assemble)**: 汇编器 (Assembler) 将汇编代码 (`foo.s`) 转换成机器语言模块，即目标文件 (`foo.o`) 。
+1.  **编译 (Compile)**: 编译器 (Compiler) 将高级语言代码（如 C 语言的 `foo.c`）翻译成汇编语言代码 (`foo.s`) 。**这一步可能有伪指令**，例如（mv, li, call, j等等）
+2.  **汇编 (Assemble)**: 汇编器 (Assembler) 将汇编代码 (`foo.s`) 转换成机器语言模块，即目标文件 (`foo.o`) 。**但是Headers(libraries)留到Linker再来处理**。
 3.  **链接 (Link)**: 链接器 (Linker) 将一个或多个目标文件（如 `foo.o` 和库文件 `lib.o`）合并成一个单独的可执行文件 (`a.out`) 。
 4.  **加载 (Load)**: 加载器 (Loader) 将可执行文件从磁盘加载到内存中，准备运行 。
 
-### 编译器 (Compiler)
+### Step 1. 编译器 (Compiler)
 
 - **输入**: 高级语言代码 (e.g., `foo.c`) 。
 - **输出**: 汇编语言代码 (e.g., `foo.s` for RISC-V) 。
 - **注意**: 编译器输出的汇编代码可能包含伪指令（pseudoinstructions），如 `mv`, `li`, `call`, `j` 等，这些伪指令会在后续步骤中被替换成真实的机器指令 。
 
-### 汇编器 (Assembler)
+### Step 2. 汇编器 (Assembler)
 
 - **功能**: 将汇编代码转换为二进制的机器码 。
 - **输入**: 汇编语言代码 (e.g., `foo.s`) 。
 - **输出**: 机器语言模块，即目标文件 (e.g., `foo.o`) 。
 - **特点**: 汇编器会处理大部分指令，但对于需要其他文件信息的引用（如库函数 `printf`），它会将其延迟到链接阶段处理 。
 
-### 链接器 (Linker)
+### Step 3. 链接器 (Linker)
 
 - **输入**: 一个或多个目标文件 (e.g., `foo.o`, `lib.o`) 。
 - **输出**: 一个可执行的机器码文件 (e.g., `a.out`) 。
 - **优势**: 链接器支持**分离编译** (separate compilation)。这意味着如果你有多个源文件，修改其中一个文件时，只需要重新编译这一个文件，然后将生成的目标文件与其他未修改的目标文件重新链接即可，无需重新编译整个项目，大大提高了开发效率 。
 
-### 加载器 (Loader)
+### Step 4. 加载器 (Loader)
 
 - **输入**: 存储在磁盘上的可执行文件 (e.g., `a.out`) 。
 - **输出**: 程序在内存中开始运行 。
 - **过程**: 当你执行一个程序时，加载器（通常是操作系统的一部分）会负责将该程序的代码和数据从磁盘复制到内存中，并设置好初始状态，让程序开始执行 。
-
----
 
 ## 编译器 (Compiler) 详解
 
@@ -85,39 +95,53 @@ int main() {
 2.  **词法分析器**将代码分割成词法单元 ：
     `int`, `main`, `(`, `)`, `{`, `for`, `(`, `int`, `i`, `=`, `0`, `;`, `i`, `<`, `10`, `;`, `i`, `++`, `)`, `printf`, `(`, `"Hello %s\n"`, `,`, `"world"`, `)`, `;`, `return`, `0`, `;`, `}`
 
-3.  **解析器**构建抽象语法树来表示程序的结构 。
+3.  **解析器**构建抽象语法树来表示程序的结构，大概像下面这个样子：
+
+```text
+Function: main
+	type: int
+	params: []
+	variables: [
+		variable:
+			type: int
+			name: i
+	]
+	body: [
+		// ...
+	]
+```
+
+省略了完整内容节省篇幅，完整AST请看PPT。
 
 4.  **代码生成器** (Encoder) 最终输出 RISC-V 汇编代码 ：
 
-    ```assembly
-    .text
-      .align 2
-      .globl main
-    main:
-      addi sp, sp, -4
-      sw   ra, 0(sp)
-      li   t0, 10         # for 循环计数器 i 的等价物，初始化为 10
-    Loop:
-      beq  t0, x0, End    # 如果计数器为0，跳转到 End
-      la   a0, str1       # 加载第一个参数 (格式化字符串) 的地址
-      la   a1, str2       # 加载第二个参数 ("world") 的地址
-      call printf         # 调用 printf 函数
-      addi t0, t0, -1     # 计数器减 1
-      j    Loop           # 跳转回 Loop
-    End:
-      lw   ra, 0(sp)
-      addi sp, sp, 4
-      li   a0, 0          # 设置返回值为 0
-      ret                 # 从 main 函数返回
-    .section .rodata
-      .balign 4
-    str1:
-      .string "Hello, %s!\n"
-    str2:
-      .string "world"
-    ```
-
----
+```assembly
+.text
+  .align 2
+  .globl main
+main:
+  addi sp, sp, -4
+  sw   ra, 0(sp)
+  li   t0, 10         # for 循环计数器 i 的等价物，初始化为 10
+Loop:
+  beq  t0, x0, End    # 如果计数器为0，跳转到 End
+  la   a0, str1       # 加载第一个参数 (格式化字符串) 的地址
+  la   a1, str2       # 加载第二个参数 ("world") 的地址
+  call printf         # 调用 printf 函数
+  addi t0, t0, -1     # 计数器减 1
+  j    Loop           # 跳转回 Loop
+End:
+  lw   ra, 0(sp)
+  addi sp, sp, 4
+  li   a0, 0          # 设置返回值为 0
+  ret                 # 从 main 函数返回
+.section .rodata
+  .balign 4
+str1:
+  .string "Hello, %s!\n"
+str2:
+  .string "world"
+```
 
 ## 汇编器 (Assembler) 详解
 
