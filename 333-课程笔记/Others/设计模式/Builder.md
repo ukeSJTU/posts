@@ -1,0 +1,1 @@
+Director并不关心实际编写文档的到底是TextBuilder还是HTMLBuilder
