@@ -1,5 +1,7 @@
 《图解设计模式》
 
+Refactoring Guru
+
 # UML
 
 我感觉得先基本了解一下 UML
@@ -47,3 +49,38 @@ classDiagram
 
     ParentClass <|-- ChildClass
 ```
+
+---
+
+# ToC
+
+## Creational Patterns
+
+- [ ] Factory Method
+- [ ] Abstract Factory
+- [ ] Builder
+- [ ] Prototype
+- [ ] Singleton
+
+## Structural Patterns
+
+- [ ] Adapter
+- [ ] Bridge
+- [ ] Composite
+- [ ] Decorator
+- [ ] Facade
+- [ ] Flyweight
+- [ ] Proxy
+
+## Behavioral Patterns
+
+- [ ] Chain of Responsibility
+- [ ] Command
+- [ ] Iterator
+- [ ] Mediator
+- [ ] Memento
+- [ ] Observer
+- [ ] State
+- [ ] Strategy
+- [ ] Template Method
+- [ ] Visitor
