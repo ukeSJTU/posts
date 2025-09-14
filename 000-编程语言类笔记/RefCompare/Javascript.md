@@ -16,6 +16,8 @@ console.log("Hello JavaScript");
 
 ## All about Variables
 
+A variable is a container for a value.
+
 ### Variable Declarations
 
 #### var
@@ -42,6 +44,8 @@ console.log("Hello JavaScript");
 
 #### Symbol
 
+es6引入的，unique and immutable primitive data type.
+
 #### number
 
 #### boolean
@@ -53,6 +57,8 @@ console.log("Hello JavaScript");
 #### bigint
 
 #### null
+
+Undefined is the value automatically assigned to a declared variable, null is used by programmer as a purposeful lack of a value.
 
 ### Object
 
