@@ -263,6 +263,8 @@ Are config1 and config2 the same instance? true
 - **对继承不友好**: 由于构造函数是私有的，所以Singleton类通常不能被继承。
 - **可能被滥用**: 开发者可能会滥用Singleton来代替全局变量，导致代码各部分之间产生不必要的强耦合，使得代码结构不清晰、难以维护。
 
+#### 具体展开违反SRP
+
 **问题一：代码耦合度高，可维护性差**
 
 想象一下，你的`AppConfig`类一开始是用简单的懒汉式实现的。后来，项目引入了多线程，你需要将`getInstance()`方法修改为线程安全的版本（比如使用双重检查锁定）。
@@ -275,7 +277,7 @@ Are config1 and config2 the same instance? true
 
 如果有一天，你希望在某些特殊情况下（比如测试）能拥有`AppConfig`的多个实例，或者希望这个实例的创建方式能被替换（比如从读取文件变为从网络获取），Singleton模式会给你带来巨大的阻碍。因为创建逻辑被硬编码（hard-coded）在`getInstance`静态方法里，外部完全无法干预或替换它。
 
-### 2. 对测试不友好是怎么体现的？
+#### 对测试不友好是怎么体现的
 
 这是Singleton模式最致命的缺点之一，因为它引入了**全局状态 (Global State)**，而全局状态是单元测试的噩梦。
 
@@ -283,11 +285,9 @@ Are config1 and config2 the same instance? true
 
 **场景**: 我们有一个 `EventLogger` 类，负责记录系统事件。我们希望它是一个单例，因为我们希望所有日志都写入同一个地方。然后，我们有一个 `UserManager` 类，在用户注册时需要调用 `EventLogger` 来记录事件。
 
-#### 第1步：使用Singleton模式的代码（不方便测试）
+##### 第1步：使用Singleton模式的代码（不方便测试）
 
-Python
-
-```
+```python
 # event_logger.py (Singleton)
 class EventLogger:
     _instance = None
@@ -315,13 +315,11 @@ class UserManager:
         return True
 ```
 
-#### 第2步：尝试为 `UserManager` 编写单元测试
+##### 第2步：尝试为 `UserManager` 编写单元测试
 
 我们想测试 `UserManager.register_user` 方法是否正确调用了日志记录器。
 
-Python
-
-```
+```python
 # test_user_manager.py
 import unittest
 from user_manager import UserManager
@@ -358,13 +356,11 @@ class TestUserManager(unittest.TestCase):
 2. **难以模拟 (Mocking)**：我们无法轻易地用一个“模拟对象”（Mock Object）来替换`EventLogger`。比如，我们想测试当`log`方法抛出异常时，`register_user`是否能优雅地处理？用Singleton就很难做到，因为`UserManager`内部硬编码了对`EventLogger()`的调用。
 3. **状态泄露**：由于实例是全局共享的，一个测试用例对Singleton实例状态的修改会“泄露”到下一个测试用例，导致测试之间相互依赖和污染。这违反了单元测试独立性的基本原则。
 
-#### 第3步：重构代码以提高可测试性（使用依赖注入）
+##### 第3步：重构代码以提高可测试性（使用依赖注入）
 
 现在，我们放弃Singleton模式，转而使用**依赖注入 (Dependency Injection)**。核心思想是：一个类不应该自己创建它所依赖的对象，而应该通过外部（比如构造函数）将依赖传递进来。
 
-Python
-
-```
+```python
 # event_logger_refactored.py (不再是Singleton)
 class EventLogger:
     def __init__(self):
@@ -389,13 +385,11 @@ class UserManager:
         return True
 ```
 
-#### 第4步：为重构后的代码编写一个干净的单元测试
+##### 第4步：为重构后的代码编写一个干净的单元测试
 
 现在测试变得非常简单、干净和可靠。
 
-Python
-
-```
+```python
 # test_user_manager_refactored.py
 import unittest
 from unittest.mock import Mock # Python内置的模拟库
@@ -422,9 +416,9 @@ class TestUserManagerRefactored(unittest.TestCase):
         pass
 ```
 
-通过这个对比，你可以清晰地看到，Singleton模式通过全局访问点（`EventLogger()`）创建了**紧耦合**，而依赖注入则实现了**松耦合**，使得单元测试变得轻而易举。
+通过这个对比，可以清晰地看到，Singleton模式通过全局访问点（`EventLogger()`）创建了**紧耦合**，而依赖注入则实现了**松耦合**，使得单元测试变得轻而易举。
 
-在应用程序的顶层，你仍然可以只创建一个`EventLogger`实例，然后把它传递给所有需要它的地方，从而达到“事实上的单例”效果，同时又保留了代码的灵活性和可测试性。这正是现代依赖注入框架（如Spring, Guice, FastAPI's Depends）所推崇的方式。
+在应用程序的顶层，仍然可以只创建一个`EventLogger`实例，然后把它传递给所有需要它的地方，从而达到“事实上的单例”效果，同时又保留了代码的灵活性和可测试性。这正是现代依赖注入框架（如Spring, Guice, FastAPI's Depends）所推崇的方式。
 
 ---
 
@@ -480,10 +474,32 @@ public class TicketMaker {
 
 修改成Singleton模式确保只能生成一个该类的实例。
 
+我自己的做法：
+
 ```java
 public class TicketMaker {
 	private static int ticket = 1000;
 	public static int getNextTicketNumber() {
+		return ticket++;
+	}
+}
+```
+
+但是这个不能算是Singleton模式，而是静态工具类而已。标准的做法：
+
+```java
+public class TicketMaker {
+	private int ticket = 1000;
+	private static TicketMaker singleton = new TicketMaker();
+
+	private TicketMaker() {
+	}
+
+	public static TicketMaker getInstance() {
+		return singleton;
+	}
+
+	public synchronized int getNextTicketNumber() {
 		return ticket++;
 	}
 }
@@ -495,10 +511,19 @@ public class TicketMaker {
 
 ```java
 public class Triple {
-	private Triple() {
+	private static Triple[] triple = new Triple[] {
+		new Triple(0),
+		new Triple(1),
+		new Triple(2),
+	};
+
+	private int id;
+	private Triple(int id) {
+		this.id = id;
 	}
 
 	public Triple getInstance(int id) {
+		return triple[id];
 	}
 }
 ```
@@ -524,3 +549,26 @@ public class Singleton {
 ```
 
 因为多线程问题。
+
+书本后面给出了一个可以体现出问题的代码：
+
+```java
+public class Main extends Thread {
+	public static void main(String[] args) {
+		System.out.println("Start.");
+		new Main("A").start();
+		new Main("B").start();
+		new Main("C").start();
+		System.out.println("End.");
+	}
+
+	public void run() {
+		Singleton obj = Singleton.getInstance();
+		System.out.println(getName() + ": obj = " + obj);
+	}
+
+	public Main(String name) {
+		super(name);
+	}
+}
+```
