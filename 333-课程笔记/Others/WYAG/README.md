@@ -41,3 +41,11 @@ A git repository is made of two things: a “work tree”, where the files meant
 ---
 
 GitRepository类
+
+- .git/objects/: **对象存储库**。Git 的核心所在。你提交的每个文件、每个目录结构、每个提交记录，都会被压缩成一个“对象”存储在这里。
+- .git/refs/: **引用存储库**。它存储了指向特定提交对象的“指针”。
+  - refs/heads/: 存放分支的引用。例如，refs/heads/master 文件会包含 master 分支最新一次提交的 SHA-1 哈希值。
+  - refs/tags/: 存放标签的引用。
+- .git/HEAD: 一个特殊的文件，它通常指向你当前所在的分支。初始内容是 ref: refs/heads/master，表示 HEAD 指向 master 分支。
+- .git/config: 仓库级别的配置文件。
+- .git/description: 仓库的描述文件，主要给 GitWeb 等工具使用。
