@@ -499,7 +499,6 @@ public class Triple {
 	}
 
 	public Triple getInstance(int id) {
-
 	}
 }
 ```
