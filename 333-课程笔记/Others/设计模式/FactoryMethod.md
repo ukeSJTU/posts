@@ -343,9 +343,86 @@ public class Application {
 
 ## 9. 练习题
 
+对于练习题的前置代码：
+
+```java
+// framework/Product.java
+package framework;
+
+public abstract class Product {
+    public abstract void use();
+}
+```
+
+```java
+// idcard/IDCard.java
+package idcard;
+
+import framework.Product;
+
+public class IDCard extends Product {
+    private String owner;
+
+    IDCard(String owner) {
+        System.out.println("Made " + owner + "'s ID Card");
+        this.owner = owner;
+    }
+    @Override
+    public void use() {
+        System.out.println("Use " + owner + "'s ID Card");
+    }
+    public String getOwner() {
+        return owner;
+    }
+}
+```
+
+```java
+// framework/Factory.java
+package framework;
+
+public abstract class Factory {
+    public final Product create(String owner) {
+        Product p = createProduct(owner);
+        registerProduct(p);
+        return p;
+    }
+    protected abstract Product createProduct(String owner);
+
+    protected abstract void registerProduct(Product product);
+}
+```
+
+```java
+// idcard/IDCardFactory.java
+package idcard;
+
+import framework.Factory;
+import framework.Product;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class IDCardFactory extends Factory {
+    private List owners = new ArrayList();
+
+    @Override
+    protected Product createProduct(String owner) {
+        return new IDCard(owner);
+    }
+    @Override
+    protected void registerProduct(Product product) {
+        owners.add(((IDCard) product).getOwner());
+    }
+    public List getOwners() {
+        return owners;
+    }
+}
+```
+
 ### 习题 4-1
 
-在下面的实力程序中，`IDCard`类的构造函数并不是`public`，请问这是想表达什么意思呢？
+在下面的实例程序中，`IDCard`类的构造函数并不是`public`，请问这是想表达什么意思呢？
 
 ```java
 public class IDCard extends Product {
@@ -356,3 +433,94 @@ public class IDCard extends Product {
 	// ...
 }
 ```
+
+答：Java里面没有access modifier，则默认是package-private。`IDCard`类的构造函数并不是`public`，使得`idcard`包外的类不能`new`出`IDCard`类的实例。
+
+### 习题 4-2
+
+请修改示例程序，为`IDCard`类添加卡的编号，并在`IDCardFactory`类中保存编号与所有者之间的对应表。
+
+答案：修改如下，值得注意的是在我们添加编号的过程中，我们不需要修改框架代码（framework包中的代码）以及外部调用代码，例如`Main.java`文件。
+
+```java
+// idcard/IDCard.java
+package idcard;
+
+import framework.Product;
+
+public class IDCard extends Product {
+    private String owner;
+    private int serial;
+
+    IDCard(String owner, int serial) {
+        System.out.println("Made " + owner + "(" + serial + ")" + "'s ID Card");
+        this.owner = owner;
+        this.serial = serial;
+    }
+    @Override
+    public void use() {
+        System.out.println("Use " + owner + "(" + serial + ")" + "'s ID Card");
+    }
+    public String getOwner() {
+        return owner;
+    }
+    public int getSerial() {
+	    return serial;
+    }
+}
+```
+
+```java
+// idcard/IDCardFactory.java
+package idcard;
+
+import framework.Factory;
+import framework.Product;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+
+public class IDCardFactory extends Factory {
+    // private List owners = new ArrayList();
+    private HashMap database = new HashMap();
+    private int serial = 100;
+
+    @Override
+    protected synchronized Product createProduct(String owner) {
+        return new IDCard(owner, serial++);
+    }
+    @Override
+    protected void registerProduct(Product product) {
+	    IDCard card = (IDCard) product;
+	    database.put(new Integer(card.getSerial()), card.getOwner());
+        // owners.add(((IDCard) product).getOwner());
+    }
+    /*
+    public List getOwners() {
+        return owners;
+    }
+    */
+
+    public Hashtable getDatabase() {
+	    return database;
+    }
+}
+```
+
+### 习题 4-3
+
+为了强制调用方向`Product`类的子类的构造函数中传入“产品名字”作为参数，我们采用了如下的定义方式。但是在编译代码时却出现了编译错误，请问这是为什么呢？
+
+```java
+public abstract class Product {
+	public abstract Product(String name);
+	public abstract void use();
+}
+```
+
+答案：这是因为在Java中无法定义abstract的构造函数。
+
+> `abstract` 意味着方法需要被子类**重写（override）**，而构造函数在 Java 中是**不能被重写**的，它们只能通过 `super()` 关键字被**调用（invoke）**。一个不能被继承和重写的东西，自然也就不存在“抽象”的概念，所以 `abstract` 构造函数在逻辑上是矛盾且无意义的。
+
+要想实现习题中的需求，不应当在构造函数中设置产品的名字，而应当另外声明一个设置产品名字的专用方法。
