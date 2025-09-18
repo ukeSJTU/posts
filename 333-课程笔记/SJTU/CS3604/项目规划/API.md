@@ -609,3 +609,447 @@ Authorization: Bearer <jwt_token>
 
 4. **数据库删除**
    - 从 `passengers` 表中删除记录
+
+---
+
+## 火车时刻表模块
+
+### 搜索火车时刻表 - `GET /{apiBaseURL}/train/schedules`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>` (可选，用于个性化功能)
+
+**Query Parameters:**
+
+| 参数名                 | 类型    | 必填 | 说明                                                          |
+| ---------------------- | ------- | ---- | ------------------------------------------------------------- |
+| `departure_city`       | string  | 是   | 出发城市                                                      |
+| `arrival_city`         | string  | 是   | 到达城市                                                      |
+| `departure_date`       | string  | 是   | 出发日期，格式：YYYY-MM-DD                                    |
+| `train_number`         | string  | 否   | 车次编号，支持模糊搜索                                        |
+| `min_price`            | number  | 否   | 最低价格筛选                                                  |
+| `max_price`            | number  | 否   | 最高价格筛选                                                  |
+| `departure_time_start` | string  | 否   | 出发时间范围开始，格式：HH:MM                                 |
+| `departure_time_end`   | string  | 否   | 出发时间范围结束，格式：HH:MM                                 |
+| `sort_by`              | string  | 否   | 排序字段，可选值：`departure_time`(默认), `price`, `duration` |
+| `sort_order`           | string  | 否   | 排序方向，可选值：`asc`(默认), `desc`                         |
+| `page`                 | integer | 否   | 页码，默认为 1                                                |
+| `limit`                | integer | 否   | 每页数量，默认为 20，最大 100                                 |
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "schedules": [
+      {
+        "id": 1,
+        "train_number": "G357",
+        "departure_city": "北京",
+        "arrival_city": "上海",
+        "departure_datetime": "2024-01-20T08:00:00Z",
+        "arrival_datetime": "2024-01-20T13:30:00Z",
+        "duration_minutes": 330,
+        "price": "553.00",
+        "available_seats": 156,
+        "total_seats": 200,
+        "train_status": "normal"
+      },
+      {
+        "id": 2,
+        "train_number": "G159",
+        "departure_city": "北京",
+        "arrival_city": "上海",
+        "departure_datetime": "2024-01-20T09:15:00Z",
+        "arrival_datetime": "2024-01-20T14:45:00Z",
+        "duration_minutes": 330,
+        "price": "553.00",
+        "available_seats": 89,
+        "total_seats": 200,
+        "train_status": "normal"
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 3,
+      "total_count": 45,
+      "per_page": 20,
+      "has_next": true,
+      "has_prev": false
+    }
+  }
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 请求参数错误
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Departure city, arrival city and departure date are required"
+  }
+}
+```
+
+`422 Unprocessable Entity`: 参数格式错误
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_DATE_FORMAT",
+    "message": "Departure date must be in YYYY-MM-DD format"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **参数验证**
+   - 验证必填参数（departure_city, arrival_city, departure_date）
+   - 验证日期格式和有效性
+   - 验证价格范围参数（min_price <= max_price）
+   - 验证时间格式（HH:MM）
+   - 验证分页参数（page >= 1, limit <= 100）
+
+2. **日期处理**
+   - 将 departure_date 转换为对应的 datetime 范围
+   - 支持查询当天 00:00:00 到 23:59:59 的所有班次
+
+3. **数据库查询**
+   - 根据出发城市、到达城市和日期范围查询 `train_schedules` 表
+   - 应用可选的筛选条件（车次、价格、时间范围）
+   - 排除已取消或停运的列车（train_status != 'cancelled' AND train_status != 'suspended'）
+
+4. **座位可用性计算**
+   - 对每个时刻表记录，查询 `orders` 表统计已售票数
+   - 计算可用座位数：total_seats - 已售出座位数
+   - 只统计状态为 'PAID' 的订单
+
+5. **结果排序和分页**
+   - 根据 sort_by 和 sort_order 参数排序
+   - 应用分页逻辑
+   - 返回分页元数据
+
+### 获取单个火车时刻表详情 - `GET /{apiBaseURL}/train/schedules/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>` (可选)
+
+**路径参数:**
+
+| 参数名 | 类型    | 必填 | 说明          |
+| ------ | ------- | ---- | ------------- |
+| `id`   | integer | 是   | 火车时刻表 ID |
+
+**Query Parameters:**
+
+| 参数名        | 类型   | 必填 | 说明                                                   |
+| ------------- | ------ | ---- | ------------------------------------------------------ |
+| `travel_date` | string | 否   | 乘车日期，格式：YYYY-MM-DD，用于计算该日期的座位可用性 |
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "train_number": "G357",
+    "departure_city": "北京",
+    "arrival_city": "上海",
+    "departure_datetime": "2024-01-20T08:00:00Z",
+    "arrival_datetime": "2024-01-20T13:30:00Z",
+    "duration_minutes": 330,
+    "price": "553.00",
+    "total_seats": 200,
+    "available_seats": 156,
+    "train_status": "normal",
+    "created_at": "2024-01-15T08:00:00Z",
+    "updated_at": "2024-01-15T08:00:00Z"
+  }
+}
+```
+
+**失败 (`404 Not Found`):**
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SCHEDULE_NOT_FOUND",
+    "message": "Train schedule not found"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **参数验证**
+   - 验证时刻表 ID 是否为有效整数
+   - 验证 travel_date 格式（如果提供）
+
+2. **数据库查询**
+   - 根据 ID 查询 `train_schedules` 表
+   - 如果记录不存在，返回 404 错误
+
+3. **座位可用性计算**
+   - 如果提供了 travel_date，计算该日期的座位可用性
+   - 如果未提供 travel_date，使用时刻表的 departure_datetime 日期
+   - 查询对应日期的已售票数量
+
+4. **响应处理**
+   - 返回完整的时刻表信息
+   - 包含实时的座位可用性数据
+
+### 管理员创建火车时刻表 - `POST /{apiBaseURL}/admin/train/schedules`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**Body (JSON):**
+
+```json
+{
+  "train_number": "G357",
+  "departure_city": "北京",
+  "arrival_city": "上海",
+  "departure_datetime": "2024-01-20T08:00:00Z",
+  "arrival_datetime": "2024-01-20T13:30:00Z",
+  "price": "553.00",
+  "seat_count": 200
+}
+```
+
+**参数说明:**
+
+| 参数名               | 类型    | 必填 | 说明                        |
+| -------------------- | ------- | ---- | --------------------------- |
+| `train_number`       | string  | 是   | 车次编号，最长 10 字符      |
+| `departure_city`     | string  | 是   | 出发城市，最长 50 字符      |
+| `arrival_city`       | string  | 是   | 到达城市，最长 50 字符      |
+| `departure_datetime` | string  | 是   | 出发日期时间，ISO 8601 格式 |
+| `arrival_datetime`   | string  | 是   | 到达日期时间，ISO 8601 格式 |
+| `price`              | number  | 是   | 票价，精确到分              |
+| `seat_count`         | integer | 是   | 座位总数，必须大于 0        |
+
+#### 响应格式
+
+**成功 (`201 Created`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "train_number": "G357",
+    "departure_city": "北京",
+    "arrival_city": "上海",
+    "departure_datetime": "2024-01-20T08:00:00Z",
+    "arrival_datetime": "2024-01-20T13:30:00Z",
+    "duration_minutes": 330,
+    "price": "553.00",
+    "seat_count": 200,
+    "train_status": "normal",
+    "created_at": "2024-01-15T08:00:00Z"
+  },
+  "message": "Train schedule created successfully"
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 请求参数错误
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Arrival time must be after departure time"
+  }
+}
+```
+
+`409 Conflict`: 时刻表已存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SCHEDULE_EXISTS",
+    "message": "Train schedule for this train number and departure time already exists"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **管理员权限验证**
+   - 验证 JWT Token 中的用户权限
+   - 确保只有管理员可以创建时刻表
+
+2. **参数验证**
+   - 验证所有必填字段
+   - 验证日期时间格式和有效性
+   - 验证到达时间晚于出发时间
+   - 验证价格和座位数为正数
+
+3. **重复性检查**
+   - 检查相同车次和出发时间的记录是否已存在
+   - 如果存在，返回 409 错误
+
+4. **自动计算字段**
+   - 计算 duration_minutes（到达时间 - 出发时间）
+   - 设置默认 train_status 为 'normal'
+
+5. **数据库操作**
+   - 插入新记录到 `train_schedules` 表
+   - 返回创建的记录信息
+
+### 管理员更新火车时刻表 - `PUT /{apiBaseURL}/admin/train/schedules/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**路径参数:**
+
+| 参数名 | 类型    | 必填 | 说明          |
+| ------ | ------- | ---- | ------------- |
+| `id`   | integer | 是   | 火车时刻表 ID |
+
+**Body (JSON):**
+
+```json
+{
+  "train_number": "G357",
+  "departure_city": "北京",
+  "arrival_city": "上海",
+  "departure_datetime": "2024-01-20T08:00:00Z",
+  "arrival_datetime": "2024-01-20T13:30:00Z",
+  "price": "553.00",
+  "seat_count": 200,
+  "train_status": "normal"
+}
+```
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "train_number": "G357",
+    "departure_city": "北京",
+    "arrival_city": "上海",
+    "departure_datetime": "2024-01-20T08:00:00Z",
+    "arrival_datetime": "2024-01-20T13:30:00Z",
+    "duration_minutes": 330,
+    "price": "553.00",
+    "seat_count": 200,
+    "train_status": "normal",
+    "updated_at": "2024-01-15T10:30:00Z"
+  },
+  "message": "Train schedule updated successfully"
+}
+```
+
+#### 业务逻辑
+
+1. **管理员权限验证**
+   - 验证 JWT Token 中的用户权限
+
+2. **存在性检查**
+   - 验证时刻表 ID 是否存在
+
+3. **参数验证**
+   - 验证更新字段的格式和有效性
+   - 特别注意时间逻辑的一致性
+
+4. **影响评估**
+   - 检查是否有已售出的票
+   - 如果有重大变更（如时间、价格），可能需要特殊处理
+
+5. **数据库更新**
+   - 更新 `train_schedules` 表记录
+   - 重新计算 duration_minutes
+
+### 管理员删除火车时刻表 - `DELETE /{apiBaseURL}/admin/train/schedules/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+
+**路径参数:**
+
+| 参数名 | 类型    | 必填 | 说明          |
+| ------ | ------- | ---- | ------------- |
+| `id`   | integer | 是   | 火车时刻表 ID |
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "message": "Train schedule deleted successfully"
+}
+```
+
+**失败响应:**
+
+`409 Conflict`: 存在关联订单
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SCHEDULE_HAS_ORDERS",
+    "message": "Cannot delete train schedule with existing orders"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **管理员权限验证**
+   - 验证 JWT Token 中的用户权限
+
+2. **存在性检查**
+   - 验证时刻表 ID 是否存在
+
+3. **关联订单检查**
+   - 查询 `orders` 表中是否存在该时刻表的订单
+   - 如果存在订单，返回 409 错误
+
+4. **数据库删除**
+   - 从 `train_schedules` 表中删除记录
