@@ -180,7 +180,7 @@ CREATE TABLE orders (
 
     FOREIGN KEY (train_schedule_id) REFERENCES train_schedules(id),
     FOREIGN KEY (buyer_id) REFERENCES users(id),
-    FOREIGN KEY (passenger_id) REFERENCES passengers(id),
+    FOREIGN KEY (passenger_id) REFERENCES passengers(id)
 );
 
 CREATE INDEX idx_orders_buyer ON orders(buyer_id);

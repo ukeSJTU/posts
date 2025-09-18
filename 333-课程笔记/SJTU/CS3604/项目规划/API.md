@@ -734,7 +734,7 @@ Authorization: Bearer <jwt_token>
 4. **座位可用性计算**
    - 对每个时刻表记录，查询 `orders` 表统计已售票数
    - 计算可用座位数：total_seats - 已售出座位数
-   - 只统计状态为 'PAID' 的订单
+   - 统计状态为 'PAID' 和 'PENDING_PAYMENT' 的订单
 
 5. **结果排序和分页**
    - 根据 sort_by 和 sort_order 参数排序
@@ -1053,3 +1053,663 @@ Authorization: Bearer <jwt_token>
 
 4. **数据库删除**
    - 从 `train_schedules` 表中删除记录
+
+---
+
+## 订单模块
+
+### 创建订单 - `POST /{apiBaseURL}/orders`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**Body (JSON):**
+
+```json
+{
+  "train_schedule_id": 1,
+  "passenger_id": 2,
+  "travel_date": "2024-01-20"
+}
+```
+
+**参数说明:**
+
+- `train_schedule_id` (integer, required): 火车时刻表 ID
+- `passenger_id` (integer, required): 乘车人 ID，必须属于当前用户
+- `travel_date` (string, required): 乘车日期，格式：YYYY-MM-DD
+
+#### 响应格式
+
+**成功 (`201 Created`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "order_number": "TK2024012012345678",
+    "train_schedule_id": 1,
+    "buyer_id": 1,
+    "passenger_id": 2,
+    "price": "553.00",
+    "status": "PENDING_PAYMENT",
+    "travel_date": "2024-01-20",
+    "train_info": {
+      "train_number": "G357",
+      "departure_city": "北京",
+      "arrival_city": "上海",
+      "departure_datetime": "2024-01-20T08:00:00Z",
+      "arrival_datetime": "2024-01-20T13:30:00Z"
+    },
+    "passenger_info": {
+      "name": "张三",
+      "id_card": "110101****1234"
+    },
+    "created_at": "2024-01-20T07:30:00Z"
+  },
+  "message": "Order created successfully"
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 请求参数错误
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Train schedule ID, passenger ID and travel date are required"
+  }
+}
+```
+
+`403 Forbidden`: 乘车人不属于当前用户
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "PASSENGER_ACCESS_DENIED",
+    "message": "You can only create orders for your own passengers"
+  }
+}
+```
+
+`404 Not Found`: 火车时刻表不存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SCHEDULE_NOT_FOUND",
+    "message": "Train schedule not found"
+  }
+}
+```
+
+`409 Conflict`: 座位不足
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "NO_SEATS_AVAILABLE",
+    "message": "No seats available for this train"
+  }
+}
+```
+
+`422 Unprocessable Entity`: 乘车日期无效
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_TRAVEL_DATE",
+    "message": "Travel date must be today or in the future"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id 作为 buyer_id
+
+2. **参数验证**
+   - 验证必填字段完整性
+   - 验证 travel_date 格式和有效性（不能是过去的日期）
+   - 验证 train_schedule_id 和 passenger_id 为有效整数
+
+3. **权限验证**
+   - 查询 passengers 表验证 passenger_id 是否属于当前用户
+   - 如果不属于，返回 403 错误
+
+4. **火车时刻表验证**
+   - 根据 train_schedule_id 查询 train_schedules 表
+   - 验证时刻表存在且状态正常（非取消或停运）
+   - 如果不存在，返回 404 错误
+
+5. **座位可用性检查**
+   - 统计该时刻表在指定日期的已售票数（状态为 PAID 和 PENDING_PAYMENT）
+   - 计算可用座位：seat_count - 已售票数
+   - 如果无可用座位，返回 409 错误
+
+6. **订单编号生成**
+   - 按照 `TK + YYYYMMDD + 8位流水号` 格式生成唯一订单编号
+   - 确保订单编号在数据库中唯一
+
+7. **数据库操作**
+   - 在事务中创建订单记录
+   - 设置初始状态为 PENDING_PAYMENT
+   - 记录当前时刻表的价格到订单中
+
+8. **响应处理**
+   - 查询并返回完整的订单信息
+   - 包含关联的火车时刻表和乘车人信息（脱敏处理）
+
+**注意事项:**
+
+- MVP 阶段不支持批量创建订单，用户需要为每个乘车人分别调用此 API
+- 订单创建后有 10 分钟的支付时限，超时将自动取消并释放座位
+
+### 获取用户订单列表 - `GET /{apiBaseURL}/users/me/orders`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+
+**Query Parameters:**
+
+| 参数名       | 类型    | 必填 | 说明                                                                     |
+| ------------ | ------- | ---- | ------------------------------------------------------------------------ |
+| `status`     | string  | 否   | 订单状态筛选，可选值：`PENDING_PAYMENT`, `CANCELLED`, `PAID`, `REFUNDED` |
+| `start_date` | string  | 否   | 乘车日期范围开始，格式：YYYY-MM-DD                                       |
+| `end_date`   | string  | 否   | 乘车日期范围结束，格式：YYYY-MM-DD                                       |
+| `sort_by`    | string  | 否   | 排序字段，可选值：`created_at`(默认), `travel_date`                      |
+| `sort_order` | string  | 否   | 排序方向，可选值：`desc`(默认), `asc`                                    |
+| `page`       | integer | 否   | 页码，默认为 1                                                           |
+| `limit`      | integer | 否   | 每页数量，默认为 20，最大 100                                            |
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "orders": [
+      {
+        "id": 1,
+        "order_number": "TK2024012012345678",
+        "train_schedule_id": 1,
+        "price": "553.00",
+        "status": "PAID",
+        "travel_date": "2024-01-20",
+        "train_info": {
+          "train_number": "G357",
+          "departure_city": "北京",
+          "arrival_city": "上海",
+          "departure_datetime": "2024-01-20T08:00:00Z",
+          "arrival_datetime": "2024-01-20T13:30:00Z"
+        },
+        "passenger_info": {
+          "name": "张三",
+          "id_card": "110101****1234"
+        },
+        "created_at": "2024-01-20T07:30:00Z",
+        "updated_at": "2024-01-20T07:35:00Z"
+      },
+      {
+        "id": 2,
+        "order_number": "TK2024012112345679",
+        "train_schedule_id": 2,
+        "price": "553.00",
+        "status": "PENDING_PAYMENT",
+        "travel_date": "2024-01-21",
+        "train_info": {
+          "train_number": "G159",
+          "departure_city": "北京",
+          "arrival_city": "上海",
+          "departure_datetime": "2024-01-21T09:15:00Z",
+          "arrival_datetime": "2024-01-21T14:45:00Z"
+        },
+        "passenger_info": {
+          "name": "李四",
+          "id_card": "220202****5678"
+        },
+        "created_at": "2024-01-21T08:00:00Z",
+        "updated_at": "2024-01-21T08:00:00Z"
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 2,
+      "total_count": 25,
+      "per_page": 20,
+      "has_next": true,
+      "has_prev": false
+    }
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **参数验证**
+   - 验证可选参数的格式和有效性
+   - 验证日期范围（start_date <= end_date）
+   - 验证分页参数（page >= 1, limit <= 100）
+
+3. **数据库查询**
+   - 根据 buyer_id 查询当前用户的所有订单
+   - 应用状态筛选和日期范围筛选
+   - 关联查询 train_schedules 和 passengers 表获取详细信息
+
+4. **数据脱敏处理**
+   - 乘车人身份证号脱敏显示
+   - 其他敏感信息按需脱敏
+
+5. **结果排序和分页**
+   - 根据 sort_by 和 sort_order 参数排序
+   - 应用分页逻辑并返回分页元数据
+
+### 获取订单详情 - `GET /{apiBaseURL}/orders/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+
+**路径参数:**
+
+- `id` (integer, required): 订单 ID
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "order_number": "TK2024012012345678",
+    "train_schedule_id": 1,
+    "buyer_id": 1,
+    "passenger_id": 2,
+    "price": "553.00",
+    "status": "PAID",
+    "travel_date": "2024-01-20",
+    "train_info": {
+      "id": 1,
+      "train_number": "G357",
+      "departure_city": "北京",
+      "arrival_city": "上海",
+      "departure_datetime": "2024-01-20T08:00:00Z",
+      "arrival_datetime": "2024-01-20T13:30:00Z",
+      "duration_minutes": 330
+    },
+    "passenger_info": {
+      "id": 2,
+      "name": "张三",
+      "id_card": "110101199001011234",
+      "phone": "13800138000",
+      "email": "zhangsan@example.com"
+    },
+    "buyer_info": {
+      "id": 1,
+      "email": "buyer@example.com"
+    },
+    "created_at": "2024-01-20T07:30:00Z",
+    "updated_at": "2024-01-20T07:35:00Z"
+  }
+}
+```
+
+**失败 (`404 Not Found`):**
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ORDER_NOT_FOUND",
+    "message": "Order not found or access denied"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **权限验证**
+   - 根据订单 ID 查询订单记录
+   - 验证订单的 buyer_id 是否为当前用户
+   - 如果不匹配或订单不存在，返回 404 错误
+
+3. **关联数据查询**
+   - 查询关联的火车时刻表详细信息
+   - 查询关联的乘车人完整信息（不脱敏）
+   - 查询购票人基本信息
+
+4. **完整信息返回**
+   - 返回订单的所有详细信息
+   - 包含完整的关联数据，便于用户查看和管理
+
+### 支付订单 - `POST /{apiBaseURL}/orders/{id}/pay`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**路径参数:**
+
+- `id` (integer, required): 订单 ID
+
+**Body (JSON):**
+
+```json
+{
+  "payment_method": "balance"
+}
+```
+
+**参数说明:**
+
+- `payment_method` (string, required): 支付方式，当前只支持 "balance"（账户余额）
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "order_number": "TK2024012012345678",
+    "status": "PAID",
+    "price": "553.00",
+    "payment_method": "balance",
+    "paid_at": "2024-01-20T07:35:00Z",
+    "remaining_balance": "447.00"
+  },
+  "message": "Payment successful"
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 订单状态不允许支付
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ORDER_STATUS",
+    "message": "Only pending payment orders can be paid"
+  }
+}
+```
+
+`402 Payment Required`: 余额不足
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INSUFFICIENT_BALANCE",
+    "message": "Insufficient account balance"
+  }
+}
+```
+
+`404 Not Found`: 订单不存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ORDER_NOT_FOUND",
+    "message": "Order not found or access denied"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **订单验证**
+   - 根据订单 ID 查询订单记录
+   - 验证订单属于当前用户（buyer_id 匹配）
+   - 验证订单状态为 PENDING_PAYMENT
+   - 如果订单不存在或状态不正确，返回相应错误
+
+3. **余额验证**
+   - 查询用户当前账户余额
+   - 验证余额是否足够支付订单金额
+   - 如果余额不足，返回 402 错误
+
+4. **支付处理（数据库事务）**
+   - 开始数据库事务
+   - 扣减用户账户余额
+   - 更新订单状态为 PAID
+   - 记录支付时间戳
+   - 提交事务
+
+5. **响应处理**
+   - 返回支付成功信息
+   - 包含订单状态和用户剩余余额
+
+### 取消订单 - `POST /{apiBaseURL}/orders/{id}/cancel`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**路径参数:**
+
+- `id` (integer, required): 订单 ID
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "order_number": "TK2024012012345678",
+    "status": "CANCELLED",
+    "cancelled_at": "2024-01-20T07:40:00Z"
+  },
+  "message": "Order cancelled successfully"
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 订单状态不允许取消
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ORDER_STATUS",
+    "message": "Only pending payment orders can be cancelled"
+  }
+}
+```
+
+`404 Not Found`: 订单不存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ORDER_NOT_FOUND",
+    "message": "Order not found or access denied"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **订单验证**
+   - 根据订单 ID 查询订单记录
+   - 验证订单属于当前用户（buyer_id 匹配）
+   - 验证订单状态为 PENDING_PAYMENT
+   - 如果订单不存在或状态不正确，返回相应错误
+
+3. **取消处理**
+   - 更新订单状态为 CANCELLED
+   - 记录取消时间戳
+   - 释放占用的座位（供其他用户购买）
+
+4. **响应处理**
+   - 返回取消成功信息
+   - 包含更新后的订单状态
+
+### 申请退款 - `POST /{apiBaseURL}/orders/{id}/refund`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**路径参数:**
+
+- `id` (integer, required): 订单 ID
+
+**Body (JSON):**
+
+```json
+{
+  "reason": "行程变更"
+}
+```
+
+**参数说明:**
+
+- `reason` (string, optional): 退款原因，最长 200 字符
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "order_number": "TK2024012012345678",
+    "status": "REFUNDED",
+    "refund_amount": "553.00",
+    "refunded_at": "2024-01-19T15:30:00Z",
+    "current_balance": "1553.00"
+  },
+  "message": "Refund processed successfully"
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 订单状态不允许退款
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ORDER_STATUS",
+    "message": "Only paid orders can be refunded"
+  }
+}
+```
+
+`400 Bad Request`: 超过退款时限
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "REFUND_TIME_EXPIRED",
+    "message": "Cannot refund after train departure time"
+  }
+}
+```
+
+`404 Not Found`: 订单不存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ORDER_NOT_FOUND",
+    "message": "Order not found or access denied"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **订单验证**
+   - 根据订单 ID 查询订单记录
+   - 验证订单属于当前用户（buyer_id 匹配）
+   - 验证订单状态为 PAID
+   - 如果订单不存在或状态不正确，返回相应错误
+
+3. **退款时限验证**
+   - 查询关联的火车时刻表信息
+   - 验证当前时间是否在火车发车时间之前
+   - 如果已过发车时间，返回 400 错误
+
+4. **退款处理（数据库事务）**
+   - 开始数据库事务
+   - 将订单金额退回到用户账户余额
+   - 更新订单状态为 REFUNDED
+   - 记录退款时间戳和退款原因
+   - 释放占用的座位
+   - 提交事务
+
+5. **响应处理**
+   - 返回退款成功信息
+   - 包含退款金额和用户当前余额
