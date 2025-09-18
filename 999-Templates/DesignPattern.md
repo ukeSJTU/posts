@@ -68,9 +68,7 @@ classDiagram
 
 在这里贴上未使用模式前的“坏”代码，并简要注释说明其问题所在。
 
-Java
-
-```
+```java
 // 注释：这里的 if-else 结构导致每次新增类型都需要修改此类。
 public class ProblematicCode {
     public void doSomething(String type) {
@@ -87,9 +85,7 @@ public class ProblematicCode {
 
 在这里贴上应用了设计模式的“好”代码，并用注释标明哪个类对应UML中的哪个角色。
 
-Java
-
-```
+```java
 // Strategy: 策略接口
 interface Strategy {
     void execute();

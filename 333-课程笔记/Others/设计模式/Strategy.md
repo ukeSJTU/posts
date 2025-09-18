@@ -283,3 +283,265 @@ public class Main {
 - On the other hand, *Strategy* usually describes different ways of doing the same thing, letting you swap these algorithms within a single context class.
 
 ## 9. 练习题
+
+本章练习题对应代码如下：
+
+```java
+// Hand.java
+package strategy;
+
+public class Hand {
+    public static final int HANDVALUE_ROCK = 0;
+    public static final int HANDVALUE_SCISSOR = 1;
+    public static final int HANDVALUE_PAPER = 2;
+    public static final Hand[] hand = {
+            new Hand(HANDVALUE_ROCK),
+            new Hand(HANDVALUE_SCISSOR),
+            new Hand(HANDVALUE_PAPER)
+    };
+    public static final String[] name = {
+            "Rock", "Scissor", "Paper"
+    };
+
+    private int handvalue;
+
+    public Hand(int handvalue) {
+        this.handvalue = handvalue;
+    }
+
+    public static Hand getHand(int handvalue) {
+        return hand[handvalue];
+    }
+
+    public boolean isStrongerThan(Hand hand) {
+        return fight(hand) == 1;
+    }
+
+    public boolean isWeakerThan(Hand hand) {
+        return fight(hand) == -1;
+    }
+
+    private int fight(Hand hand) {
+        if (this == hand) {
+            return 0;
+        } else if ((this.handvalue + 1) % 3 == hand.handvalue) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    public String toString() {
+        return name[handvalue];
+    }
+}
+```
+
+```java
+// Strategy.java
+package strategy;
+
+public interface Strategy {
+    public abstract Hand nextHand();
+
+    public abstract void study(boolean win);
+}
+```
+
+```java
+// ProbStrategy.java
+package strategy;
+
+import java.util.Random;
+
+public class ProbStrategy implements Strategy{
+    private Random random;
+    private int prevHandValue = 0;
+    private int currHandValue = 0;
+    private int[][] history = {
+            {1, 1, 1},
+            {1, 1, 1},
+            {1, 1, 1}
+    };
+
+    public ProbStrategy(int seed) {
+        random = new Random(seed);
+    }
+
+
+    @Override
+    public Hand nextHand() {
+        int bet = random.nextInt(getSum(currHandValue));
+        int handvalue = 0;
+        if (bet < history[currHandValue][0]) {
+            handvalue = 0;
+        } else if (bet < history[currHandValue][0] + history[currHandValue][1]) {
+            handvalue = 1;
+        } else {
+            handvalue = 2;
+        }
+
+        prevHandValue = currHandValue;
+        currHandValue = handvalue;
+        return Hand.getHand(handvalue);
+    }
+
+    @Override
+    public void study(boolean win) {
+        if (win) {
+            history[prevHandValue][currHandValue]++;
+        } else {
+            history[prevHandValue][(currHandValue + 1) % 3]++;
+            history[prevHandValue][(currHandValue + 2) % 3]++;
+        }
+    }
+
+    private int getSum(int hv) {
+        int sum = 0;
+        for (int i = 0; i < 3; i++) {
+            sum += history[hv][i];
+        }
+        return sum;
+    }
+}
+```
+
+```java
+// WinningStrategy.java
+package strategy;
+
+import java.util.Random;
+
+public class WinningStrategy implements Strategy{
+    private Random random;
+    private boolean won = false;
+    private Hand prevHand;
+
+    public WinningStrategy(int seed) {
+        random = new Random(seed);
+    }
+
+    @Override
+    public Hand nextHand() {
+        if (!won) {
+            prevHand = Hand.getHand(random.nextInt(3));
+        }
+        return prevHand;
+    }
+
+    @Override
+    public void study(boolean win) {
+        won = win;
+    }
+}
+```
+
+```java
+// Player.java
+package strategy;
+
+public class Player {
+    private String name;
+    private Strategy strategy;
+    private int wincount;
+    private int losecount;
+    private int gamecount;
+
+    public Player(String name, Strategy strategy) {
+        this.name = name;
+        this.strategy = strategy;
+    }
+
+    public Hand nextHand() {
+        return strategy.nextHand();
+    }
+
+    public void win() {
+        strategy.study(true);
+        wincount++;
+        gamecount++;
+    }
+
+    public void lose() {
+        strategy.study(false);
+        losecount++;
+        gamecount++;
+    }
+
+    public void even() {
+        gamecount++;
+    }
+
+    public String toString() {
+        return "[" + name + ":" + gamecount + " games, " + wincount + " win, " + losecount + " lose]";
+    }
+}
+```
+
+```java
+// Main.java
+package strategy;
+
+public class Main {
+    public static void main(String[] args) {
+        int seed1 = 314;
+        int seed2 = 15;
+        Player player1 = new Player("Taro", new WinningStrategy(seed1));
+        Player player2 = new Player("Hana", new ProbStrategy(seed2));
+
+        for (int i = 0; i < 10000; i++) {
+            Hand nextHand1 = player1.nextHand();
+            Hand nextHand2 = player2.nextHand();
+            if (nextHand1.isStrongerThan(nextHand2)) {
+                System.out.println("Winner:" + player1);
+                player1.win();
+                player2.lose();
+            } else if (nextHand1.isWeakerThan(nextHand2)) {
+                System.out.println("Winner:" + player2);
+                player2.win();
+                player1.lose();
+            } else {
+                System.out.println("Even...");
+                player1.even();
+                player2.even();
+            }
+        }
+
+        System.out.println("Total result:");
+        System.out.println(player1);
+        System.out.println(player2);
+    }
+}
+```
+
+### 习题 1
+
+请编写一个随机出手势的`RandomStrategy`类
+
+```java
+import java.util.Random;
+
+public class RandomStrategy implements Strategy {
+	private Random random;
+
+	public RandomStrategy(int seed) {
+		random = new Random(seed);
+	}
+
+	public Hand nextHand() {
+		return Hand.getHand(random.nextInt(3));
+	}
+
+	public void study(boolean win) {
+		return;
+	}
+}
+```
+
+### 习题 2
+
+在本章的示例程序中，`Hand`类（代码清单 10-1）的 `fight` 方法负责判断平局。在进行判断时，它使用的表达式不是 `this.handValue == h.value`，而是 `this == h`，请问为什么可以这样写？
+
+### 习题 3
+
+### 习题 4
