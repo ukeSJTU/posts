@@ -261,3 +261,351 @@ Authorization: Bearer <jwt_token>
 - `POST /api/users/logout`: 登出接口。虽然 JWT 是无状态的，但配合 Refresh Token 机制，登出时可以在后端将对应的 refreshToken 加入黑名单，使其失效。
 - `PUT /api/users/profile`: 允许认证用户更新自己的信息（例如，如果未来增加了昵称、头像等字段）。
 - `POST /api/users/change-password`: 允许已登录用户修改自己的密码（需要提供旧密码）。
+
+## 乘车人模块
+
+### 添加乘车人 - `POST /{apiBaseURL}/users/me/passengers`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**Body (JSON):**
+
+```json
+{
+  "name": "张三",
+  "id_card": "110101199001011234",
+  "phone": "13800138000",
+  "email": "zhangsan@example.com"
+}
+```
+
+**参数说明:**
+
+- `name` (string, required): 乘车人姓名，最长 50 字符
+- `id_card` (string, required): 身份证号，18 位
+- `phone` (string, optional): 手机号，最长 20 字符
+- `email` (string, optional): 邮箱地址，最长 100 字符
+
+#### 响应格式
+
+**成功 (`201 Created`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "张三",
+    "id_card": "110101199001011234",
+    "phone": "13800138000",
+    "email": "zhangsan@example.com",
+    "created_at": "2024-01-15T08:00:00Z"
+  },
+  "message": "Passenger added successfully"
+}
+```
+
+**失败响应:**
+
+`400 Bad Request`: 请求参数错误
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Name and ID card are required, please check parameter format"
+  }
+}
+```
+
+`409 Conflict`: 乘车人已存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "PASSENGER_EXISTS",
+    "message": "Passenger with this ID card already exists"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **参数验证**
+   - 验证必填字段（name, id_card）
+   - 验证身份证号格式（18 位数字/字母）
+   - 验证手机号和邮箱格式（如果提供）
+
+3. **重复性检查**
+   - 查询当前用户是否已添加过该身份证号的乘车人
+   - 如果存在，返回 `409 Conflict` 错误
+
+4. **数据库操作**
+   - 插入新乘车人记录到 `passengers` 表
+   - 自动关联当前用户的 user_id
+   - 记录创建时间戳
+
+### 获取乘车人列表 - `GET /{apiBaseURL}/users/me/passengers`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "张三",
+      "id_card": "110101****1234",
+      "phone": "138****8000",
+      "email": "zhangsan@example.com",
+      "created_at": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "李四",
+      "id_card": "220202****5678",
+      "phone": "139****9000",
+      "email": "lisi@example.com",
+      "created_at": "2024-01-16T09:00:00Z"
+    }
+  ]
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **数据库查询**
+   - 根据 user_id 查询 `passengers` 表中的所有记录
+   - 按创建时间倒序排列
+
+3. **数据脱敏处理**
+   - 身份证号脱敏：显示前 6 位和后 4 位，中间用 `****` 替代
+   - 手机号脱敏：显示前 3 位和后 4 位，中间用 `****` 替代
+   - 邮箱不脱敏（相对不敏感）
+
+### 获取单个乘车人信息 - `GET /{apiBaseURL}/users/me/passengers/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+
+**路径参数:**
+
+- `id` (integer, required): 乘车人 ID
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "张三",
+    "id_card": "110101199001011234",
+    "phone": "13800138000",
+    "email": "zhangsan@example.com",
+    "created_at": "2024-01-15T08:00:00Z",
+    "updated_at": "2024-01-15T08:00:00Z"
+  }
+}
+```
+
+**失败 (`404 Not Found`):**
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "PASSENGER_NOT_FOUND",
+    "message": "Passenger not found or access denied"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **权限验证**
+   - 根据乘车人 ID 和 user_id 查询记录
+   - 确保只能访问属于当前用户的乘车人
+
+3. **完整信息返回**
+   - 返回完整的乘车人信息（不脱敏）
+   - 包含详细的时间戳信息
+
+### 更新乘车人信息 - `PUT /{apiBaseURL}/users/me/passengers/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+- `Content-Type: application/json`
+
+**路径参数:**
+
+- `id` (integer, required): 乘车人 ID
+
+**Body (JSON):**
+
+```json
+{
+  "name": "张三",
+  "id_card": "110101199001011234",
+  "phone": "13900139000",
+  "email": "zhangsan_new@example.com"
+}
+```
+
+**参数说明:**
+
+- `name` (string, required): 乘车人姓名
+- `id_card` (string, required): 身份证号（允许修改）
+- `phone` (string, optional): 手机号
+- `email` (string, optional): 邮箱地址
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "张三",
+    "id_card": "110101199001011234",
+    "phone": "13900139000",
+    "email": "zhangsan_new@example.com",
+    "updated_at": "2024-01-15T10:30:00Z"
+  },
+  "message": "Passenger information updated successfully"
+}
+```
+
+**失败响应:**
+
+`404 Not Found`: 乘车人不存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "PASSENGER_NOT_FOUND",
+    "message": "Passenger not found or access denied"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **权限验证**
+   - 确保只能修改属于当前用户的乘车人
+
+3. **参数验证**
+   - 验证所有字段格式（包括身份证号）
+   - 验证手机号和邮箱格式（如果提供）
+
+4. **数据库更新**
+   - 更新 `passengers` 表中的记录
+   - 更新 updated_at 时间戳
+
+### 删除乘车人 - `DELETE /{apiBaseURL}/users/me/passengers/{id}`
+
+#### 请求格式
+
+**Headers:**
+
+- `Authorization: Bearer <jwt_token>`
+
+**路径参数:**
+
+- `id` (integer, required): 乘车人 ID
+
+#### 响应格式
+
+**成功 (`200 OK`):**
+
+```json
+{
+  "success": true,
+  "message": "Passenger deleted successfully"
+}
+```
+
+**失败响应:**
+
+`404 Not Found`: 乘车人不存在
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "PASSENGER_NOT_FOUND",
+    "message": "Passenger not found or access denied"
+  }
+}
+```
+
+`409 Conflict`: 存在关联订单
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "PASSENGER_HAS_ORDERS",
+    "message": "Cannot delete passenger with active orders"
+  }
+}
+```
+
+#### 业务逻辑
+
+1. **JWT Token 验证**
+   - 验证请求头中的 JWT Token
+   - 获取当前登录用户的 user_id
+
+2. **权限验证**
+   - 确保只能删除属于当前用户的乘车人
+
+3. **关联订单检查**
+   - 查询 `orders` 表中是否存在该乘车人的活跃订单
+   - 如果存在未完成订单，返回 `409 Conflict` 错误
+
+4. **数据库删除**
+   - 从 `passengers` 表中删除记录
