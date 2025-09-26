@@ -6,5 +6,6 @@ zhaiguangtao@sjtu.edu.cn
 
 minxiongkuo@sjtu.edu.cn
 
-50% Final Examination open book
-50% others(Lab, Project)
+50% Final Examination (open book)
+30% 1x Project
+20% attendance of course, experiment, etc.
