@@ -56,11 +56,11 @@ classDiagram
 
 ## Creational Patterns
 
-- [ ] Factory Method
-- [ ] Abstract Factory
+- [x] Factory Method
+- [x] Abstract Factory
 - [ ] Builder
 - [ ] Prototype
-- [ ] Singleton
+- [x] Singleton
 
 ## Structural Patterns
 
@@ -81,6 +81,6 @@ classDiagram
 - [ ] Memento
 - [ ] Observer
 - [ ] State
-- [ ] Strategy
+- [x] Strategy
 - [ ] Template Method
 - [ ] Visitor
