@@ -58,7 +58,7 @@ classDiagram
 
 - [x] Factory Method
 - [x] Abstract Factory
-- [ ] Builder
+- [x] Builder
 - [ ] Prototype
 - [x] Singleton
 
