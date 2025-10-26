@@ -59,7 +59,7 @@ classDiagram
 - [x] Factory Method
 - [x] Abstract Factory
 - [x] Builder
-- [ ] Prototype
+- [x] Prototype
 - [x] Singleton
 
 ## Structural Patterns
@@ -82,5 +82,5 @@ classDiagram
 - [ ] Observer
 - [ ] State
 - [x] Strategy
-- [ ] Template Method
+- [x] Template Method
 - [ ] Visitor
