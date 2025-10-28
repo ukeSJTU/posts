@@ -332,4 +332,174 @@ class Application is
 
 ## 9. 练习题
 
-TODO
+### 习题 15-1
+
+在示例程序（代码清单 15-2 至 15-5）中，`PageMaker` 类（Facade 角色）的代码如下所示。请问这段代码是否存在问题？如果存在问题，请说明原因，并指出应该如何修改。
+
+```java
+// Database 类 (模拟从属性文件获取数据)
+package pagemaker;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+public class Database {
+    private Database() {    // 防止外部 new 出 Database 的实例，所以声明为 private
+    }
+    // 根据数据库名获取 Properties
+    public static Properties getProperties(String dbname) throws IOException {
+        String filename = dbname + ".txt";
+        Properties prop = new Properties();
+        prop.load(new FileInputStream(filename));
+        return prop;
+    }
+}
+
+// HtmlWriter 类 (用于生成 HTML 文件)
+package pagemaker;
+import java.io.Writer;
+import java.io.IOException;
+
+public class HtmlWriter {
+    private Writer writer;
+    public HtmlWriter(Writer writer) {
+        this.writer = writer;
+    }
+    // 输出标题
+    public void title(String title) throws IOException {
+        writer.write("<!DOCTYPE html>\n");
+        writer.write("<html>\n");
+        writer.write("<head>\n");
+        writer.write("<title>" + title + "</title>\n");
+        writer.write("</head>\n");
+        writer.write("<body>\n");
+        writer.write("<h1>" + title + "</h1>\n");
+    }
+    // 输出段落
+    public void paragraph(String msg) throws IOException {
+        writer.write("<p>" + msg + "</p>\n");
+    }
+    // 输出超链接
+    public void link(String href, String caption) throws IOException {
+        paragraph("<a href=\"" + href + "\">" + caption + "</a>");
+    }
+    // 输出邮件地址
+    public void mailto(String mailaddr, String username) throws IOException {
+        link("mailto:" + mailaddr, username);
+    }
+    // 结束 HTML 输出
+    public void close() throws IOException {
+        writer.write("</body>\n");
+        writer.write("</html>\n");
+        writer.close();
+    }
+}
+
+// PageMaker 类 (Facade 角色)
+package pagemaker;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Properties;
+
+public class PageMaker {
+    private PageMaker() {   // 防止外部 new 出 PageMaker 的实例
+    }
+    public static void makeWelcomePage(String mailaddr, String filename) throws IOException {
+        Properties mailprop = Database.getProperties("maildata");
+        String username = mailprop.getProperty(mailaddr);
+        HtmlWriter writer = new HtmlWriter(new FileWriter(filename));
+        writer.title("Welcome to " + username + "'s page!");
+        writer.paragraph(username + "欢迎来到" + username + "的主页。");
+        writer.paragraph("等着你的邮件哦！");
+        writer.mailto(mailaddr, username);
+        writer.close();
+        System.out.println(filename + " is created for " + mailaddr + " (" + username + ")");
+    }
+}
+
+// Main 类 (测试程序)
+package pagemaker;
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) {
+        try {
+            PageMaker.makeWelcomePage("hyuki@hyuki.com", "welcome.html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+请你思考一下，上面 `PageMaker` 类的实现是否存在问题？
+
+是的，`PageMaker` 类的实现存在问题。
+
+**问题原因：**
+
+`PageMaker` 类只包含 `static` 方法 (`makeWelcomePage`)，并且其构造函数是 `private` 的。这意味着：
+
+1. **无法创建 `PageMaker` 的实例**：客户端不能 `new PageMaker()`。
+2. **所有操作通过静态方法进行**：客户端直接通过类名调用 `PageMaker.makeWelcomePage(...)`。
+
+这使得 `PageMaker` 更像是一个**工具类 (Utility Class)**，而不是一个典型的 Facade 对象。Facade 模式通常通过创建一个 Facade _对象_ 来封装子系统的访问。
+
+**缺点：**
+
+- **缺乏灵活性和扩展性**：因为全是静态方法，你无法通过继承 `PageMaker` 来创建不同的 Facade 实现或扩展其功能。无法利用多态性来替换 Facade。
+- **与模式意图略有偏差**：虽然它简化了接口，但失去了面向对象实现所带来的好处（如替换、扩展）。
+
+**修改方法：**
+
+1. 将 `PageMaker` 的构造函数改为 `public`。
+2. 将 `makeWelcomePage` 方法改为非静态（实例）方法。
+3. 修改客户端代码 (`Main`)，先创建 `PageMaker` 的实例，然后通过实例调用 `makeWelcomePage` 方法。
+
+修改后的 `PageMaker` (部分):
+
+```java
+package pagemaker;
+// ... imports ...
+
+public class PageMaker {
+    // 改为 public
+    public PageMaker() {
+    }
+
+    // 去掉 static
+    public void makeWelcomePage(String mailaddr, String filename) throws IOException {
+        // ... 方法内部逻辑不变 ...
+        Properties mailprop = Database.getProperties("maildata");
+        String username = mailprop.getProperty(mailaddr);
+        HtmlWriter writer = new HtmlWriter(new FileWriter(filename));
+        writer.title("Welcome to " + username + "'s page!");
+        writer.paragraph(username + "欢迎来到" + username + "的主页。");
+        writer.paragraph("等着你的邮件哦！");
+        writer.mailto(mailaddr, username);
+        writer.close();
+        System.out.println(filename + " is created for " + mailaddr + " (" + username + ")");
+    }
+}
+```
+
+修改后的 `Main` (部分):
+
+```java
+package pagemaker;
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) {
+        try {
+            // 创建实例，然后调用实例方法
+            PageMaker maker = new PageMaker();
+            maker.makeWelcomePage("hyuki@hyuki.com", "welcome.html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+这样修改后，`PageMaker` 就成为了一个可以实例化和替换的对象，更符合 Facade 模式的典型实现。
