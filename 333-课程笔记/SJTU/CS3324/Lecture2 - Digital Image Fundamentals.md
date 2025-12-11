@@ -1,3 +1,14 @@
+## Agenda
+
+- Introduction
+- Sampling & Reconstruction
+- Radiometry Fundamentals
+- Colorimetry Fundamentals
+- Human Visual System and Illusions
+- Visual Quality Assessment
+
+## Introduction
+
 1. Gray Scale Image
    - I=f(x,y)
    - 离散化后I=f(m,n), I:0-255
@@ -26,3 +37,5 @@
    -
 1. StereoVision 立体视觉
    - 双目
+
+## Sampling & Reconstruction

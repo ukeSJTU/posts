@@ -1,6 +1,6 @@
 #25Fall
 
-数字图像处理
+数字图像处理 DIP
 
 zhaiguangtao@sjtu.edu.cn
 
