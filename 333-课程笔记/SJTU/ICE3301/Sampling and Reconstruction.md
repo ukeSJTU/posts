@@ -1,12 +1,14 @@
-7.1 Sampling
-7.2 Reconstruction
-7.3. Sampling Theorem
+## Agenda
+
+7.1 Sampling (7.1)
+7.2 Reconstruction (7.2)
+7.3. Sampling Theorem (7.1, 7.3)
 
 ## 7.1 Sampling
 
 ### 7.1.1 Time-Domain Expression of Sampling
 
-TODO: copy from PPT
+A continuous-time signal is converted into a discrete-time signal by **sampling**.
 
 There are two kinds of sampling:
 
@@ -15,27 +17,17 @@ There are two kinds of sampling:
 
 > 这节课我们只考虑 periodic sampling，后续的所有sampling都是periodic sampling
 
-Suppose x(n) is discrete-time signal and x_c(t) is continuous-time signal. Then the time-domain expression of (periodic) sampling is as below:
+Suppose $x(n)$ is discrete-time signal and $x_c(t)$ is continuous-time signal. Then the time-domain expression of (periodic) sampling is as below:
 
-x(n)=xc(t)|t=nT=xc(nT).
-
-TODO: convert to latex
+$$x(n) = x_c(t)\bigg|_{t=nT} = x_c(nT)$$
 
 ### 7.1.2 Frequency-Domain Expression of Sampling
 
-Let:
+Let $x_c(t)$ be a continuous-time signal, $X_c(\Omega)$ be the continuous-time Fourier transform of $x_c(t)$, $x(n)$ be a discrete-time signal, and $X(\omega)$ be the discrete-time Fourier transform of $x(n)$. If $x(n)=x_c(nT)$, then we have:
 
-xc(t) be a continuous-time signal, Xc() be the continuous-
+$$X(\omega) = \frac{1}{T} \sum_{m=-\infty}^{\infty} X_c\left(\frac{\omega - 2\pi m}{T}\right).$$
 
-time Fourier transform of xc(t), x(n) be a discrete-time signal, and
-
-X() be the discrete-time Fourier transform of x(n).
-
-Then we have:
-
-See page 3 of PPT and convert to LATEX.
-
-Clarify two concepts:
+Before we understand the theorem, we need to clarify two concepts first:
 
 CT signal processing we have the concept of frequency, in e^j(omega)\*t, we call the omega freq. This is actually the **physical frequency**. It means the change of phase in one second. We can look at this from another perspective: omega = d(omega\*t) / dt, unit: rad/s.
 
