@@ -11,3 +11,7 @@
 # 打开 terminal
 
 快捷键：`ctrl+j`或者`command+j`
+
+# 导航与跳转
+
+https://code.visualstudio.com/docs/editing/editingevolved
